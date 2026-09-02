@@ -21,7 +21,7 @@
 - `main/main.c`：硬件初始化与 WorkBuddy 直接启动
 - `main/Kconfig.projbuild`：不含已提交凭据的 demo/live 构建设置
 - `main/workbuddy_types.h`：跨模块有界类型与上限
-- `main/workbuddy_model.[ch]`：页面、焦点、录音、确认、通知与 operation 状态的纯模型
+- `main/workbuddy_model.[ch]`：页面、焦点、语音准备、录音、确认、通知与 operation 状态的纯模型
 - `main/workbuddy_protocol.[ch]`：有界快照解析与动作序列化
 - `main/workbuddy_app.[ch]`：队列所有权与 worker 编排
 - `main/workbuddy_wifi.[ch]`：STA 生命周期与重连状态
@@ -177,11 +177,11 @@
 
 - [ ] **步骤 2：实现直接启动的应用编排**
 
-  先初始化 I2C、显示与 LVGL；按键、音频、电量、存储与网络分别降级。按键回调只把 `wb_event_t` 放入有界队列。UI timer 在 LVGL 锁内消费状态快照。
+  先初始化 I2C、显示与 LVGL；按键、音频、电量、存储与网络分别降级。按键回调只把 `wb_event_t` 放入有界队列。UI timer 在 LVGL 锁内消费状态快照。音频就绪、转写与动作完成事件都携带 operation ID 并可靠投递；过期 operation 的结果会被忽略。
 
 - [ ] **步骤 3：实现可穿戴 UI**
 
-  使用固定 240×320 布局：24 px 状态栏、248 px 内容区和 48 px 操作区。远端文字使用 Noto Sans SC 14 px、2 bpp 压缩子集，WorkBuddy 标题与计数使用 Montserrat 20。显示隐私封面、列表、详情、导航、录音、转写确认、发送中、成功、失败、过期标记与明确的 Demo 标记。
+  使用固定 240×320 布局：24 px 状态栏、248 px 内容区和 48 px 操作区。远端文字使用 Noto Sans SC 14 px、2 bpp 压缩子集，WorkBuddy 标题与计数使用 Montserrat 20。显示隐私封面、列表、详情、导航、语音准备、录音、转写确认、发送中、成功、失败、过期标记与明确的 Demo 标记。
 
   Demo 任务详情可以进入追问交互以覆盖状态机；Live 任务详情按 `OK` 时必须在录音前显示“云任务追问将在后续版本开放”，footer 显示“云任务追问预留”，且不提交动作。不要把这个入口写成 V1 已支持能力。
 
@@ -212,7 +212,7 @@
 
 - [ ] **步骤 2：实现 Wi-Fi 生命周期**
 
-  创建一个 STA netif 与一组事件 handler，凭据来自未跟踪的本地 `sdkconfig`，连接失败按最高 30 秒退避重试。Demo 模式不启动无线电，也不记录 SSID 密码。
+  创建一个 STA netif 与一组事件 handler，凭据来自未跟踪的本地 `sdkconfig`，连接失败按最高 30 秒退避重试。`esp_wifi_connect()` 短暂启动失败会重新进入退避；SNTP 虽返回成功但 epoch 不合理时会主动重启 SNTP。HTTPS 模式在本次启动获得新的 SNTP 结果并建立合理时钟前不能报告网络就绪，同时启用 Mbed TLS 证书日期校验。Demo 模式不启动无线电，也不记录 SSID 密码。
 
 - [ ] **步骤 3：实现 HTTP 传输**
 
@@ -220,7 +220,7 @@
 
 - [ ] **步骤 4：实现音频管线**
 
-  单一音频 task 每次读取 2 KiB PCM 并直接写入固定长度上传。5 秒结束或用户提前停止后，不再读取麦克风；提前结束的剩余部分写入静音。取消时中止请求，错误时显示可重试失败。
+  单一音频 task 先建立固定长度上传，并返回与 operation ID 匹配的就绪事件。UI 先处理准备阶段已经排队的按键，渲染录音页并等待排队的 SPI 像素传输完成，再发送带 operation ID 的开始控制；音频 task 随后重置 RX DMA 队列再读取 2 KiB PCM，使网络准备时间和预录数据都不会进入 5 秒录音窗口。开始、结束和取消控制均绑定 operation ID，延迟控制不能影响下一次录音。5 秒结束或用户提前停止后，不再读取麦克风；提前结束的剩余部分写入静音。取消时中止请求，音频或传输错误会显示可重试失败，而不是静默丢失结果。
 
 - [ ] **步骤 5：集成轮询、动作与 demo worker**
 
@@ -228,7 +228,7 @@
 
 - [ ] **步骤 6：验证主机与固件构建**
 
-  依次运行主机测试、`./tools/validate.sh --static`，再激活 ESP-IDF 5.5.3 并运行 `./tools/validate.sh --firmware`。记录镜像大小和最大的静态资源。
+  依次运行主机测试、`./tools/validate.sh --static`，再激活 ESP-IDF 5.5.3 并运行 `./tools/validate.sh --firmware`。固件门必须分别编译、合并并验证 Demo profile 与只含占位配置的 Live profile，并在接受构建前断言生成配置中的 Demo、蓝牙、HTTPS、证书包和证书日期校验设置。记录镜像大小和最大的静态资源。
 
 ### 任务 5：记录配置、API 与产品事实
 

@@ -30,7 +30,7 @@ V1 把远端内容放在隐私封面之后，并把每类列表限制为六条�
 | 任务 | 显示归一化状态、打开详情，并用确认后的语音文字创建任务 | Live 模式需要 `user.task.readable` 与 `user.task.invokable` |
 | 任务追问 | Demo 模式可以演示交互状态；Live 任务详情会在录音开始前提示此能力留待后续版本 | **V1 明确 NOT_SUPPORTED**：直接调用网关 `task_followup` 会返回 HTTP 501 `not_supported`，因为尚未实现 Agent Client Protocol（ACP）v1 的流式连接与 JSON-RPC |
 | 产出物 | 显示从可见任务中发现的计划、清单、概览、图片和文档摘要 | 不下载文件、不预览图片、不渲染 Office 文件，也不把任意产物 URL 下发到工卡 |
-| 语音 | 最多采集 5 秒 16 kHz、16-bit 单声道 PCM，并在提交前显示转写结果 | 没有本地自动语音识别；Live 模式必须配置转写服务 |
+| 语音 | 先建立上传通道，完成红色录音页像素传输并丢弃已排队的 RX 样本，再保留最多 5 秒 16 kHz、16-bit 单声道 PCM，提交前显示转写结果 | 通道准备时间和驱动可见的预录数据不进入录音窗口；这不表示麦克风此前物理断开，没有本地自动语音识别，Live 模式必须配置转写服务 |
 | 刷新 | 默认每 30 秒轮询网关；失败时把缓存标为过期 | 不是即时推送，网络中断会延迟状态更新 |
 
 演示模式会模拟完整交互和结果页面。模拟成功不能证明真实 WorkBuddy、转写、Wi-Fi 或 ACP 链路可用。
@@ -46,7 +46,7 @@ V1 把远端内容放在隐私封面之后，并把每类列表限制为六条�
 ./tools/validate.sh --firmware
 ```
 
-固件验证会生成 `build/FoloToy-AI-Passport-full.bin`。按照[用 Codex 创造 AI Passport 玩法](https://ai-passport.folotoy.cn/guides/create-a-play-with-codex/)把本地构建安装到开发设备。构建通过不能替代真机测试。
+固件验证会同时编译并检查 Demo 与无真实凭据的 Live 编译配置，再生成可安装的 Demo 产物 `build/FoloToy-AI-Passport-full.bin`。按照[用 Codex 创造 AI Passport 玩法](https://ai-passport.folotoy.cn/guides/create-a-play-with-codex/)把本地构建安装到开发设备。构建通过不能替代真机测试。
 
 必须保留原有安装与恢复契约：
 
@@ -85,7 +85,7 @@ PYTHONPATH=tools/workbuddy_gateway python3 -m workbuddy_gateway.server
 
 内置网关服务不会终止 TLS。Live 部署应在它前面提供 HTTPS。只有隔离的开发局域网才能使用明文 HTTP，并且必须显式打开固件的开发局域网选项。
 
-运行 `idf.py menuconfig`，打开 **WorkBuddy AI Passport**，关闭演示模式。在本地且已忽略的 `sdkconfig` 中填写 Wi-Fi SSID、Wi-Fi 密码、网关 URL，以及同一份网关设备 token。设备 token 只用于工卡到网关的鉴权，不是 WorkBuddy OAuth token。
+运行 `idf.py menuconfig`，打开 **WorkBuddy AI Passport**，关闭演示模式。在本地且已忽略的 `sdkconfig` 中填写 Wi-Fi SSID、Wi-Fi 密码、网关 URL、同一份网关设备 token 与合适的 SNTP 时间服务器。HTTPS 模式会先完成一次新的 SNTP 校时，再允许网关流量；Mbed TLS 同时检查证书有效期、主机名和信任链。显式启用的明文 HTTP 开发模式不等待校时，只能用于隔离局域网。设备 token 只用于工卡到网关的鉴权，不是 WorkBuddy OAuth token。
 
 WorkBuddy `client_secret`、refresh token、access token、ACP ticket、sandbox link 和转写密钥只能保存在网关侧，不能进入固件、日志、示例文件或提交记录。启用刷新凭据后，网关状态文件也应按 secret 管理。
 
@@ -93,7 +93,7 @@ WorkBuddy `client_secret`、refresh token、access token、ACP ticket、sandbox 
 
 V1 未实现 ACP 任务追问、`permission_response`、任务流式事件、产物下载、本地语音识别、抬手唤醒、蜂窝网络或 Office 文件渲染。Live 固件会在录音前拦截任务追问，并提示此能力留待后续版本。生产追问会等到可持久化的异步阶段、ACP 权限处理与跨断线/重启幂等方案一起完成后再开放。当前硬件没有已确认的惯性测量单元（IMU）。
 
-本次仓库交付没有使用真实 WorkBuddy 账号验证 OAuth 审核、公网网关或真实转写服务。屏幕可读性、按键、麦克风、扬声器、Wi-Fi 重连、堆与栈余量、续航、安装和 Recovery 入口也都需要在 AI Passport 真机上验收。
+本次仓库交付没有使用真实 WorkBuddy 账号验证 OAuth 审核、公网网关、真实转写服务或设备端 SNTP/TLS 路径。屏幕可读性、按键、麦克风、扬声器、Wi-Fi 重连、堆与栈余量、续航、安装和 Recovery 入口也都需要在 AI Passport 真机上验收。
 
 ## 查找实现
 

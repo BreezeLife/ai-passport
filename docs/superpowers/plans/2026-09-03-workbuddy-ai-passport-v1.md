@@ -27,7 +27,7 @@ Firmware production files:
 - `main/main.c`: board initialization and direct WorkBuddy launch only.
 - `main/Kconfig.projbuild`: credential-free build settings and explicit demo/live mode.
 - `main/workbuddy_types.h`: all bounded cross-module types and limits.
-- `main/workbuddy_model.[ch]`: pure page, focus, recording, review, notification, and operation state.
+- `main/workbuddy_model.[ch]`: pure page, focus, voice preparation, recording, review, notification, and operation state.
 - `main/workbuddy_protocol.[ch]`: bounded snapshot parser and action serializer.
 - `main/workbuddy_app.[ch]`: queue ownership and worker orchestration.
 - `main/workbuddy_wifi.[ch]`: STA lifecycle and reconnect state.
@@ -51,7 +51,8 @@ Gateway:
 Documentation:
 
 - `README.md` / `README.zh_CN.md`, `docs/CHANGELOG.md` / `.zh_CN.md`.
-- `PROJECT.md`, `MEMORY.md`, `TASKS.md`, `WORKLOG.md` plus Chinese pairs in the firmware repository.
+- The outer long-lived project workspace maintains `PROJECT.md`, `MEMORY.md`, `TASKS.md`,
+  and `WORKLOG.md`; those files do not live in this firmware repository.
 
 ### Task 1: Lock the firmware domain contract with host tests
 
@@ -210,13 +211,14 @@ Documentation:
 
   Initialize I2C/display/LVGL first; button, audio, battery, storage, and network degrade
   independently. Button callbacks enqueue only `wb_event_t`. A UI timer drains immutable
-  snapshots under the LVGL lock.
+  snapshots under the LVGL lock. Audio-ready, transcription, and action completion events
+  carry an operation ID and use reliable delivery; stale operation results are ignored.
 
 - [ ] **Step 3: Implement the wearable UI**
 
   Build fixed 240×320 regions: 24 px status bar, 248 px content, 48 px action/footer. Use
-  Source Han Sans SC 14 CJK for remote text and Montserrat 20 for the WorkBuddy title/count.
-  Show privacy cover, list, detail, nav sheet, recording, transcription review,
+  Noto Sans SC 14 CJK for remote text and Montserrat 20 for the WorkBuddy title/count.
+  Show privacy cover, list, detail, nav sheet, voice preparation, recording, transcription review,
   sending/sent/failed, stale marker, and a clear Demo badge.
 
   Demo task details may enter the follow-up interaction to exercise the state machine. In
@@ -252,8 +254,12 @@ Documentation:
 
 - [ ] **Step 2: Implement Wi-Fi lifecycle**
 
-  Use one STA netif, one registered event pair, NVS-backed ESP Wi-Fi credentials, and capped
-  reconnect backoff. Demo mode does not start the radio. Never log SSID passwords.
+  Use one STA netif, one registered event pair, local untracked build-time Wi-Fi credentials, and capped
+  reconnect backoff. For HTTPS, do not report the network ready until a fresh SNTP result has
+  established a plausible clock for this boot; enable Mbed TLS certificate-date validation.
+  A transient `esp_wifi_connect()` start failure returns to capped backoff, and an SNTP success
+  carrying an implausible epoch actively restarts SNTP. Demo mode does not start the radio.
+  Never log SSID passwords.
 
 - [ ] **Step 3: Implement HTTP transport**
 
@@ -264,10 +270,15 @@ Documentation:
 
 - [ ] **Step 4: Implement audio pipeline**
 
-  One audio task reads 2 KiB PCM chunks; one bounded FIFO feeds the transport. Capture
-  stops at five seconds or an explicit stop event, then zero-fills the fixed request length
-  without reading more microphone data. Queue overflow cancels the operation and displays a
-  retryable failure rather than silently dropping audio.
+  One audio task first opens the fixed-length upload and returns an operation-matched ready
+  event. The UI processes already queued preparation inputs, renders the recording state, and
+  waits for its queued SPI pixel transfer to finish before sending an operation-tagged start
+  control. The audio task resets the RX DMA queue at that point before reading 2 KiB PCM chunks,
+  so network setup and pre-roll do not enter the five-second capture window. Start, finish, and
+  cancel controls are operation-tagged so delayed controls cannot affect a later capture. Capture
+  stops at five seconds or an explicit stop event, then zero-fills the fixed request length without
+  reading more microphone data. Cancellation aborts the request, and transport/audio failures
+  produce a retryable error rather than silently losing a result.
 
 - [ ] **Step 5: Integrate poll, action, and demo workers**
 
@@ -278,7 +289,10 @@ Documentation:
 - [ ] **Step 6: Verify host and firmware builds**
 
   Run the host suites, `./tools/validate.sh --static`, then activate ESP-IDF 5.5.3 and run
-  `./tools/validate.sh --firmware`. Record image size and inspect largest static consumers.
+  `./tools/validate.sh --firmware`. The firmware gate must compile, merge, and verify both the
+  Demo profile and a placeholder-only Live profile. It must also assert the generated Demo,
+  Bluetooth, HTTPS, trust-bundle, and certificate-date settings before accepting either build.
+  Record image size and inspect largest static consumers.
 
 ### Task 5: Document configuration, API, and product truth
 
@@ -290,10 +304,8 @@ Documentation:
 - Modify: `README.zh_CN.md`
 - Modify: `docs/CHANGELOG.md`
 - Modify: `docs/CHANGELOG.zh_CN.md`
-- Create: `PROJECT.md`, `PROJECT.zh_CN.md`
-- Create: `MEMORY.md`, `MEMORY.zh_CN.md`
-- Create: `TASKS.md`, `TASKS.zh_CN.md`
-- Create: `WORKLOG.md`, `WORKLOG.zh_CN.md`
+- Maintain outside this repository: workspace `PROJECT.md`, `MEMORY.md`, `TASKS.md`, and
+  `WORKLOG.md`
 
 - [ ] **Step 1: Document exact demo and live commands**
 

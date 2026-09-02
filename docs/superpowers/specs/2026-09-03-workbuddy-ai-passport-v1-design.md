@@ -34,7 +34,7 @@ snapshot:
 4. **New task** — a short voice instruction is transcribed, reviewed, and then sent to
    WorkBuddy's task creation endpoint.
 
-The badge polls for a fresh snapshot and gives a short audible/visual notification only
+The badge polls for a fresh snapshot and gives a short visual notification only
 when a cursor advances or a task changes to an actionable/terminal state. There is no
 claim of instant delivery while Wi-Fi, the gateway, or the PC local assistant is offline.
 
@@ -70,14 +70,23 @@ wearables. It avoids hidden simultaneous-button chords.
 
 ### Voice state
 
-- Entering voice mode is always an explicit button action and produces a short cue.
-- The screen shows a red recording indicator, context/recipient, elapsed time, and level.
+- Entering voice mode is always an explicit button action. Live mode first shows a preparation
+  state while the bounded HTTP upload is opened; it does not start the recording clock yet.
+- An operation-ID-matched audio-ready acknowledgement changes the screen to a red recording
+  indicator with context/recipient and elapsed time. Already queued preparation inputs are
+  processed first; the UI renders and waits for its queued SPI pixel transfer to finish before an
+  operation-tagged start control is sent. The audio worker then rearms RX DMA, discarding
+  preparation pre-roll before its first read.
 - `OK CLICK`: finish early. Recording also stops at five seconds. If a fixed-length HTTP
   upload is already open, the remaining samples are zero-filled rather than retaining more
   microphone data.
 - `OK LONG`: cancel; no audio or text is submitted.
 - Audio is 16 kHz, signed 16-bit, mono PCM and is streamed/buffered in bounded chunks by
   the audio worker. The firmware never owns a whole unbounded recording.
+- Audio-ready, transcription, and action completion events are delivered reliably and matched
+  to the active operation ID. Start, finish, and cancel controls are also operation-tagged so a
+  delayed control cannot alter a later capture; buttons and coalescible poll notices may still be
+  dropped when full.
 
 ### Review state
 
@@ -91,7 +100,7 @@ wearables. It avoids hidden simultaneous-button chords.
 
 ### Result and failure states
 
-- Success shows a receipt ID, plays one short cue, then returns to the relevant list.
+- Success shows a receipt ID and then returns to the relevant list after confirmation.
 - Wi-Fi, authentication, gateway, transcription, and WorkBuddy failures have distinct,
   short user-facing states. Raw server errors, credentials, message bodies, and tokens are
   never logged.
@@ -209,9 +218,11 @@ is valid and whether the last WorkBuddy check succeeded, without leaking secrets
 ## Configuration and demo mode
 
 Firmware build configuration contains no committed credentials. Local `sdkconfig` values
-provide Wi-Fi SSID/password, gateway URL, and device token. If any are absent, the firmware
-enters a clearly labelled offline demo mode with deterministic sample messages, tasks,
-outputs, and transcription so a clean repository build remains installable and testable.
+provide Wi-Fi SSID/password, gateway URL, device token, and an SNTP source. HTTPS traffic is
+gated on a fresh boot-time clock synchronization, after which Mbed TLS validates certificate
+dates, hostname, and trust chain. If Live configuration is not selected, the firmware enters a
+clearly labelled offline demo mode with deterministic sample messages, tasks, outputs, and
+transcription so a clean repository build remains installable and testable.
 
 Gateway live mode requires WorkBuddy OAuth configuration and a device token. Gateway demo
 mode requires no external credentials. Transcription can use an OpenAI-compatible endpoint;
@@ -244,9 +255,14 @@ The repository gates are:
 ./tools/validate.sh
 ```
 
+The firmware gate builds and verifies both Demo and a placeholder-only Live compile profile,
+and asserts the generated profile mode, Bluetooth disablement, HTTPS policy, trust bundle, and
+certificate-date settings.
+
 Device acceptance remains separate: display/font readability, every button path, Wi-Fi
-reconnect, five-second capture, Chinese transcription, notification deduplication, 30-minute
-polling, heap/stack watermarks, Recovery entry, and installation of the merged artifact.
+reconnect, SNTP and TLS certificate-date validation, five-second capture, Chinese transcription,
+notification deduplication, 30-minute polling, heap/stack watermarks, Recovery entry, and
+installation of the merged artifact.
 
 ## V1 delivery
 

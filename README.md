@@ -30,7 +30,7 @@ V1 keeps all remote content behind a privacy cover and limits every collection t
 | Tasks | Lists normalized status, opens details, and creates a task from confirmed speech | Live access needs `user.task.readable` and `user.task.invokable` |
 | Task follow-up | Demo mode can exercise the interaction state; Live task details show that follow-up is reserved for a later release before recording starts | **NOT_SUPPORTED in V1**: a direct gateway `task_followup` request returns HTTP 501 `not_supported` because Agent Client Protocol (ACP) v1 streaming and JSON-RPC are not implemented |
 | Outputs | Shows bounded plan, checklist, overview, image, and document summaries discovered for visible tasks | No file download, image preview, Office rendering, or arbitrary artifact URL reaches the badge |
-| Voice | Captures up to 5 seconds of 16 kHz, 16-bit mono PCM and displays the returned transcript before submission | There is no local automatic speech recognition; live transcription needs a configured provider |
+| Voice | Opens the upload channel first, completes the red recording-screen pixel transfer, discards queued RX samples, then keeps up to 5 seconds of 16 kHz, 16-bit mono PCM and displays the returned transcript before submission | Preparation time and driver-visible pre-roll never enter the recording window; this does not claim the microphone was physically off, there is no local automatic speech recognition, and live transcription needs a configured provider |
 | Refresh | Polls the gateway every 30 seconds by default and marks failed snapshots stale | Delivery is not instant, and outages can delay visible updates |
 
 Demo mode simulates the interaction, including result screens. A simulated result does not prove live WorkBuddy, transcription, Wi-Fi, or ACP behavior.
@@ -46,7 +46,7 @@ Activate ESP-IDF 5.5.3, then run the repository gates:
 ./tools/validate.sh --firmware
 ```
 
-The firmware gate produces `build/FoloToy-AI-Passport-full.bin`. Follow the [AI Passport Codex play guide](https://ai-passport.folotoy.cn/en/guides/create-a-play-with-codex/) to install a local build on a development device. Do not treat a successful build as a device test.
+The firmware gate compiles and verifies both the demo and the credential-free Live compile profile, then produces the installable demo artifact at `build/FoloToy-AI-Passport-full.bin`. Follow the [AI Passport Codex play guide](https://ai-passport.folotoy.cn/en/guides/create-a-play-with-codex/) to install a local build on a development device. Do not treat a successful build as a device test.
 
 Preserve the existing install and recovery contract:
 
@@ -85,7 +85,7 @@ Replace `WORKBUDDY_ACCESS_TOKEN` with all three refresh settings when needed: `W
 
 The built-in gateway server does not terminate TLS. Put it behind HTTPS for a live deployment. Plain HTTP requires the firmware's explicit development-LAN option and must stay on an isolated network.
 
-Run `idf.py menuconfig`, open **WorkBuddy AI Passport**, and disable demo mode. Enter the Wi-Fi SSID, Wi-Fi password, gateway URL, and the same gateway device token in the local ignored `sdkconfig`. The device token authenticates only to your gateway. It is not a WorkBuddy OAuth token.
+Run `idf.py menuconfig`, open **WorkBuddy AI Passport**, and disable demo mode. Enter the Wi-Fi SSID, Wi-Fi password, gateway URL, the same gateway device token, and an appropriate SNTP server in the local ignored `sdkconfig`. The device token authenticates only to your gateway. It is not a WorkBuddy OAuth token. For HTTPS, the badge waits for a fresh SNTP synchronization before allowing gateway traffic, and Mbed TLS checks the certificate validity period as well as its hostname and trust chain. Explicit plain-HTTP development builds skip that time gate and must remain isolated.
 
 The WorkBuddy `client_secret`, refresh token, access token, ACP ticket, sandbox link, and transcription key stay on the gateway. None belongs in firmware, logs, example files, or commits. Treat the gateway state file as a secret when refresh credentials are enabled.
 
@@ -93,7 +93,7 @@ The WorkBuddy `client_secret`, refresh token, access token, ACP ticket, sandbox 
 
 V1 does not implement ACP task follow-up, `permission_response`, streamed task events, artifact downloads, local speech recognition, raise-to-wake, cellular access, or Office-file rendering. Live firmware blocks task follow-up before recording and shows that it is reserved for a later release. Production follow-up remains deferred until durable asynchronous phases, ACP permission handling, and idempotency across disconnects and restarts are designed together. The board has no confirmed inertial measurement unit (IMU).
 
-No live WorkBuddy account, OAuth approval, public gateway deployment, or real transcription provider has been validated as part of this repository delivery. Physical display readability, buttons, microphone, speaker, Wi-Fi reconnection, heap and stack margins, battery life, installation, and Recovery entry also remain unverified until tested on an AI Passport.
+No live WorkBuddy account, OAuth approval, public gateway deployment, real transcription provider, or on-device SNTP/TLS path has been validated as part of this repository delivery. Physical display readability, buttons, microphone, speaker, Wi-Fi reconnection, heap and stack margins, battery life, installation, and Recovery entry also remain unverified until tested on an AI Passport.
 
 ## Find the implementation
 

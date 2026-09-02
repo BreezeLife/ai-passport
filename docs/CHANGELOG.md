@@ -6,7 +6,7 @@
 
 ## Unreleased
 
-- Added the WorkBuddy AI Passport V1 application, a credential-free demo, a bounded device gateway, voice transcript review, message and cloud-task views, task creation, output summaries, and a redistributable Simplified Chinese font. Live mode uses Tencent WorkBuddy `/openapi/v2` through a server-side OAuth boundary. ACP task follow-up remains explicitly unsupported, and no physical-device acceptance is claimed. The application and Recovery partition contract is unchanged.
+- Added the WorkBuddy AI Passport V1 application, a credential-free demo, a bounded device gateway, voice transcript review, message and cloud-task views, task creation, output summaries, and a redistributable Simplified Chinese font. Live mode uses Tencent WorkBuddy `/openapi/v2` through a server-side OAuth boundary. After an operation-matched audio-ready handshake, it completes the red-screen pixel transfer, discards queued RX samples, then retains up to five seconds of audio; every audio control is operation-tagged. HTTPS is gated on fresh SNTP time with certificate-date validation. Demo and Live compile profiles and their security-critical generated settings are firmware-gated. ACP task follow-up remains explicitly unsupported, and no physical-device acceptance is claimed. The application and Recovery partition contract is unchanged.
 
 - Added the supplied 80-byte CW2017 profile for the specified 520 mAh cell, including content/update-flag checks, verified writes, the required restart sequence, and bounded SOC-readiness polling.
 
