@@ -1,0 +1,673 @@
+openapi: 3.1.0
+info:
+  title: WorkBuddy AI Passport Device Gateway API
+  version: 1.0.0
+  description: |
+    The bounded HTTP contract between an AI Passport badge and its operator-run
+    gateway. This is not the Tencent WorkBuddy Open API. The gateway keeps
+    WorkBuddy OAuth, task tickets, artifact locations, and transcription
+    credentials outside the device trust boundary.
+
+    Every JSON response has `Cache-Control: no-store`, contains `version: 1`,
+    and includes a bounded `request_id`. Request and response text limits marked
+    with `x-maxUtf8Bytes` are measured after UTF-8 encoding.
+  license:
+    name: MIT
+    identifier: MIT
+externalDocs:
+  description: WorkBuddy Open API reference used by the Live adapter
+  url: https://open.workbuddy.cn/en/docs/openapi
+servers:
+  - url: http://127.0.0.1:8787
+    description: Default local demo listener
+tags:
+  - name: Probes
+    description: Public process health and upstream readiness probes
+  - name: Device
+    description: Bearer-protected AI Passport operations
+paths:
+  /healthz:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+    get:
+      tags: [Probes]
+      summary: Check process health
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: The gateway process can serve requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /readyz:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+    get:
+      tags: [Probes]
+      summary: Check upstream readiness
+      description: |
+        Demo mode is ready at startup. Live mode becomes ready only after a
+        WorkBuddy snapshot succeeds. A later snapshot failure makes it unready.
+      operationId: getReadiness
+      security: []
+      responses:
+        '200':
+          description: The gateway is ready to serve device data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadyResponse'
+        '503':
+          description: No current successful upstream snapshot is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotReadyResponse'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/snapshot:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+    get:
+      tags: [Device]
+      summary: Read the bounded WorkBuddy snapshot
+      operationId: getSnapshot
+      parameters:
+        - name: after
+          in: query
+          required: false
+          description: |
+            Last accepted device snapshot cursor. When supplied it must be a non-empty
+            identifier of at most 64 UTF-8 bytes. Only one value is accepted.
+          schema:
+            $ref: '#/components/schemas/InputCursor'
+      responses:
+        '200':
+          description: |
+            A normalized snapshot containing no remote credentials or URLs. If
+            JSON escaping would exceed 12 KiB, the gateway shortens summary text
+            and then drops tail items while retaining the pre-trim count fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '502':
+          $ref: '#/components/responses/UpstreamFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      security:
+        - deviceBearer: []
+  /v1/transcriptions:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+    post:
+      tags: [Device]
+      summary: Transcribe a short PCM recording
+      description: |
+        Creates a draft only and does not mutate WorkBuddy. Chunked transfer is
+        rejected. `Content-Length` is required. The body must contain one to five
+        seconds of signed 16-bit, 16 kHz, mono little-endian PCM: 32,000 through
+        160,000 bytes inclusive, with an even byte count.
+      operationId: createTranscription
+      parameters:
+        - name: operation_id
+          in: query
+          required: true
+          description: Device-generated identifier for this recording attempt.
+          schema:
+            $ref: '#/components/schemas/Identifier'
+      requestBody:
+        required: true
+        content:
+          audio/L16;rate=16000;channels=1:
+            schema:
+              type: string
+              format: binary
+              x-minBytes: 32000
+              x-maxBytes: 160000
+      responses:
+        '200':
+          description: A bounded transcript for on-device review.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '411':
+          $ref: '#/components/responses/LengthRequired'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '502':
+          $ref: '#/components/responses/UpstreamFailure'
+      security:
+        - deviceBearer: []
+  /v1/actions:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+    post:
+      tags: [Device]
+      summary: Submit one confirmed action
+      description: |
+        Accepts exactly one of the three closed action shapes. The JSON body is
+        limited to 4,096 bytes, must use UTF-8, must not use chunked transfer,
+        and must not contain duplicate keys or extra fields.
+
+        `task_followup` is reserved for forward compatibility. Its first V1
+        submission records a failed operation and returns HTTP 501 with
+        `error.code: not_supported`. Repeating the identical request returns the
+        stored failed operation with HTTP 200. Reusing an operation ID with
+        different action content returns HTTP 409. Current Live firmware stops
+        before recording and does not submit this action; this behavior protects
+        direct API clients. A retryable failure known to
+        occur before submission releases the reservation so the same operation
+        ID can be retried. An ambiguous upstream result remains PENDING and an
+        identical repeat does not resubmit it.
+      operationId: submitAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ReplyAction'
+                - $ref: '#/components/schemas/TaskCreateAction'
+                - $ref: '#/components/schemas/TaskFollowupAction'
+      responses:
+        '200':
+          description: |
+            The successful operation, or a stored PENDING, SUCCEEDED, or FAILED
+            record for an identical repeated request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/OperationConflict'
+        '411':
+          $ref: '#/components/responses/LengthRequired'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '501':
+          $ref: '#/components/responses/NotSupported'
+        '502':
+          $ref: '#/components/responses/UpstreamFailure'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      security:
+        - deviceBearer: []
+  /v1/operations/{operation_id}:
+    parameters:
+      - $ref: '#/components/parameters/RequestIdHeader'
+      - name: operation_id
+        in: path
+        required: true
+        description: Device-generated operation identifier.
+        schema:
+          $ref: '#/components/schemas/Identifier'
+    get:
+      tags: [Device]
+      summary: Read a stored operation record
+      operationId: getOperation
+      responses:
+        '200':
+          description: The current bounded operation record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '431':
+          $ref: '#/components/responses/HeaderFieldsTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      security:
+        - deviceBearer: []
+components:
+  securitySchemes:
+    deviceBearer:
+      type: http
+      scheme: bearer
+      description: |
+        Operator-generated token shared only between the device and gateway.
+        This is not a WorkBuddy OAuth access token.
+  parameters:
+    RequestIdHeader:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: |
+        Caller-selected correlation ID. Invalid values are replaced, not rejected.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 64
+        pattern: '^[A-Za-z0-9._:-]{1,64}$'
+  responses:
+    BadRequest:
+      description: The request query, body, identifier, or version is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: The exact device bearer token was not supplied.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The route or operation was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    OperationConflict:
+      description: The operation ID was already used for different action content.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    LengthRequired:
+      description: Exactly one Content-Length is required for POST bodies.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PayloadTooLarge:
+      description: The request body exceeds the route-specific byte limit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnsupportedMediaType:
+      description: Content-Type or charset does not match the route contract.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RequestTimeout:
+      description: A partial POST body exceeded the inbound connection timeout.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    HeaderFieldsTooLarge:
+      description: Parsed request headers exceed the 16 KiB gateway limit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Gateway configuration, state, or response serialization failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotSupported:
+      description: The requested V1 capability is explicitly not supported.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UpstreamFailure:
+      description: WorkBuddy or the transcription provider failed or returned invalid data.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: Gateway state is unavailable or cannot reserve another operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: The total 10-second Live snapshot deadline, including lock wait and DNS, expired.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ApiVersion:
+      type: integer
+      const: 1
+    RequestId:
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: '^[A-Za-z0-9._:-]{1,64}$'
+      x-maxUtf8Bytes: 64
+    Identifier:
+      type: string
+      minLength: 1
+      maxLength: 64
+      description: |
+        At most 64 UTF-8 bytes, with no leading or trailing whitespace and no
+        C0 control character.
+      x-maxUtf8Bytes: 64
+    InputCursor:
+      allOf:
+        - $ref: '#/components/schemas/Identifier'
+      description: A non-empty stable snapshot cursor of at most 64 UTF-8 bytes.
+    OutputCursor:
+      allOf:
+        - $ref: '#/components/schemas/Identifier'
+      description: Stable snapshot fingerprint bounded for the firmware parser.
+    Title:
+      type: string
+      maxLength: 128
+      x-maxUtf8Bytes: 128
+    Preview:
+      type: string
+      maxLength: 384
+      x-maxUtf8Bytes: 384
+    ActionText:
+      type: string
+      minLength: 1
+      maxLength: 512
+      description: Non-blank text of at most 512 UTF-8 bytes.
+      x-maxUtf8Bytes: 512
+    BaseResponse:
+      type: object
+      required: [version, request_id]
+      properties:
+        version:
+          $ref: '#/components/schemas/ApiVersion'
+        request_id:
+          $ref: '#/components/schemas/RequestId'
+    HealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required: [status]
+          properties:
+            status:
+              type: string
+              const: ok
+      unevaluatedProperties: false
+    ReadyResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required: [ready]
+          properties:
+            ready:
+              type: boolean
+              const: true
+      unevaluatedProperties: false
+    NotReadyResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required: [ready]
+          properties:
+            ready:
+              type: boolean
+              const: false
+      unevaluatedProperties: false
+    MessageSummary:
+      type: object
+      additionalProperties: false
+      required: [id, role, preview, unread]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        role:
+          type: string
+          enum: [assistant, user, system]
+        preview:
+          $ref: '#/components/schemas/Preview'
+        unread:
+          type: boolean
+    TaskSummary:
+      type: object
+      additionalProperties: false
+      required: [id, title, status, preview]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        title:
+          $ref: '#/components/schemas/Title'
+        status:
+          type: string
+          enum: [QUEUED, RUNNING, NEEDS_INPUT, COMPLETED, FAILED]
+        preview:
+          $ref: '#/components/schemas/Preview'
+    ArtifactSummary:
+      type: object
+      additionalProperties: false
+      required: [id, task_id, title, kind, description]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        task_id:
+          $ref: '#/components/schemas/Identifier'
+        title:
+          $ref: '#/components/schemas/Title'
+        kind:
+          type: string
+          enum: [plan, checklist, overview, image, document]
+        description:
+          $ref: '#/components/schemas/Preview'
+    SnapshotResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required:
+            - cursor
+            - fresh
+            - assistant_available
+            - unread_count
+            - active_task_count
+            - messages
+            - tasks
+            - artifacts
+          properties:
+            cursor:
+              $ref: '#/components/schemas/OutputCursor'
+            fresh:
+              type: boolean
+            assistant_available:
+              type: boolean
+              description: Whether the user's PC-side WorkBuddy local assistant is online.
+            unread_count:
+              type: integer
+              minimum: 0
+              maximum: 6
+              description: Normalized unread-message count before HTTP size trimming.
+            active_task_count:
+              type: integer
+              minimum: 0
+              maximum: 6
+              description: Normalized active-task count before HTTP size trimming.
+            messages:
+              type: array
+              maxItems: 6
+              items:
+                $ref: '#/components/schemas/MessageSummary'
+            tasks:
+              type: array
+              maxItems: 6
+              items:
+                $ref: '#/components/schemas/TaskSummary'
+            artifacts:
+              type: array
+              maxItems: 6
+              items:
+                $ref: '#/components/schemas/ArtifactSummary'
+      unevaluatedProperties: false
+    TranscriptionResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required: [operation_id, text]
+          properties:
+            operation_id:
+              $ref: '#/components/schemas/Identifier'
+            text:
+              type: string
+              minLength: 1
+              maxLength: 512
+              x-maxUtf8Bytes: 512
+      unevaluatedProperties: false
+    ReplyAction:
+      type: object
+      additionalProperties: false
+      required: [version, operation_id, type, message_id, text]
+      properties:
+        version:
+          $ref: '#/components/schemas/ApiVersion'
+        operation_id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          const: reply
+        message_id:
+          $ref: '#/components/schemas/Identifier'
+        text:
+          $ref: '#/components/schemas/ActionText'
+    TaskCreateAction:
+      type: object
+      additionalProperties: false
+      required: [version, operation_id, type, prompt]
+      properties:
+        version:
+          $ref: '#/components/schemas/ApiVersion'
+        operation_id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          const: task_create
+        prompt:
+          $ref: '#/components/schemas/ActionText'
+    TaskFollowupAction:
+      type: object
+      additionalProperties: false
+      required: [version, operation_id, type, task_id, text]
+      properties:
+        version:
+          $ref: '#/components/schemas/ApiVersion'
+        operation_id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          const: task_followup
+        task_id:
+          $ref: '#/components/schemas/Identifier'
+        text:
+          $ref: '#/components/schemas/ActionText'
+    OperationResponse:
+      type: object
+      additionalProperties: false
+      required: [version, request_id, operation_id, status]
+      properties:
+        version:
+          $ref: '#/components/schemas/ApiVersion'
+        request_id:
+          $ref: '#/components/schemas/RequestId'
+        operation_id:
+          $ref: '#/components/schemas/Identifier'
+        status:
+          type: string
+          enum: [PENDING, SUCCEEDED, FAILED]
+        receipt_id:
+          $ref: '#/components/schemas/Identifier'
+        error_code:
+          $ref: '#/components/schemas/Identifier'
+        error:
+          type: string
+          maxLength: 160
+          x-maxUtf8Bytes: 160
+      oneOf:
+        - properties:
+            status:
+              const: PENDING
+          not:
+            anyOf:
+              - required: [receipt_id]
+              - required: [error_code]
+              - required: [error]
+        - required: [receipt_id]
+          properties:
+            status:
+              const: SUCCEEDED
+          not:
+            anyOf:
+              - required: [error_code]
+              - required: [error]
+        - required: [error_code, error]
+          properties:
+            status:
+              const: FAILED
+          not:
+            required: [receipt_id]
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required: [code, message, retryable]
+      properties:
+        code:
+          $ref: '#/components/schemas/Identifier'
+        message:
+          type: string
+          maxLength: 160
+          x-maxUtf8Bytes: 160
+        retryable:
+          type: boolean
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          required: [error]
+          properties:
+            error:
+              $ref: '#/components/schemas/ErrorBody'
+      unevaluatedProperties: false

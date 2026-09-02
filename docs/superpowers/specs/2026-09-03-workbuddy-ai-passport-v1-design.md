@@ -1,3 +1,7 @@
+<p align="right">
+  <a href="2026-09-03-workbuddy-ai-passport-v1-design.zh_CN.md">简体中文</a> · <strong>English</strong>
+</p>
+
 # WorkBuddy AI Passport V1 Design
 
 ## Goal
@@ -22,8 +26,9 @@ snapshot:
 1. **Inbox** — recent local-assistant messages, unread marker, sender role, and a bounded
    preview. Selecting an item starts a reply recording.
 2. **Tasks** — recent cloud tasks with normalized state (`QUEUED`, `RUNNING`,
-   `NEEDS_INPUT`, `COMPLETED`, or `FAILED`). Selecting a task opens its detail and makes a
-   spoken follow-up possible.
+   `NEEDS_INPUT`, `COMPLETED`, or `FAILED`). Selecting a task opens its detail. In Live
+   mode, `OK` shows that cloud-task follow-up is reserved for a later release and does not
+   start recording; demo mode may exercise the follow-up state machine.
 3. **Outputs** — bounded titles and short descriptions for recent plan, checklist,
    overview, image, or document artifacts. The badge does not parse Office files.
 4. **New task** — a short voice instruction is transcribed, reviewed, and then sent to
@@ -36,6 +41,13 @@ claim of instant delivery while Wi-Fi, the gateway, or the PC local assistant is
 V1 does not implement raise-to-wake (the board has no confirmed IMU), cellular access,
 local speech recognition, arbitrary text editing, Office rendering, or a production
 always-on power target.
+
+V1 also does not implement production ACP task follow-up. A safe implementation needs a
+durable asynchronous phase model, ACP permission-request handling, and idempotency across
+connection loss and process restart. The Live firmware therefore blocks before recording.
+The device API keeps a forward-compatible `task_followup` shape, but a direct request to
+either V1 gateway adapter returns HTTP 501 `not_supported`. Demo success is only a state-
+machine demonstration and does not prove a production follow-up path.
 
 ## Interaction design
 
@@ -84,6 +96,9 @@ wearables. It avoids hidden simultaneous-button chords.
   short user-facing states. Raw server errors, credentials, message bodies, and tokens are
   never logged.
 - Cached summaries are explicitly marked stale when a poll fails.
+- Live task details stop before recording and explain that cloud-task follow-up is reserved
+  for a later release. Only a direct device-API call receives the non-retryable
+  `not_supported` result.
 
 ## Architecture
 
@@ -160,10 +175,16 @@ Accepts one of:
 
 - `reply`: context message ID plus confirmed text;
 - `task_create`: confirmed task prompt;
-- `task_followup`: task ID plus confirmed text.
+- `task_followup`: task ID plus confirmed text, reserved for forward compatibility.
 
 Each request includes a stable operation ID. A repeated operation ID returns the stored
 receipt without repeating the upstream mutation.
+
+A direct `task_followup` submission records a failed operation and returns HTTP 501
+`not_supported`; repeating the same ID and body returns the stored failure without another
+attempt. Current Live firmware never sends this action because it blocks before recording.
+Production support is deferred until durable async state, ACP permissions, and cross-
+connection idempotency are designed and implemented together.
 
 ### `GET /v1/operations/{operation_id}`
 

@@ -1,3 +1,7 @@
+<p align="right">
+  <a href="2026-09-03-workbuddy-ai-passport-v1.zh_CN.md">简体中文</a> · <strong>English</strong>
+</p>
+
 # WorkBuddy AI Passport V1 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
@@ -7,6 +11,12 @@
 **Architecture:** The ESP-IDF firmware owns bounded UI/input/audio/network state and talks only to a small versioned gateway contract. A Python standard-library gateway owns Tencent WorkBuddy OAuth, official API normalization, transcription-provider credentials, and idempotent writes; deterministic demo adapters keep clean builds and tests credential-free.
 
 **Tech Stack:** ESP-IDF 5.5.3, C11, FreeRTOS, LVGL 9, cJSON, `esp_http_client`, ESP32 Wi-Fi, Python 3.11 standard library, `unittest`.
+
+**Fixed V1 boundary:** Production task follow-up requires ACP SSE and JSON-RPC plus a
+durable asynchronous phase model, permission-request handling, and idempotency across
+connection loss. V1 does not implement that path. Demo mode may exercise the firmware
+state machine; Live firmware stops before recording and shows a later-release notice. A
+direct device-API `task_followup` request returns HTTP 501 `not_supported`.
 
 ---
 
@@ -58,9 +68,10 @@ Documentation:
 - [ ] **Step 1: Write failing model tests**
 
   Cover privacy-cover entry, `OK` to Inbox, list clamping, menu navigation, context-aware
-  voice start, five-second timeout, re-record, cancel, one-shot submit lock, stale snapshot,
-  cursor deduplication, and WorkBuddy status normalization. Compile before implementations
-  exist and confirm missing-symbol failures.
+  voice start, demo task-follow-up state, Live task-follow-up blocking before recording,
+  five-second timeout, re-record, cancel, one-shot submit lock, stale snapshot, cursor
+  deduplication, and WorkBuddy status normalization. Compile before implementations exist
+  and confirm missing-symbol failures.
 
 - [ ] **Step 2: Implement the bounded types and model**
 
@@ -88,7 +99,8 @@ Documentation:
 
   Test a full snapshot, missing version, wrong types, over-limit arrays/strings, invalid
   UTF-8, unknown task states, duplicate cursor, reply serialization, task-create
-  serialization, escaping, and fixed operation IDs.
+  serialization, the reserved task-follow-up action shape, escaping, and fixed operation
+  IDs.
 
 - [ ] **Step 5: Implement protocol parsing and serialization**
 
@@ -133,8 +145,9 @@ Documentation:
 - [ ] **Step 3: Write failing adapter/service tests**
 
   Specify normalized snapshots from official message/task fixtures, status mapping,
-  artifact summaries, incremental cursor behavior, reply/task/follow-up requests, duplicate
-  operation receipts, and atomic state-file recovery.
+  artifact summaries, incremental cursor behavior, reply/task-create requests, direct
+  task-follow-up HTTP 501 with a stored failed operation, duplicate operation receipts, and
+  atomic state-file recovery.
 
 - [ ] **Step 4: Implement adapters and service**
 
@@ -148,7 +161,9 @@ Documentation:
   ```
 
   OAuth client secret, refresh token, WorkBuddy access token, ACP token, and sandbox URL
-  never appear in the normalized device response.
+  never appear in the normalized device response. Do not add a partial production ACP
+  adapter: V1 must keep `task_followup` explicitly unsupported until durable async phases,
+  permission handling, and cross-connection idempotency are implemented together.
 
 - [ ] **Step 5: Write failing transcription tests**
 
@@ -203,6 +218,10 @@ Documentation:
   Source Han Sans SC 14 CJK for remote text and Montserrat 20 for the WorkBuddy title/count.
   Show privacy cover, list, detail, nav sheet, recording, transcription review,
   sending/sent/failed, stale marker, and a clear Demo badge.
+
+  Demo task details may enter the follow-up interaction to exercise the state machine. In
+  Live mode, `OK` on a task detail must stop before recording, show “Cloud task follow-up
+  will be available in a later release,” label the footer as reserved, and emit no action.
 
 - [ ] **Step 4: Re-run host tests and static repository checks**
 
@@ -287,7 +306,8 @@ Documentation:
   State that runtime is phone-free but Wi-Fi/gateway-dependent; first setup is external;
   there is no IMU/cellular/local ASR/Office parser; WorkBuddy PC assistant availability,
   polling latency, OAuth application registration, and physical battery life remain external
-  dependencies.
+  dependencies. State separately that demo follow-up is simulated, Live firmware blocks
+  before recording, and direct device-API `task_followup` returns HTTP 501.
 
 - [ ] **Step 3: Run documentation and OpenAPI consistency checks**
 
@@ -303,7 +323,8 @@ Documentation:
 
   Run `python3 -m unittest discover -s tools/workbuddy_gateway/tests -v`, start demo gateway
   on an ephemeral port, and exercise health, authenticated snapshot, transcription, action,
-  duplicate action, and receipt endpoints with real HTTP requests.
+  duplicate action, direct task-follow-up HTTP 501, and receipt endpoints with real HTTP
+  requests.
 
 - [ ] **Step 2: Run full repository gate**
 

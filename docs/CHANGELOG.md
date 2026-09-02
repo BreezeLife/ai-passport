@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+- Added the WorkBuddy AI Passport V1 application, a credential-free demo, a bounded device gateway, voice transcript review, message and cloud-task views, task creation, output summaries, and a redistributable Simplified Chinese font. Live mode uses Tencent WorkBuddy `/openapi/v2` through a server-side OAuth boundary. ACP task follow-up remains explicitly unsupported, and no physical-device acceptance is claimed. The application and Recovery partition contract is unchanged.
+
 - Added the supplied 80-byte CW2017 profile for the specified 520 mAh cell, including content/update-flag checks, verified writes, the required restart sequence, and bounded SOC-readiness polling.
 
 - Reorganized the documentation by function area with a dual entry point: the root `AGENTS.md` is now a thin router (hard constraints + task routing only) and the detailed AI workflow lives in `docs/development/ai-guide.md`; `agent-guide.md` was folded in. `docs/development/` gained a second level (`engineering/`, `ci/`, `release/`), and the `plays/` application archive and `experiences/` moved into a `docs/reference/` area with a dedicated README. Removed `docs/software-design/` (empty scaffold); folded the three `assets/{fonts,images,music}/README` leaves into the `assets/` README; flattened the six `project-completion` sub-documents into a single file; and unified each directory to a single README, eliminating every `INDEX` file and a duplicated experience index. All cross-references and bibliographic links were updated; no content was dropped.
