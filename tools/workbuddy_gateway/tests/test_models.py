@@ -7,6 +7,7 @@ from support import PACKAGE_ROOT  # noqa: F401
 from workbuddy_gateway.errors import GatewayError
 from workbuddy_gateway.models import (
     MAX_COLLECTION_ITEMS,
+    MAX_CURSOR_BYTES,
     MAX_ID_BYTES,
     MAX_PREVIEW_BYTES,
     MAX_TITLE_BYTES,
@@ -37,7 +38,7 @@ class ModelLimitTests(unittest.TestCase):
 
     def test_task_status_normalization_is_closed(self) -> None:
         cases = {
-            "pending": "QUEUED",
+            "pending": "NEEDS_INPUT",
             "created": "QUEUED",
             "processing": "RUNNING",
             "working": "RUNNING",
@@ -47,12 +48,25 @@ class ModelLimitTests(unittest.TestCase):
             "success": "COMPLETED",
             "error": "FAILED",
             "cancelled": "FAILED",
+            "archived": "UNKNOWN",
+            "deleted": "UNKNOWN",
         }
         for raw, expected in cases.items():
             with self.subTest(raw=raw):
                 self.assertEqual(expected, normalize_task_status(raw))
         with self.assertRaises(GatewayError):
             normalize_task_status("teleporting")
+
+    def test_snapshot_cursor_is_strictly_bounded_for_firmware(self) -> None:
+        with self.assertRaises(GatewayError):
+            Snapshot.create(
+                "c" * (MAX_CURSOR_BYTES + 1),
+                True,
+                True,
+                [],
+                [],
+                [],
+            )
 
     def test_snapshot_enforces_collection_and_unicode_byte_caps(self) -> None:
         messages = [
@@ -67,6 +81,8 @@ class ModelLimitTests(unittest.TestCase):
         snapshot = Snapshot.create("cursor", True, True, messages, tasks, artifacts).to_dict()
 
         self.assertEqual(MAX_COLLECTION_ITEMS, len(snapshot["messages"]))
+        self.assertEqual(MAX_COLLECTION_ITEMS, snapshot["unread_count"])
+        self.assertEqual(1, snapshot["active_task_count"])
         self.assertLessEqual(len(snapshot["messages"][0]["preview"].encode("utf-8")), MAX_PREVIEW_BYTES)
         self.assertLessEqual(len(snapshot["tasks"][0]["title"].encode("utf-8")), MAX_TITLE_BYTES)
         self.assertLessEqual(len(snapshot["artifacts"][0]["description"].encode("utf-8")), MAX_PREVIEW_BYTES)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -30,9 +31,29 @@ def _parse_timeout(value: str) -> float:
         timeout = float(value)
     except (TypeError, ValueError):
         raise _config_error("Request timeout must be numeric")
-    if timeout <= 0 or timeout > 120:
+    if not math.isfinite(timeout) or timeout <= 0 or timeout > 120:
         raise _config_error("Request timeout is out of range")
     return timeout
+
+
+def _parse_inbound_timeout(value: str) -> float:
+    try:
+        timeout = float(value)
+    except (TypeError, ValueError):
+        raise _config_error("Inbound timeout must be numeric")
+    if not math.isfinite(timeout) or timeout <= 0 or timeout > 60:
+        raise _config_error("Inbound timeout is out of range")
+    return timeout
+
+
+def _parse_max_connections(value: str) -> int:
+    try:
+        maximum = int(value)
+    except (TypeError, ValueError):
+        raise _config_error("Maximum connections must be an integer")
+    if maximum < 1 or maximum > 64:
+        raise _config_error("Maximum connections is out of range")
+    return maximum
 
 
 def _validate_https(value: Optional[str], label: str) -> str:
@@ -60,6 +81,8 @@ class GatewayConfig:
     transcription_api_key: Optional[str] = None
     transcription_model: str = "gpt-4o-mini-transcribe"
     request_timeout_seconds: float = 15.0
+    inbound_timeout_seconds: float = 5.0
+    max_connections: int = 8
 
     @classmethod
     def from_env(cls, environ: Optional[Mapping[str, str]] = None) -> "GatewayConfig":
@@ -73,6 +96,12 @@ class GatewayConfig:
         port = _parse_port(values.get("WORKBUDDY_GATEWAY_PORT", "8787"))
         state_path = Path(values.get("WORKBUDDY_GATEWAY_STATE_PATH", ".workbuddy-gateway-state.json"))
         timeout = _parse_timeout(values.get("WORKBUDDY_REQUEST_TIMEOUT_SECONDS", "15"))
+        inbound_timeout = _parse_inbound_timeout(
+            values.get("WORKBUDDY_GATEWAY_INBOUND_TIMEOUT_SECONDS", "5")
+        )
+        max_connections = _parse_max_connections(
+            values.get("WORKBUDDY_GATEWAY_MAX_CONNECTIONS", "8")
+        )
 
         if mode == "demo":
             return cls(
@@ -84,6 +113,8 @@ class GatewayConfig:
                 ),
                 state_path=state_path,
                 request_timeout_seconds=timeout,
+                inbound_timeout_seconds=inbound_timeout,
+                max_connections=max_connections,
             )
 
         device_token = values.get("WORKBUDDY_GATEWAY_DEVICE_TOKEN", "")
@@ -124,6 +155,8 @@ class GatewayConfig:
                 "WORKBUDDY_TRANSCRIPTION_MODEL", "gpt-4o-mini-transcribe"
             ),
             request_timeout_seconds=timeout,
+            inbound_timeout_seconds=inbound_timeout,
+            max_connections=max_connections,
         )
 
     def public_summary(self) -> Dict[str, Any]:
@@ -136,6 +169,8 @@ class GatewayConfig:
                 self.workbuddy_access_token or self.workbuddy_refresh_token
             ),
             "transcription_configured": bool(self.transcription_api_key),
+            "inbound_timeout_seconds": self.inbound_timeout_seconds,
+            "max_connections": self.max_connections,
         }
 
     def __repr__(self) -> str:

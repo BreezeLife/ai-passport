@@ -5,19 +5,25 @@ import unittest
 from pathlib import Path
 from typing import List, Optional
 
-from support import PACKAGE_ROOT  # noqa: F401
+from support import PACKAGE_ROOT, RecordingServer  # noqa: F401
 
 from workbuddy_gateway.demo_adapter import DemoAdapter
 from workbuddy_gateway.errors import GatewayError
 from workbuddy_gateway.models import MAX_TRANSCRIPT_BYTES, Snapshot
 from workbuddy_gateway.service import GatewayService
 from workbuddy_gateway.store import StateStore
+from workbuddy_gateway.workbuddy_client import (
+    LiveWorkBuddyAdapter,
+    OAuthTokenProvider,
+    WorkBuddyClient,
+)
 
 
 class FakeAdapter:
     def __init__(self) -> None:
         self.calls: List[tuple] = []
         self.retryable_error = False
+        self.safe_retryable_error = False
         self.nonretryable_error = False
 
     def fetch_snapshot(self, after_cursor: Optional[str] = None) -> Snapshot:
@@ -26,6 +32,14 @@ class FakeAdapter:
 
     def reply(self, message_id: str, text: str, operation_id: str) -> str:
         self.calls.append(("reply", message_id, text, operation_id))
+        if self.safe_retryable_error:
+            raise GatewayError(
+                "workbuddy_auth_failed",
+                502,
+                "WorkBuddy authorization failed",
+                True,
+                safe_to_retry_operation=True,
+            )
         if self.retryable_error:
             raise GatewayError("upstream_timeout", 504, "WorkBuddy timed out", True)
         if self.nonretryable_error:
@@ -136,6 +150,171 @@ class GatewayServiceTests(unittest.TestCase):
         self.assertEqual("PENDING", result["status"])
         self.service.perform_action(action)
         self.assertEqual(1, len([call for call in self.adapter.calls if call[0] == "reply"]))
+
+    def test_known_preflight_failure_releases_reservation_for_same_id_retry(self) -> None:
+        self.adapter.safe_retryable_error = True
+        action = {
+            "version": 1,
+            "operation_id": "op-auth-retry",
+            "type": "reply",
+            "message_id": "m-1",
+            "text": "hello",
+        }
+
+        with self.assertRaises(GatewayError) as caught:
+            self.service.perform_action(action)
+
+        self.assertTrue(caught.exception.retryable)
+        with self.assertRaises(GatewayError) as missing:
+            self.service.get_operation("op-auth-retry")
+        self.assertEqual("not_found", missing.exception.code)
+
+        self.adapter.safe_retryable_error = False
+        result = self.service.perform_action(action)
+
+        self.assertEqual("SUCCEEDED", result["status"])
+        self.assertEqual(
+            2,
+            len([call for call in self.adapter.calls if call[0] == "reply"]),
+        )
+
+    def test_real_oauth_preflight_failure_allows_same_operation_id_after_recovery(self) -> None:
+        token_attempts = []
+        with RecordingServer() as upstream:
+            def token_route(request):
+                token_attempts.append(request)
+                if len(token_attempts) == 1:
+                    return 503, {"Content-Type": "application/json"}, b"{}"
+                return (
+                    200,
+                    {"Content-Type": "application/json"},
+                    b'{"access_token":"access","token_type":"Bearer","expires_in":3600}',
+                )
+
+            upstream.route("POST", "/openapi/v2/token", token_route)
+            upstream.json_route(
+                "POST",
+                "/openapi/v2/localassistant/message",
+                {"code": 0, "data": {"message_id": "reply-receipt"}},
+            )
+            provider = OAuthTokenProvider(
+                upstream.base_url + "/openapi/v2/token",
+                "client-id",
+                "client-secret",
+                "refresh-token",
+                allow_insecure_http=True,
+            )
+            adapter = LiveWorkBuddyAdapter(
+                WorkBuddyClient(
+                    upstream.base_url,
+                    token_provider=provider,
+                    allow_insecure_http=True,
+                )
+            )
+            service = GatewayService(
+                adapter,
+                self.transcriber,
+                StateStore(Path(self.temp.name) / "oauth-retry-state.json"),
+                clock=lambda: 100.0,
+            )
+            action = {
+                "version": 1,
+                "operation_id": "op-real-auth-retry",
+                "type": "reply",
+                "message_id": "m-1",
+                "text": "hello",
+            }
+
+            with self.assertRaises(GatewayError) as first:
+                service.perform_action(action)
+            second = service.perform_action(action)
+
+        self.assertTrue(first.exception.retryable)
+        self.assertEqual("SUCCEEDED", second["status"])
+        self.assertEqual(2, len(token_attempts))
+        self.assertEqual(
+            1,
+            len(
+                [
+                    request
+                    for request in upstream.requests
+                    if request.path == "/openapi/v2/localassistant/message"
+                ]
+            ),
+        )
+
+    def test_post_429_keeps_pending_reservation_and_is_not_resubmitted(self) -> None:
+        with RecordingServer() as upstream:
+            upstream.json_route(
+                "POST",
+                "/openapi/v2/localassistant/message",
+                {"code": 429, "msg": "busy"},
+                status=429,
+            )
+            adapter = LiveWorkBuddyAdapter(
+                WorkBuddyClient(
+                    upstream.base_url,
+                    "access",
+                    allow_insecure_http=True,
+                )
+            )
+            service = GatewayService(
+                adapter,
+                self.transcriber,
+                StateStore(Path(self.temp.name) / "post-429-state.json"),
+                clock=lambda: 100.0,
+            )
+            action = {
+                "version": 1,
+                "operation_id": "op-post-429",
+                "type": "reply",
+                "message_id": "m-1",
+                "text": "hello",
+            }
+
+            with self.assertRaises(GatewayError) as caught:
+                service.perform_action(action)
+            repeated = service.perform_action(action)
+
+        self.assertTrue(caught.exception.retryable)
+        self.assertEqual("PENDING", repeated["status"])
+        self.assertEqual(
+            1,
+            len(
+                [
+                    request
+                    for request in upstream.requests
+                    if request.path == "/openapi/v2/localassistant/message"
+                ]
+            ),
+        )
+
+    def test_unhealthy_state_store_keeps_readiness_false_and_blocks_mutation(self) -> None:
+        corrupt_path = Path(self.temp.name) / "corrupt-state.json"
+        corrupt_path.write_text("not-json", encoding="utf-8")
+        corrupt_path.with_name(corrupt_path.name + ".bak").write_text(
+            "also-not-json", encoding="utf-8"
+        )
+        service = GatewayService(
+            self.adapter,
+            self.transcriber,
+            StateStore(corrupt_path),
+            clock=lambda: 100.0,
+        )
+
+        self.assertFalse(service.is_ready())
+        with self.assertRaises(GatewayError) as caught:
+            service.perform_action(
+                {
+                    "version": 1,
+                    "operation_id": "op-blocked",
+                    "type": "task_create",
+                    "prompt": "must not be submitted",
+                }
+            )
+
+        self.assertEqual("state_corrupt", caught.exception.code)
+        self.assertEqual([], self.adapter.calls)
 
     def test_nonretryable_upstream_error_records_public_failure(self) -> None:
         self.adapter.nonretryable_error = True

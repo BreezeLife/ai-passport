@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import threading
 import time
 from typing import Any, Callable, Dict, Optional, Protocol
 
 from .errors import GatewayError
 from .models import (
     MAX_ACTION_TEXT_BYTES,
+    MAX_CURSOR_BYTES,
     MAX_TRANSCRIPT_BYTES,
     Snapshot,
     require_identifier,
@@ -52,23 +54,27 @@ class GatewayService:
         self._store = store
         self._clock = clock
         self._last_upstream_ok = bool(getattr(adapter, "initially_ready", False))
+        self._readiness_lock = threading.Lock()
 
     def get_snapshot(self, after_cursor: Optional[str] = None) -> Dict[str, Any]:
         if after_cursor is not None:
-            require_identifier(after_cursor, "cursor", 128)
+            require_identifier(after_cursor, "cursor", MAX_CURSOR_BYTES)
         try:
             snapshot = self._adapter.fetch_snapshot(after_cursor)
             if not isinstance(snapshot, Snapshot):
                 raise GatewayError(
                     "upstream_schema", 502, "WorkBuddy returned an invalid snapshot", True
                 )
-            self._last_upstream_ok = True
+            with self._readiness_lock:
+                self._last_upstream_ok = True
             return snapshot.to_dict()
         except GatewayError:
-            self._last_upstream_ok = False
+            with self._readiness_lock:
+                self._last_upstream_ok = False
             raise
         except Exception:
-            self._last_upstream_ok = False
+            with self._readiness_lock:
+                self._last_upstream_ok = False
             raise GatewayError(
                 "upstream_failed", 502, "WorkBuddy snapshot could not be loaded", True
             )
@@ -122,7 +128,9 @@ class GatewayService:
                 )
             receipt_id = require_identifier(receipt_id, "receipt_id")
         except GatewayError as error:
-            if not error.retryable:
+            if error.retryable and error.safe_to_retry_operation:
+                self._store.release_pending(operation_id, fingerprint)
+            elif not error.retryable:
                 self._store.finish_failure(
                     operation_id,
                     error.code,
@@ -150,7 +158,9 @@ class GatewayService:
         return record.to_device_dict()
 
     def is_ready(self) -> bool:
-        return self._last_upstream_ok
+        with self._readiness_lock:
+            upstream_ready = self._last_upstream_ok
+        return upstream_ready and self._store.is_healthy()
 
     @staticmethod
     def _validate_action(raw_action: Any) -> Dict[str, Any]:

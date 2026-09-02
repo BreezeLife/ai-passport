@@ -11,7 +11,7 @@ from .errors import GatewayError
 API_VERSION = 1
 MAX_COLLECTION_ITEMS = 6
 MAX_ID_BYTES = 64
-MAX_CURSOR_BYTES = 128
+MAX_CURSOR_BYTES = 64
 MAX_TITLE_BYTES = 128
 MAX_PREVIEW_BYTES = 384
 MAX_TRANSCRIPT_BYTES = 512
@@ -64,7 +64,7 @@ def require_text(value: Any, field: str, max_bytes: int, *, allow_empty: bool = 
 _TASK_STATUSES = {
     "creating": "QUEUED",
     "queued": "QUEUED",
-    "pending": "QUEUED",
+    "pending": "NEEDS_INPUT",
     "created": "QUEUED",
     "idle": "QUEUED",
     "planning": "RUNNING",
@@ -87,8 +87,8 @@ _TASK_STATUSES = {
     "error": "FAILED",
     "cancelled": "FAILED",
     "canceled": "FAILED",
-    "archived": "FAILED",
-    "deleted": "FAILED",
+    "archived": "UNKNOWN",
+    "deleted": "UNKNOWN",
 }
 
 
@@ -224,9 +224,12 @@ class Snapshot:
         tasks: Iterable[TaskSummary],
         artifacts: Iterable[ArtifactSummary],
     ) -> "Snapshot":
-        if not isinstance(cursor, str):
-            raise GatewayError("upstream_schema", 502, "WorkBuddy returned an invalid cursor", True)
-        clean_cursor = truncate_utf8(cursor, MAX_CURSOR_BYTES)
+        try:
+            clean_cursor = require_identifier(cursor, "cursor", MAX_CURSOR_BYTES)
+        except GatewayError:
+            raise GatewayError(
+                "upstream_schema", 502, "WorkBuddy returned an invalid cursor", True
+            )
         return cls(
             clean_cursor,
             bool(fresh),
@@ -241,6 +244,12 @@ class Snapshot:
             "cursor": self.cursor,
             "fresh": self.fresh,
             "assistant_available": self.assistant_available,
+            "unread_count": sum(1 for message in self.messages if message.unread),
+            "active_task_count": sum(
+                1
+                for task in self.tasks
+                if task.status in ("QUEUED", "RUNNING", "NEEDS_INPUT")
+            ),
             "messages": [message.to_dict() for message in self.messages],
             "tasks": [task.to_dict() for task in self.tasks],
             "artifacts": [artifact.to_dict() for artifact in self.artifacts],

@@ -24,6 +24,8 @@ class GatewayConfigTests(unittest.TestCase):
         self.assertTrue(config.device_token)
         self.assertIsNone(config.workbuddy_access_token)
         self.assertIsNone(config.transcription_api_key)
+        self.assertEqual(5.0, config.inbound_timeout_seconds)
+        self.assertEqual(8, config.max_connections)
 
     def test_live_mode_accepts_access_token_configuration(self) -> None:
         config = GatewayConfig.from_env(self._live_env())
@@ -85,6 +87,31 @@ class GatewayConfigTests(unittest.TestCase):
             GatewayConfig.from_env(
                 {"WORKBUDDY_GATEWAY_MODE": "demo", "WORKBUDDY_GATEWAY_PORT": "70000"}
             )
+
+    def test_inbound_timeout_and_connection_limit_are_bounded(self) -> None:
+        config = GatewayConfig.from_env(
+            {
+                "WORKBUDDY_GATEWAY_MODE": "demo",
+                "WORKBUDDY_GATEWAY_INBOUND_TIMEOUT_SECONDS": "0.25",
+                "WORKBUDDY_GATEWAY_MAX_CONNECTIONS": "2",
+            }
+        )
+        self.assertEqual(0.25, config.inbound_timeout_seconds)
+        self.assertEqual(2, config.max_connections)
+
+        for name, value in (
+            ("WORKBUDDY_REQUEST_TIMEOUT_SECONDS", "NaN"),
+            ("WORKBUDDY_GATEWAY_INBOUND_TIMEOUT_SECONDS", "NaN"),
+            ("WORKBUDDY_GATEWAY_INBOUND_TIMEOUT_SECONDS", "0"),
+            ("WORKBUDDY_GATEWAY_INBOUND_TIMEOUT_SECONDS", "61"),
+            ("WORKBUDDY_GATEWAY_MAX_CONNECTIONS", "0"),
+            ("WORKBUDDY_GATEWAY_MAX_CONNECTIONS", "65"),
+        ):
+            with self.subTest(name=name, value=value):
+                with self.assertRaises(GatewayError):
+                    GatewayConfig.from_env(
+                        {"WORKBUDDY_GATEWAY_MODE": "demo", name: value}
+                    )
 
     def test_repr_and_public_summary_redact_all_tokens(self) -> None:
         env = self._live_env()

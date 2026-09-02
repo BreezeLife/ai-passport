@@ -18,11 +18,14 @@ class GatewayError(Exception):
         status: int,
         public_message: str,
         retryable: bool = False,
+        *,
+        safe_to_retry_operation: bool = False,
     ) -> None:
         self.code = code
         self.status = status
         self.public_message = public_message
         self.retryable = bool(retryable)
+        self.safe_to_retry_operation = bool(safe_to_retry_operation)
         super().__init__("%s: %s" % (code, public_message))
 
     def to_dict(self) -> Dict[str, Any]:
