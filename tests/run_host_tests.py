@@ -23,6 +23,7 @@ def run_test(name: str, sources: list[str]) -> None:
             "-Wall",
             "-Wextra",
             "-Werror",
+            "-Itests/shims",
             "-Imain",
             *sources,
             "-o",
@@ -33,7 +34,14 @@ def run_test(name: str, sources: list[str]) -> None:
 
 
 def main() -> int:
-    requested = set(sys.argv[1:] or ["all"])
+    arguments = sys.argv[1:]
+    if arguments[:1] == ["--test"]:
+        if len(arguments) != 2:
+            print("usage: run_host_tests.py --test model|protocol|ui|all", file=sys.stderr)
+            return 2
+        requested = {arguments[1]}
+    else:
+        requested = set(arguments or ["all"])
     known = {"all", "model", "protocol", "ui"}
     unknown = requested - known
     if unknown:

@@ -2,17 +2,14 @@
 
 #include <ctype.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "cJSON.h"
 #include "workbuddy_model.h"
-
-typedef struct {
-    const char *current;
-    const char *end;
-    wb_protocol_result_t error;
-} json_reader_t;
 
 typedef struct {
     char *output;
@@ -21,521 +18,321 @@ typedef struct {
     bool overflow;
 } json_writer_t;
 
-enum {
-    SNAPSHOT_HAS_VERSION = 1U << 0,
-    SNAPSHOT_HAS_REQUEST_ID = 1U << 1,
-    SNAPSHOT_HAS_CURSOR = 1U << 2,
-    SNAPSHOT_HAS_FRESHNESS = 1U << 3,
-    SNAPSHOT_HAS_ASSISTANT = 1U << 4,
-    SNAPSHOT_HAS_MESSAGES = 1U << 5,
-    SNAPSHOT_HAS_TASKS = 1U << 6,
-    SNAPSHOT_HAS_OUTPUTS = 1U << 7,
-};
+static wb_protocol_allocate_fn s_allocate = malloc;
+static wb_protocol_deallocate_fn s_deallocate = free;
+static bool s_allocation_failed;
 
-#define SNAPSHOT_REQUIRED_FIELDS \
-    (SNAPSHOT_HAS_VERSION | SNAPSHOT_HAS_REQUEST_ID | SNAPSHOT_HAS_CURSOR | \
-     SNAPSHOT_HAS_FRESHNESS | SNAPSHOT_HAS_ASSISTANT | SNAPSHOT_HAS_MESSAGES | \
-     SNAPSHOT_HAS_TASKS | SNAPSHOT_HAS_OUTPUTS)
-
-static void set_error(json_reader_t *reader, wb_protocol_result_t error)
+static void *tracked_allocate(size_t size)
 {
-    if (reader->error == WB_PROTOCOL_OK) {
-        reader->error = error;
+    void *allocation = s_allocate(size);
+
+    if (allocation == NULL) {
+        s_allocation_failed = true;
     }
+    return allocation;
 }
 
-static void skip_whitespace(json_reader_t *reader)
+static void tracked_deallocate(void *pointer)
 {
-    while (reader->current < reader->end &&
-           isspace((unsigned char)*reader->current) != 0) {
-        ++reader->current;
-    }
+    s_deallocate(pointer);
 }
 
-static bool consume(json_reader_t *reader, char expected)
+static void install_cjson_hooks(void)
 {
-    skip_whitespace(reader);
-    if (reader->current >= reader->end || *reader->current != expected) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    ++reader->current;
-    return true;
+    cJSON_Hooks hooks = {
+        .malloc_fn = tracked_allocate,
+        .free_fn = tracked_deallocate,
+    };
+
+    cJSON_InitHooks(&hooks);
 }
 
-static bool require_type(json_reader_t *reader, char expected)
+void wb_protocol_set_allocator(wb_protocol_allocate_fn allocate,
+                               wb_protocol_deallocate_fn deallocate)
 {
-    skip_whitespace(reader);
-    if (reader->current >= reader->end) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
+    if (allocate == NULL || deallocate == NULL) {
+        s_allocate = malloc;
+        s_deallocate = free;
+    } else {
+        s_allocate = allocate;
+        s_deallocate = deallocate;
     }
-    if (*reader->current != expected) {
-        set_error(reader, WB_PROTOCOL_ERR_TYPE);
-        return false;
-    }
-    ++reader->current;
-    return true;
+    install_cjson_hooks();
 }
 
-static int hex_digit(char character)
+void wb_protocol_reset_allocator(void)
 {
-    if (character >= '0' && character <= '9') {
-        return character - '0';
-    }
-    if (character >= 'a' && character <= 'f') {
-        return character - 'a' + 10;
-    }
-    if (character >= 'A' && character <= 'F') {
-        return character - 'A' + 10;
-    }
-    return -1;
+    wb_protocol_set_allocator(malloc, free);
 }
 
-static bool parse_hex_quad(json_reader_t *reader, uint32_t *value)
+static size_t strict_utf8_codepoint_bytes(const unsigned char *text, size_t remaining)
 {
-    unsigned index;
-    uint32_t result = 0U;
-
-    if ((size_t)(reader->end - reader->current) < 4U) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    for (index = 0U; index < 4U; ++index) {
-        int digit = hex_digit(reader->current[index]);
-
-        if (digit < 0) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
-        }
-        result = (result << 4) | (uint32_t)digit;
-    }
-    reader->current += 4;
-    *value = result;
-    return true;
-}
-
-static size_t encode_utf8(uint32_t codepoint, unsigned char encoded[4])
-{
-    if (codepoint <= 0x7FU) {
-        encoded[0] = (unsigned char)codepoint;
+    if (text[0] < 0x80U) {
         return 1U;
     }
-    if (codepoint <= 0x7FFU) {
-        encoded[0] = (unsigned char)(0xC0U | (codepoint >> 6));
-        encoded[1] = (unsigned char)(0x80U | (codepoint & 0x3FU));
+    if (remaining >= 2U && text[0] >= 0xC2U && text[0] <= 0xDFU &&
+        text[1] >= 0x80U && text[1] <= 0xBFU) {
         return 2U;
     }
-    if (codepoint <= 0xFFFFU) {
-        encoded[0] = (unsigned char)(0xE0U | (codepoint >> 12));
-        encoded[1] = (unsigned char)(0x80U | ((codepoint >> 6) & 0x3FU));
-        encoded[2] = (unsigned char)(0x80U | (codepoint & 0x3FU));
+    if (remaining >= 3U && text[0] == 0xE0U &&
+        text[1] >= 0xA0U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
         return 3U;
     }
-    encoded[0] = (unsigned char)(0xF0U | (codepoint >> 18));
-    encoded[1] = (unsigned char)(0x80U | ((codepoint >> 12) & 0x3FU));
-    encoded[2] = (unsigned char)(0x80U | ((codepoint >> 6) & 0x3FU));
-    encoded[3] = (unsigned char)(0x80U | (codepoint & 0x3FU));
-    return 4U;
+    if (remaining >= 3U &&
+        ((text[0] >= 0xE1U && text[0] <= 0xECU) ||
+         (text[0] >= 0xEEU && text[0] <= 0xEFU)) &&
+        text[1] >= 0x80U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
+        return 3U;
+    }
+    if (remaining >= 3U && text[0] == 0xEDU &&
+        text[1] >= 0x80U && text[1] <= 0x9FU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
+        return 3U;
+    }
+    if (remaining >= 4U && text[0] == 0xF0U &&
+        text[1] >= 0x90U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
+        return 4U;
+    }
+    if (remaining >= 4U && text[0] >= 0xF1U && text[0] <= 0xF3U &&
+        text[1] >= 0x80U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
+        return 4U;
+    }
+    if (remaining >= 4U && text[0] == 0xF4U &&
+        text[1] >= 0x80U && text[1] <= 0x8FU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
+        return 4U;
+    }
+    return 0U;
 }
 
-static bool raw_utf8_sequence(json_reader_t *reader,
-                              unsigned char encoded[4],
-                              size_t *encoded_length)
+static bool strict_utf8_is_valid(const char *text, size_t length)
 {
-    const unsigned char *bytes = (const unsigned char *)reader->current;
-    size_t remaining = (size_t)(reader->end - reader->current);
+    size_t offset = 0U;
+
+    while (offset < length) {
+        size_t codepoint_bytes = strict_utf8_codepoint_bytes(
+            (const unsigned char *)&text[offset], length - offset);
+
+        if (codepoint_bytes == 0U) {
+            return false;
+        }
+        offset += codepoint_bytes;
+    }
+    return true;
+}
+
+static wb_protocol_result_t validate_json_envelope(const char *json, size_t length)
+{
+    char containers[WB_PROTOCOL_MAX_JSON_DEPTH];
+    size_t depth = 0U;
+    size_t index = 0U;
+    bool in_string = false;
+    bool escaped = false;
+
+    while (index < length) {
+        unsigned char byte = (unsigned char)json[index];
+
+        if (byte >= 0x80U) {
+            size_t codepoint_bytes = strict_utf8_codepoint_bytes(
+                (const unsigned char *)&json[index], length - index);
+
+            if (codepoint_bytes == 0U) {
+                return WB_PROTOCOL_ERR_INVALID_UTF8;
+            }
+            index += codepoint_bytes;
+            continue;
+        }
+
+        if (in_string) {
+            if (escaped) {
+                escaped = false;
+            } else if (byte == '\\') {
+                escaped = true;
+            } else if (byte == '"') {
+                in_string = false;
+            } else if (byte < 0x20U) {
+                return WB_PROTOCOL_ERR_INVALID_JSON;
+            }
+        } else if (byte == '"') {
+            in_string = true;
+        } else if (byte == '{' || byte == '[') {
+            if (depth >= WB_PROTOCOL_MAX_JSON_DEPTH) {
+                return WB_PROTOCOL_ERR_LIMIT;
+            }
+            containers[depth++] = (char)byte;
+        } else if (byte == '}' || byte == ']') {
+            char expected = byte == '}' ? '{' : '[';
+
+            if (depth == 0U || containers[depth - 1U] != expected) {
+                return WB_PROTOCOL_ERR_INVALID_JSON;
+            }
+            --depth;
+        } else if (byte < 0x20U && isspace(byte) == 0) {
+            return WB_PROTOCOL_ERR_INVALID_JSON;
+        }
+        ++index;
+    }
+
+    if (in_string || escaped || depth != 0U) {
+        return WB_PROTOCOL_ERR_INVALID_JSON;
+    }
+    return WB_PROTOCOL_OK;
+}
+
+static cJSON *object_item(const cJSON *object,
+                          const char *first,
+                          const char *second,
+                          const char *third)
+{
+    cJSON *item = cJSON_GetObjectItemCaseSensitive(object, first);
+
+    if (item == NULL && second != NULL) {
+        item = cJSON_GetObjectItemCaseSensitive(object, second);
+    }
+    if (item == NULL && third != NULL) {
+        item = cJSON_GetObjectItemCaseSensitive(object, third);
+    }
+    return item;
+}
+
+static wb_protocol_result_t copy_string_item(const cJSON *item,
+                                             char *destination,
+                                             size_t capacity,
+                                             bool strict_limit,
+                                             bool require_nonempty)
+{
     size_t length;
-    uint32_t codepoint;
-    size_t index;
+    size_t read_index = 0U;
+    size_t write_index = 0U;
 
-    if (bytes[0] >= 0xC2U && bytes[0] <= 0xDFU) {
-        length = 2U;
-        codepoint = bytes[0] & 0x1FU;
-    } else if (bytes[0] >= 0xE0U && bytes[0] <= 0xEFU) {
-        length = 3U;
-        codepoint = bytes[0] & 0x0FU;
-    } else if (bytes[0] >= 0xF0U && bytes[0] <= 0xF4U) {
-        length = 4U;
-        codepoint = bytes[0] & 0x07U;
-    } else {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
+    if (!cJSON_IsString(item) || item->valuestring == NULL) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    if (remaining < length) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
+    length = strlen(item->valuestring);
+    if (!strict_utf8_is_valid(item->valuestring, length)) {
+        return WB_PROTOCOL_ERR_INVALID_UTF8;
     }
-    for (index = 1U; index < length; ++index) {
-        if ((bytes[index] & 0xC0U) != 0x80U) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
+    if (require_nonempty && length == 0U) {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
+    }
+    if (strict_limit && length >= capacity) {
+        return WB_PROTOCOL_ERR_LIMIT;
+    }
+
+    while (read_index < length) {
+        size_t codepoint_bytes = strict_utf8_codepoint_bytes(
+            (const unsigned char *)&item->valuestring[read_index], length - read_index);
+
+        if (write_index + codepoint_bytes >= capacity) {
+            break;
         }
-        codepoint = (codepoint << 6) | (bytes[index] & 0x3FU);
+        memcpy(&destination[write_index], &item->valuestring[read_index], codepoint_bytes);
+        read_index += codepoint_bytes;
+        write_index += codepoint_bytes;
     }
-    if ((length == 3U && codepoint < 0x800U) ||
-        (length == 4U && codepoint < 0x10000U) ||
-        (codepoint >= 0xD800U && codepoint <= 0xDFFFU) ||
-        codepoint > 0x10FFFFU) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    memcpy(encoded, bytes, length);
-    reader->current += length;
-    *encoded_length = length;
-    return true;
+    destination[write_index] = '\0';
+    return WB_PROTOCOL_OK;
 }
 
-static bool append_decoded(json_reader_t *reader,
-                           char *destination,
-                           size_t capacity,
-                           size_t *written,
-                           bool *saturated,
-                           bool strict_limit,
-                           const unsigned char *encoded,
-                           size_t encoded_length)
+static wb_protocol_result_t read_required_string(const cJSON *object,
+                                                 const char *first,
+                                                 const char *second,
+                                                 const char *third,
+                                                 char *destination,
+                                                 size_t capacity,
+                                                 bool strict_limit,
+                                                 bool require_nonempty)
 {
-    if (destination == NULL || *saturated) {
-        return true;
+    cJSON *item = object_item(object, first, second, third);
+
+    if (item == NULL) {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
     }
-    if (*written + encoded_length >= capacity) {
-        if (strict_limit) {
-            set_error(reader, WB_PROTOCOL_ERR_LIMIT);
-            return false;
-        }
-        *saturated = true;
-        return true;
-    }
-    memcpy(&destination[*written], encoded, encoded_length);
-    *written += encoded_length;
-    return true;
+    return copy_string_item(item, destination, capacity, strict_limit, require_nonempty);
 }
 
-static bool parse_json_string(json_reader_t *reader,
-                              char *destination,
-                              size_t capacity,
-                              bool strict_limit,
-                              bool field_value)
+static wb_protocol_result_t read_optional_string(const cJSON *object,
+                                                 const char *first,
+                                                 const char *second,
+                                                 char *destination,
+                                                 size_t capacity,
+                                                 bool strict_limit)
 {
-    size_t written = 0U;
-    bool saturated = false;
+    cJSON *item = object_item(object, first, second, NULL);
 
-    skip_whitespace(reader);
-    if (reader->current >= reader->end) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
+    if (item == NULL) {
+        destination[0] = '\0';
+        return WB_PROTOCOL_OK;
     }
-    if (*reader->current != '"') {
-        set_error(reader, field_value ? WB_PROTOCOL_ERR_TYPE : WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    ++reader->current;
-    if (destination != NULL && capacity == 0U) {
-        set_error(reader, WB_PROTOCOL_ERR_ARGUMENT);
-        return false;
-    }
-
-    while (reader->current < reader->end) {
-        unsigned char encoded[4];
-        size_t encoded_length = 1U;
-        unsigned char byte = (unsigned char)*reader->current++;
-
-        if (byte == '"') {
-            if (destination != NULL) {
-                destination[written] = '\0';
-            }
-            return true;
-        }
-        if (byte < 0x20U) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
-        }
-        if (byte == '\\') {
-            uint32_t codepoint;
-
-            if (reader->current >= reader->end) {
-                set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                return false;
-            }
-            byte = (unsigned char)*reader->current++;
-            switch (byte) {
-            case '"':
-            case '\\':
-            case '/':
-                encoded[0] = byte;
-                break;
-            case 'b':
-                encoded[0] = '\b';
-                break;
-            case 'f':
-                encoded[0] = '\f';
-                break;
-            case 'n':
-                encoded[0] = '\n';
-                break;
-            case 'r':
-                encoded[0] = '\r';
-                break;
-            case 't':
-                encoded[0] = '\t';
-                break;
-            case 'u':
-                if (!parse_hex_quad(reader, &codepoint)) {
-                    return false;
-                }
-                if (codepoint >= 0xD800U && codepoint <= 0xDBFFU) {
-                    uint32_t low_surrogate;
-
-                    if ((size_t)(reader->end - reader->current) < 6U ||
-                        reader->current[0] != '\\' || reader->current[1] != 'u') {
-                        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                        return false;
-                    }
-                    reader->current += 2;
-                    if (!parse_hex_quad(reader, &low_surrogate) ||
-                        low_surrogate < 0xDC00U || low_surrogate > 0xDFFFU) {
-                        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                        return false;
-                    }
-                    codepoint = UINT32_C(0x10000) +
-                        ((codepoint - UINT32_C(0xD800)) << 10) +
-                        (low_surrogate - UINT32_C(0xDC00));
-                } else if (codepoint >= 0xDC00U && codepoint <= 0xDFFFU) {
-                    set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                    return false;
-                }
-                if (codepoint == 0U && destination != NULL) {
-                    set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                    return false;
-                }
-                encoded_length = encode_utf8(codepoint, encoded);
-                break;
-            default:
-                set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-                return false;
-            }
-        } else if (byte < 0x80U) {
-            encoded[0] = byte;
-        } else {
-            --reader->current;
-            if (!raw_utf8_sequence(reader, encoded, &encoded_length)) {
-                return false;
-            }
-        }
-
-        if (!append_decoded(reader, destination, capacity, &written, &saturated,
-                            strict_limit, encoded, encoded_length)) {
-            return false;
-        }
-    }
-    set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-    return false;
+    return copy_string_item(item, destination, capacity, strict_limit, false);
 }
 
-static bool parse_boolean(json_reader_t *reader, bool *value)
+static wb_protocol_result_t read_required_bool(const cJSON *object,
+                                               const char *name,
+                                               bool *value)
 {
-    size_t remaining;
+    cJSON *item = cJSON_GetObjectItemCaseSensitive(object, name);
 
-    skip_whitespace(reader);
-    remaining = (size_t)(reader->end - reader->current);
-    if (remaining >= 4U && memcmp(reader->current, "true", 4U) == 0) {
-        reader->current += 4;
-        *value = true;
-        return true;
+    if (item == NULL) {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
     }
-    if (remaining >= 5U && memcmp(reader->current, "false", 5U) == 0) {
-        reader->current += 5;
-        *value = false;
-        return true;
+    if (!cJSON_IsBool(item)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    set_error(reader, WB_PROTOCOL_ERR_TYPE);
-    return false;
+    *value = cJSON_IsTrue(item);
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_unsigned(json_reader_t *reader, unsigned *value)
+static wb_protocol_result_t number_to_unsigned(const cJSON *item, unsigned *value)
 {
-    unsigned result = 0U;
-    bool first = true;
+    double number;
 
-    skip_whitespace(reader);
-    if (reader->current >= reader->end ||
-        !isdigit((unsigned char)*reader->current)) {
-        set_error(reader, WB_PROTOCOL_ERR_TYPE);
-        return false;
+    if (!cJSON_IsNumber(item)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    if (*reader->current == '0' && reader->current + 1 < reader->end &&
-        isdigit((unsigned char)reader->current[1])) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
+    number = item->valuedouble;
+    if (number < 0.0) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    while (reader->current < reader->end &&
-           isdigit((unsigned char)*reader->current)) {
-        unsigned digit = (unsigned)(*reader->current - '0');
-
-        if (!first && result > (UINT_MAX - digit) / 10U) {
-            set_error(reader, WB_PROTOCOL_ERR_LIMIT);
-            return false;
-        }
-        result = result * 10U + digit;
-        first = false;
-        ++reader->current;
+    if (number > (double)UINT_MAX) {
+        return WB_PROTOCOL_ERR_LIMIT;
     }
-    if (reader->current < reader->end &&
-        (*reader->current == '.' || *reader->current == 'e' ||
-         *reader->current == 'E')) {
-        set_error(reader, WB_PROTOCOL_ERR_TYPE);
-        return false;
+    *value = (unsigned)number;
+    if ((double)*value != number) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    *value = result;
-    return true;
+    return WB_PROTOCOL_OK;
 }
 
-static bool skip_value(json_reader_t *reader, unsigned depth);
-
-static bool skip_number(json_reader_t *reader)
+static wb_protocol_result_t read_required_unsigned(const cJSON *object,
+                                                   const char *name,
+                                                   unsigned *value)
 {
-    if (reader->current < reader->end && *reader->current == '-') {
-        ++reader->current;
+    cJSON *item = cJSON_GetObjectItemCaseSensitive(object, name);
+
+    if (item == NULL) {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
     }
-    if (reader->current >= reader->end) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    if (*reader->current == '0') {
-        ++reader->current;
-        if (reader->current < reader->end &&
-            isdigit((unsigned char)*reader->current)) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
-        }
-    } else if (isdigit((unsigned char)*reader->current)) {
-        do {
-            ++reader->current;
-        } while (reader->current < reader->end &&
-                 isdigit((unsigned char)*reader->current));
-    } else {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    if (reader->current < reader->end && *reader->current == '.') {
-        ++reader->current;
-        if (reader->current >= reader->end ||
-            !isdigit((unsigned char)*reader->current)) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
-        }
-        do {
-            ++reader->current;
-        } while (reader->current < reader->end &&
-                 isdigit((unsigned char)*reader->current));
-    }
-    if (reader->current < reader->end &&
-        (*reader->current == 'e' || *reader->current == 'E')) {
-        ++reader->current;
-        if (reader->current < reader->end &&
-            (*reader->current == '+' || *reader->current == '-')) {
-            ++reader->current;
-        }
-        if (reader->current >= reader->end ||
-            !isdigit((unsigned char)*reader->current)) {
-            set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-            return false;
-        }
-        do {
-            ++reader->current;
-        } while (reader->current < reader->end &&
-                 isdigit((unsigned char)*reader->current));
-    }
-    return true;
+    return number_to_unsigned(item, value);
 }
 
-static bool skip_object(json_reader_t *reader, unsigned depth)
+static wb_protocol_result_t read_optional_unsigned(const cJSON *object,
+                                                   const char *name,
+                                                   unsigned *value)
 {
-    if (!consume(reader, '{')) {
-        return false;
-    }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == '}') {
-        ++reader->current;
-        return true;
-    }
-    for (;;) {
-        if (!parse_json_string(reader, NULL, 0U, false, false) ||
-            !consume(reader, ':') || !skip_value(reader, depth + 1U)) {
-            return false;
-        }
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == '}') {
-            ++reader->current;
-            return true;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
-    }
-}
+    cJSON *item = cJSON_GetObjectItemCaseSensitive(object, name);
 
-static bool skip_array(json_reader_t *reader, unsigned depth)
-{
-    if (!consume(reader, '[')) {
-        return false;
+    if (item == NULL) {
+        return WB_PROTOCOL_OK;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == ']') {
-        ++reader->current;
-        return true;
-    }
-    for (;;) {
-        if (!skip_value(reader, depth + 1U)) {
-            return false;
-        }
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == ']') {
-            ++reader->current;
-            return true;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
-    }
-}
-
-static bool skip_value(json_reader_t *reader, unsigned depth)
-{
-    size_t remaining;
-
-    if (depth > 16U) {
-        set_error(reader, WB_PROTOCOL_ERR_LIMIT);
-        return false;
-    }
-    skip_whitespace(reader);
-    if (reader->current >= reader->end) {
-        set_error(reader, WB_PROTOCOL_ERR_INVALID_JSON);
-        return false;
-    }
-    if (*reader->current == '"') {
-        return parse_json_string(reader, NULL, 0U, false, false);
-    }
-    if (*reader->current == '{') {
-        return skip_object(reader, depth);
-    }
-    if (*reader->current == '[') {
-        return skip_array(reader, depth);
-    }
-    remaining = (size_t)(reader->end - reader->current);
-    if (remaining >= 4U && memcmp(reader->current, "true", 4U) == 0) {
-        reader->current += 4;
-        return true;
-    }
-    if (remaining >= 5U && memcmp(reader->current, "false", 5U) == 0) {
-        reader->current += 5;
-        return true;
-    }
-    if (remaining >= 4U && memcmp(reader->current, "null", 4U) == 0) {
-        reader->current += 4;
-        return true;
-    }
-    return skip_number(reader);
+    return number_to_unsigned(item, value);
 }
 
 static bool ascii_equal(const char *left, const char *right)
@@ -584,366 +381,265 @@ static wb_output_kind_t normalize_output_kind(const char *kind)
     return WB_OUTPUT_KIND_UNKNOWN;
 }
 
-static bool parse_message(json_reader_t *reader, wb_message_t *message)
+static wb_protocol_result_t parse_message(const cJSON *item, wb_message_t *message)
 {
-    bool has_id = false;
+    wb_protocol_result_t result;
+    char role[32];
+    cJSON *unread;
 
-    if (!require_type(reader, '{')) {
-        return false;
+    if (!cJSON_IsObject(item)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == '}') {
-        ++reader->current;
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_required_string(item, "id", "message_id", NULL,
+                                  message->id, sizeof(message->id), true, true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    for (;;) {
-        char key[32];
-
-        if (!parse_json_string(reader, key, sizeof(key), false, false) ||
-            !consume(reader, ':')) {
-            return false;
-        }
-        if (strcmp(key, "id") == 0 || strcmp(key, "message_id") == 0) {
-            if (!parse_json_string(reader, message->id, sizeof(message->id), true, true)) {
-                return false;
-            }
-            has_id = message->id[0] != '\0';
-        } else if (strcmp(key, "title") == 0 || strcmp(key, "sender") == 0) {
-            if (!parse_json_string(reader, message->title, sizeof(message->title), false, true)) {
-                return false;
-            }
-        } else if (strcmp(key, "preview") == 0) {
-            if (!parse_json_string(reader, message->preview, sizeof(message->preview), false,
-                                   true)) {
-                return false;
-            }
-        } else if (strcmp(key, "role") == 0 || strcmp(key, "sender_role") == 0) {
-            char role[32];
-
-            if (!parse_json_string(reader, role, sizeof(role), false, true)) {
-                return false;
-            }
-            message->role = normalize_role(role);
-        } else if (strcmp(key, "unread") == 0) {
-            if (!parse_boolean(reader, &message->unread)) {
-                return false;
-            }
-        } else if (!skip_value(reader, 0U)) {
-            return false;
-        }
-
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == '}') {
-            ++reader->current;
-            break;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
+    result = read_optional_string(item, "title", "sender",
+                                  message->title, sizeof(message->title), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    if (!has_id) {
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_optional_string(item, "preview", NULL,
+                                  message->preview, sizeof(message->preview), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    return true;
+    result = read_optional_string(item, "role", "sender_role",
+                                  role, sizeof(role), true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    message->role = normalize_role(role);
+    unread = cJSON_GetObjectItemCaseSensitive(item, "unread");
+    if (unread != NULL) {
+        if (!cJSON_IsBool(unread)) {
+            return WB_PROTOCOL_ERR_TYPE;
+        }
+        message->unread = cJSON_IsTrue(unread);
+    }
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_task(json_reader_t *reader, wb_task_t *task)
+static wb_protocol_result_t parse_task(const cJSON *item, wb_task_t *task)
 {
-    bool has_id = false;
-    bool has_status = false;
+    wb_protocol_result_t result;
+    char status[32];
 
-    if (!require_type(reader, '{')) {
-        return false;
+    if (!cJSON_IsObject(item)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == '}') {
-        ++reader->current;
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_required_string(item, "id", "task_id", NULL,
+                                  task->id, sizeof(task->id), true, true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    for (;;) {
-        char key[32];
-
-        if (!parse_json_string(reader, key, sizeof(key), false, false) ||
-            !consume(reader, ':')) {
-            return false;
-        }
-        if (strcmp(key, "id") == 0 || strcmp(key, "task_id") == 0) {
-            if (!parse_json_string(reader, task->id, sizeof(task->id), true, true)) {
-                return false;
-            }
-            has_id = task->id[0] != '\0';
-        } else if (strcmp(key, "title") == 0) {
-            if (!parse_json_string(reader, task->title, sizeof(task->title), false, true)) {
-                return false;
-            }
-        } else if (strcmp(key, "preview") == 0 || strcmp(key, "description") == 0) {
-            if (!parse_json_string(reader, task->preview, sizeof(task->preview), false, true)) {
-                return false;
-            }
-        } else if (strcmp(key, "status") == 0) {
-            char status[32];
-
-            if (!parse_json_string(reader, status, sizeof(status), false, true)) {
-                return false;
-            }
-            task->status = wb_task_status_normalize(status);
-            has_status = true;
-        } else if (!skip_value(reader, 0U)) {
-            return false;
-        }
-
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == '}') {
-            ++reader->current;
-            break;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
+    result = read_optional_string(item, "title", NULL,
+                                  task->title, sizeof(task->title), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    if (!has_id || !has_status) {
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_optional_string(item, "preview", "description",
+                                  task->preview, sizeof(task->preview), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    return true;
+    result = read_required_string(item, "status", NULL, NULL,
+                                  status, sizeof(status), true, true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    task->status = wb_task_status_normalize(status);
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_output(json_reader_t *reader, wb_output_t *output)
+static wb_protocol_result_t parse_output(const cJSON *item, wb_output_t *output)
 {
-    bool has_id = false;
+    wb_protocol_result_t result;
+    char kind[32];
 
-    if (!require_type(reader, '{')) {
-        return false;
+    if (!cJSON_IsObject(item)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == '}') {
-        ++reader->current;
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_required_string(item, "id", "output_id", "artifact_id",
+                                  output->id, sizeof(output->id), true, true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    for (;;) {
-        char key[32];
-
-        if (!parse_json_string(reader, key, sizeof(key), false, false) ||
-            !consume(reader, ':')) {
-            return false;
-        }
-        if (strcmp(key, "id") == 0 || strcmp(key, "output_id") == 0 ||
-            strcmp(key, "artifact_id") == 0) {
-            if (!parse_json_string(reader, output->id, sizeof(output->id), true, true)) {
-                return false;
-            }
-            has_id = output->id[0] != '\0';
-        } else if (strcmp(key, "task_id") == 0) {
-            if (!parse_json_string(reader, output->task_id, sizeof(output->task_id), true,
-                                   true)) {
-                return false;
-            }
-        } else if (strcmp(key, "title") == 0) {
-            if (!parse_json_string(reader, output->title, sizeof(output->title), false, true)) {
-                return false;
-            }
-        } else if (strcmp(key, "preview") == 0 || strcmp(key, "description") == 0) {
-            if (!parse_json_string(reader, output->preview, sizeof(output->preview), false,
-                                   true)) {
-                return false;
-            }
-        } else if (strcmp(key, "kind") == 0 || strcmp(key, "type") == 0) {
-            char kind[32];
-
-            if (!parse_json_string(reader, kind, sizeof(kind), false, true)) {
-                return false;
-            }
-            output->kind = normalize_output_kind(kind);
-        } else if (!skip_value(reader, 0U)) {
-            return false;
-        }
-
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == '}') {
-            ++reader->current;
-            break;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
+    result = read_optional_string(item, "task_id", NULL,
+                                  output->task_id, sizeof(output->task_id), true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    if (!has_id) {
-        set_error(reader, WB_PROTOCOL_ERR_MISSING_FIELD);
-        return false;
+    result = read_optional_string(item, "title", NULL,
+                                  output->title, sizeof(output->title), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    return true;
+    result = read_optional_string(item, "preview", "description",
+                                  output->preview, sizeof(output->preview), false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    result = read_optional_string(item, "kind", "type",
+                                  kind, sizeof(kind), true);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    output->kind = normalize_output_kind(kind);
+    return WB_PROTOCOL_OK;
 }
 
-typedef bool (*parse_item_fn)(json_reader_t *reader, void *item);
-
-static bool parse_message_item(json_reader_t *reader, void *item)
+static wb_protocol_result_t parse_messages(const cJSON *array, wb_snapshot_t *snapshot)
 {
-    return parse_message(reader, item);
+    int count;
+    int index;
+
+    if (!cJSON_IsArray(array)) {
+        return WB_PROTOCOL_ERR_TYPE;
+    }
+    count = cJSON_GetArraySize(array);
+    snapshot->message_count = count < (int)WB_MAX_ITEMS ? (size_t)count : WB_MAX_ITEMS;
+    for (index = 0; index < (int)snapshot->message_count; ++index) {
+        wb_protocol_result_t result = parse_message(cJSON_GetArrayItem(array, index),
+                                                    &snapshot->messages[index]);
+
+        if (result != WB_PROTOCOL_OK) {
+            return result;
+        }
+    }
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_task_item(json_reader_t *reader, void *item)
+static wb_protocol_result_t parse_tasks(const cJSON *array, wb_snapshot_t *snapshot)
 {
-    return parse_task(reader, item);
+    int count;
+    int index;
+
+    if (!cJSON_IsArray(array)) {
+        return WB_PROTOCOL_ERR_TYPE;
+    }
+    count = cJSON_GetArraySize(array);
+    snapshot->task_count = count < (int)WB_MAX_ITEMS ? (size_t)count : WB_MAX_ITEMS;
+    for (index = 0; index < (int)snapshot->task_count; ++index) {
+        wb_protocol_result_t result = parse_task(cJSON_GetArrayItem(array, index),
+                                                 &snapshot->tasks[index]);
+
+        if (result != WB_PROTOCOL_OK) {
+            return result;
+        }
+    }
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_output_item(json_reader_t *reader, void *item)
+static wb_protocol_result_t parse_outputs(const cJSON *array, wb_snapshot_t *snapshot)
 {
-    return parse_output(reader, item);
+    int count;
+    int index;
+
+    if (!cJSON_IsArray(array)) {
+        return WB_PROTOCOL_ERR_TYPE;
+    }
+    count = cJSON_GetArraySize(array);
+    snapshot->output_count = count < (int)WB_MAX_ITEMS ? (size_t)count : WB_MAX_ITEMS;
+    for (index = 0; index < (int)snapshot->output_count; ++index) {
+        wb_protocol_result_t result = parse_output(cJSON_GetArrayItem(array, index),
+                                                   &snapshot->outputs[index]);
+
+        if (result != WB_PROTOCOL_OK) {
+            return result;
+        }
+    }
+    return WB_PROTOCOL_OK;
 }
 
-static bool parse_bounded_array(json_reader_t *reader,
-                                void *items,
-                                size_t item_size,
-                                size_t *item_count,
-                                parse_item_fn parse_item)
+static wb_protocol_result_t snapshot_from_dom(const cJSON *root, wb_snapshot_t *snapshot)
 {
-    size_t total = 0U;
+    wb_protocol_result_t result;
+    cJSON *fresh;
+    cJSON *stale;
+    cJSON *messages;
+    cJSON *tasks;
+    cJSON *outputs;
 
-    if (!require_type(reader, '[')) {
-        return false;
+    if (!cJSON_IsObject(root)) {
+        return WB_PROTOCOL_ERR_TYPE;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == ']') {
-        ++reader->current;
-        *item_count = 0U;
-        return true;
+    result = read_required_unsigned(root, "version", &snapshot->version);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    for (;;) {
-        if (total < WB_MAX_ITEMS) {
-            void *item = (unsigned char *)items + total * item_size;
+    if (snapshot->version != 1U) {
+        return WB_PROTOCOL_ERR_UNSUPPORTED_VERSION;
+    }
+    result = read_required_string(root, "request_id", NULL, NULL,
+                                  snapshot->request_id, sizeof(snapshot->request_id),
+                                  true, false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    result = read_required_string(root, "cursor", NULL, NULL,
+                                  snapshot->cursor, sizeof(snapshot->cursor), true, false);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
 
-            if (!parse_item(reader, item)) {
-                return false;
-            }
-        } else if (!skip_value(reader, 0U)) {
-            return false;
+    fresh = cJSON_GetObjectItemCaseSensitive(root, "fresh");
+    stale = cJSON_GetObjectItemCaseSensitive(root, "stale");
+    if (fresh != NULL) {
+        if (!cJSON_IsBool(fresh)) {
+            return WB_PROTOCOL_ERR_TYPE;
         }
-        ++total;
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == ']') {
-            ++reader->current;
-            *item_count = total < WB_MAX_ITEMS ? total : WB_MAX_ITEMS;
-            return true;
+        snapshot->fresh = cJSON_IsTrue(fresh);
+    } else if (stale != NULL) {
+        if (!cJSON_IsBool(stale)) {
+            return WB_PROTOCOL_ERR_TYPE;
         }
-        if (!consume(reader, ',')) {
-            return false;
-        }
+        snapshot->fresh = !cJSON_IsTrue(stale);
+    } else {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
     }
-}
 
-static bool parse_snapshot_object(json_reader_t *reader,
-                                  wb_snapshot_t *snapshot,
-                                  unsigned *fields)
-{
-    if (!require_type(reader, '{')) {
-        return false;
+    result = read_required_bool(root, "assistant_available",
+                                &snapshot->assistant_available);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    skip_whitespace(reader);
-    if (reader->current < reader->end && *reader->current == '}') {
-        ++reader->current;
-        return true;
+    result = read_optional_unsigned(root, "unread_count", &snapshot->unread_count);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    for (;;) {
-        char key[32];
-
-        if (!parse_json_string(reader, key, sizeof(key), false, false) ||
-            !consume(reader, ':')) {
-            return false;
-        }
-        if (strcmp(key, "version") == 0) {
-            if (!parse_unsigned(reader, &snapshot->version)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_VERSION;
-            if (snapshot->version != 1U) {
-                set_error(reader, WB_PROTOCOL_ERR_UNSUPPORTED_VERSION);
-                return false;
-            }
-        } else if (strcmp(key, "request_id") == 0) {
-            if (!parse_json_string(reader, snapshot->request_id,
-                                   sizeof(snapshot->request_id), true, true)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_REQUEST_ID;
-        } else if (strcmp(key, "cursor") == 0) {
-            if (!parse_json_string(reader, snapshot->cursor,
-                                   sizeof(snapshot->cursor), true, true)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_CURSOR;
-        } else if (strcmp(key, "fresh") == 0) {
-            if (!parse_boolean(reader, &snapshot->fresh)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_FRESHNESS;
-        } else if (strcmp(key, "stale") == 0) {
-            bool stale;
-
-            if (!parse_boolean(reader, &stale)) {
-                return false;
-            }
-            snapshot->fresh = !stale;
-            *fields |= SNAPSHOT_HAS_FRESHNESS;
-        } else if (strcmp(key, "assistant_available") == 0) {
-            if (!parse_boolean(reader, &snapshot->assistant_available)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_ASSISTANT;
-        } else if (strcmp(key, "unread_count") == 0) {
-            if (!parse_unsigned(reader, &snapshot->unread_count)) {
-                return false;
-            }
-        } else if (strcmp(key, "active_task_count") == 0) {
-            if (!parse_unsigned(reader, &snapshot->active_task_count)) {
-                return false;
-            }
-        } else if (strcmp(key, "messages") == 0) {
-            if (!parse_bounded_array(reader, snapshot->messages,
-                                     sizeof(snapshot->messages[0]),
-                                     &snapshot->message_count, parse_message_item)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_MESSAGES;
-        } else if (strcmp(key, "tasks") == 0) {
-            if (!parse_bounded_array(reader, snapshot->tasks,
-                                     sizeof(snapshot->tasks[0]),
-                                     &snapshot->task_count, parse_task_item)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_TASKS;
-        } else if (strcmp(key, "outputs") == 0 || strcmp(key, "artifacts") == 0) {
-            if (!parse_bounded_array(reader, snapshot->outputs,
-                                     sizeof(snapshot->outputs[0]),
-                                     &snapshot->output_count, parse_output_item)) {
-                return false;
-            }
-            *fields |= SNAPSHOT_HAS_OUTPUTS;
-        } else if (!skip_value(reader, 0U)) {
-            return false;
-        }
-
-        skip_whitespace(reader);
-        if (reader->current < reader->end && *reader->current == '}') {
-            ++reader->current;
-            return true;
-        }
-        if (!consume(reader, ',')) {
-            return false;
-        }
+    result = read_optional_unsigned(root, "active_task_count",
+                                    &snapshot->active_task_count);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
+
+    messages = cJSON_GetObjectItemCaseSensitive(root, "messages");
+    tasks = cJSON_GetObjectItemCaseSensitive(root, "tasks");
+    outputs = object_item(root, "outputs", "artifacts", NULL);
+    if (messages == NULL || tasks == NULL || outputs == NULL) {
+        return WB_PROTOCOL_ERR_MISSING_FIELD;
+    }
+    result = parse_messages(messages, snapshot);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    result = parse_tasks(tasks, snapshot);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
+    }
+    return parse_outputs(outputs, snapshot);
 }
 
 wb_protocol_result_t wb_protocol_parse_snapshot(const char *json,
                                                 size_t json_length,
                                                 wb_snapshot_t *snapshot)
 {
-    json_reader_t reader;
+    const char *parse_end = NULL;
+    cJSON *root;
     wb_snapshot_t parsed = { 0 };
-    unsigned fields = 0U;
+    wb_protocol_result_t result;
 
     if (json == NULL || snapshot == NULL || json_length == 0U) {
         return WB_PROTOCOL_ERR_ARGUMENT;
@@ -951,22 +647,33 @@ wb_protocol_result_t wb_protocol_parse_snapshot(const char *json,
     if (json_length > WB_SNAPSHOT_MAX_BYTES) {
         return WB_PROTOCOL_ERR_LIMIT;
     }
-
-    reader.current = json;
-    reader.end = json + json_length;
-    reader.error = WB_PROTOCOL_OK;
-    if (!parse_snapshot_object(&reader, &parsed, &fields)) {
-        return reader.error == WB_PROTOCOL_OK ? WB_PROTOCOL_ERR_INVALID_JSON : reader.error;
+    result = validate_json_envelope(json, json_length);
+    if (result != WB_PROTOCOL_OK) {
+        return result;
     }
-    skip_whitespace(&reader);
-    if (reader.current != reader.end) {
+
+    install_cjson_hooks();
+    s_allocation_failed = false;
+    root = cJSON_ParseWithLengthOpts(json, json_length, &parse_end, false);
+    if (root == NULL) {
+        return s_allocation_failed ? WB_PROTOCOL_ERR_NO_MEMORY
+                                   : WB_PROTOCOL_ERR_INVALID_JSON;
+    }
+    while (parse_end != NULL && parse_end < json + json_length &&
+           isspace((unsigned char)*parse_end) != 0) {
+        ++parse_end;
+    }
+    if (parse_end == NULL || parse_end != json + json_length) {
+        cJSON_Delete(root);
         return WB_PROTOCOL_ERR_INVALID_JSON;
     }
-    if ((fields & SNAPSHOT_REQUIRED_FIELDS) != SNAPSHOT_REQUIRED_FIELDS) {
-        return WB_PROTOCOL_ERR_MISSING_FIELD;
+
+    result = snapshot_from_dom(root, &parsed);
+    cJSON_Delete(root);
+    if (result == WB_PROTOCOL_OK) {
+        *snapshot = parsed;
     }
-    *snapshot = parsed;
-    return WB_PROTOCOL_OK;
+    return result;
 }
 
 static bool bounded_string_length(const char *text, size_t maximum, size_t *length)
@@ -1067,12 +774,19 @@ static wb_protocol_result_t validate_action(const wb_action_t *action)
     if (operation_length == 0U || text_length == 0U) {
         return WB_PROTOCOL_ERR_ARGUMENT;
     }
+    if (!strict_utf8_is_valid(action->operation_id, operation_length) ||
+        !strict_utf8_is_valid(action->text, text_length)) {
+        return WB_PROTOCOL_ERR_INVALID_UTF8;
+    }
     if (action->type == WB_ACTION_REPLY || action->type == WB_ACTION_TASK_FOLLOWUP) {
         if (!bounded_string_length(action->target_id, WB_ID_MAX_BYTES, &target_length)) {
             return WB_PROTOCOL_ERR_LIMIT;
         }
         if (target_length == 0U) {
             return WB_PROTOCOL_ERR_ARGUMENT;
+        }
+        if (!strict_utf8_is_valid(action->target_id, target_length)) {
+            return WB_PROTOCOL_ERR_INVALID_UTF8;
         }
     } else if (action->type != WB_ACTION_TASK_CREATE) {
         return WB_PROTOCOL_ERR_ARGUMENT;
@@ -1207,6 +921,8 @@ const char *wb_protocol_result_name(wb_protocol_result_t result)
         return "ARGUMENT";
     case WB_PROTOCOL_ERR_INVALID_JSON:
         return "INVALID_JSON";
+    case WB_PROTOCOL_ERR_INVALID_UTF8:
+        return "INVALID_UTF8";
     case WB_PROTOCOL_ERR_UNSUPPORTED_VERSION:
         return "UNSUPPORTED_VERSION";
     case WB_PROTOCOL_ERR_MISSING_FIELD:
@@ -1217,6 +933,8 @@ const char *wb_protocol_result_name(wb_protocol_result_t result)
         return "LIMIT";
     case WB_PROTOCOL_ERR_BUFFER_TOO_SMALL:
         return "BUFFER_TOO_SMALL";
+    case WB_PROTOCOL_ERR_NO_MEMORY:
+        return "NO_MEMORY";
     default:
         return "UNKNOWN";
     }

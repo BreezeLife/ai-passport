@@ -11,21 +11,61 @@ static size_t utf8_codepoint_bytes(const unsigned char *text, size_t remaining)
         return 1U;
     }
     if (remaining >= 2U && text[0] >= 0xC2U && text[0] <= 0xDFU &&
-        (text[1] & 0xC0U) == 0x80U) {
+        text[1] >= 0x80U && text[1] <= 0xBFU) {
         return 2U;
     }
-    if (remaining >= 3U && text[0] >= 0xE0U && text[0] <= 0xEFU &&
-        (text[1] & 0xC0U) == 0x80U &&
-        (text[2] & 0xC0U) == 0x80U) {
+    if (remaining >= 3U && text[0] == 0xE0U &&
+        text[1] >= 0xA0U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
         return 3U;
     }
-    if (remaining >= 4U && text[0] >= 0xF0U && text[0] <= 0xF4U &&
-        (text[1] & 0xC0U) == 0x80U &&
-        (text[2] & 0xC0U) == 0x80U &&
-        (text[3] & 0xC0U) == 0x80U) {
+    if (remaining >= 3U &&
+        ((text[0] >= 0xE1U && text[0] <= 0xECU) ||
+         (text[0] >= 0xEEU && text[0] <= 0xEFU)) &&
+        text[1] >= 0x80U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
+        return 3U;
+    }
+    if (remaining >= 3U && text[0] == 0xEDU &&
+        text[1] >= 0x80U && text[1] <= 0x9FU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU) {
+        return 3U;
+    }
+    if (remaining >= 4U && text[0] == 0xF0U &&
+        text[1] >= 0x90U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
         return 4U;
     }
-    return 1U;
+    if (remaining >= 4U && text[0] >= 0xF1U && text[0] <= 0xF3U &&
+        text[1] >= 0x80U && text[1] <= 0xBFU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
+        return 4U;
+    }
+    if (remaining >= 4U && text[0] == 0xF4U &&
+        text[1] >= 0x80U && text[1] <= 0x8FU &&
+        text[2] >= 0x80U && text[2] <= 0xBFU &&
+        text[3] >= 0x80U && text[3] <= 0xBFU) {
+        return 4U;
+    }
+    return 0U;
+}
+
+static bool utf8_is_valid(const char *text, size_t length)
+{
+    size_t offset = 0U;
+
+    while (offset < length) {
+        size_t codepoint_bytes = utf8_codepoint_bytes(
+            (const unsigned char *)&text[offset], length - offset);
+
+        if (codepoint_bytes == 0U) {
+            return false;
+        }
+        offset += codepoint_bytes;
+    }
+    return true;
 }
 
 static void copy_utf8(char *destination, size_t capacity, const char *source)
@@ -47,6 +87,9 @@ static void copy_utf8(char *destination, size_t capacity, const char *source)
         size_t codepoint_bytes = utf8_codepoint_bytes(
             (const unsigned char *)&source[read_index], source_length - read_index);
 
+        if (codepoint_bytes == 0U) {
+            break;
+        }
         if (write_index + codepoint_bytes >= capacity) {
             break;
         }
@@ -63,17 +106,17 @@ static void terminate_snapshot_strings(wb_snapshot_t *snapshot)
 
     snapshot->request_id[WB_ID_CAP - 1U] = '\0';
     snapshot->cursor[WB_ID_CAP - 1U] = '\0';
-    for (index = 0U; index < snapshot->message_count; ++index) {
+    for (index = 0U; index < WB_MAX_ITEMS; ++index) {
         snapshot->messages[index].id[WB_ID_CAP - 1U] = '\0';
         snapshot->messages[index].title[WB_TITLE_CAP - 1U] = '\0';
         snapshot->messages[index].preview[WB_PREVIEW_CAP - 1U] = '\0';
     }
-    for (index = 0U; index < snapshot->task_count; ++index) {
+    for (index = 0U; index < WB_MAX_ITEMS; ++index) {
         snapshot->tasks[index].id[WB_ID_CAP - 1U] = '\0';
         snapshot->tasks[index].title[WB_TITLE_CAP - 1U] = '\0';
         snapshot->tasks[index].preview[WB_PREVIEW_CAP - 1U] = '\0';
     }
-    for (index = 0U; index < snapshot->output_count; ++index) {
+    for (index = 0U; index < WB_MAX_ITEMS; ++index) {
         snapshot->outputs[index].id[WB_ID_CAP - 1U] = '\0';
         snapshot->outputs[index].task_id[WB_ID_CAP - 1U] = '\0';
         snapshot->outputs[index].title[WB_TITLE_CAP - 1U] = '\0';
@@ -230,33 +273,36 @@ void wb_model_init(wb_model_t *model, uint32_t operation_nonce)
 bool wb_model_apply_snapshot(wb_model_t *model, const wb_snapshot_t *snapshot)
 {
     bool cursor_advanced;
+    wb_snapshot_t sanitized;
 
     if (model == NULL || snapshot == NULL) {
         return false;
     }
 
-    cursor_advanced = snapshot->cursor[0] != '\0' &&
-        (!model->cursor_seen || strcmp(model->cursor, snapshot->cursor) != 0);
-    model->snapshot = *snapshot;
-    if (model->snapshot.message_count > WB_MAX_ITEMS) {
-        model->snapshot.message_count = WB_MAX_ITEMS;
+    sanitized = *snapshot;
+    if (sanitized.message_count > WB_MAX_ITEMS) {
+        sanitized.message_count = WB_MAX_ITEMS;
     }
-    if (model->snapshot.task_count > WB_MAX_ITEMS) {
-        model->snapshot.task_count = WB_MAX_ITEMS;
+    if (sanitized.task_count > WB_MAX_ITEMS) {
+        sanitized.task_count = WB_MAX_ITEMS;
     }
-    if (model->snapshot.output_count > WB_MAX_ITEMS) {
-        model->snapshot.output_count = WB_MAX_ITEMS;
+    if (sanitized.output_count > WB_MAX_ITEMS) {
+        sanitized.output_count = WB_MAX_ITEMS;
     }
-    terminate_snapshot_strings(&model->snapshot);
+    terminate_snapshot_strings(&sanitized);
 
-    if (snapshot->cursor[0] != '\0') {
-        copy_utf8(model->cursor, sizeof(model->cursor), snapshot->cursor);
+    cursor_advanced = sanitized.cursor[0] != '\0' &&
+        (!model->cursor_seen || strcmp(model->cursor, sanitized.cursor) != 0);
+    model->snapshot = sanitized;
+
+    if (sanitized.cursor[0] != '\0') {
+        memcpy(model->cursor, sanitized.cursor, sizeof(model->cursor));
         model->cursor_seen = true;
     }
     model->inbox_focus = clamp_focus(model->inbox_focus, model->snapshot.message_count);
     model->task_focus = clamp_focus(model->task_focus, model->snapshot.task_count);
     model->output_focus = clamp_focus(model->output_focus, model->snapshot.output_count);
-    model->stale = !snapshot->fresh;
+    model->stale = !sanitized.fresh;
     return cursor_advanced;
 }
 
@@ -407,8 +453,14 @@ wb_model_effect_t wb_model_tick(wb_model_t *model, uint32_t now_ms)
 
 bool wb_model_accept_transcript(wb_model_t *model, const char *transcript)
 {
+    size_t transcript_length;
+
     if (model == NULL || transcript == NULL || transcript[0] == '\0' ||
         model->screen != WB_SCREEN_TRANSCRIBING) {
+        return false;
+    }
+    transcript_length = strlen(transcript);
+    if (!utf8_is_valid(transcript, transcript_length)) {
         return false;
     }
     copy_utf8(model->transcript, sizeof(model->transcript), transcript);
@@ -484,11 +536,7 @@ static void canonicalize_status(char *destination, size_t capacity, const char *
     while (*source != '\0' && write_index + 1U < capacity) {
         unsigned char byte = (unsigned char)*source++;
 
-        if (byte == '-' || byte == ' ') {
-            destination[write_index++] = '_';
-        } else {
-            destination[write_index++] = (char)toupper(byte);
-        }
+        destination[write_index++] = (char)toupper(byte);
     }
     destination[write_index] = '\0';
 }
@@ -503,28 +551,21 @@ wb_task_status_t wb_task_status_normalize(const char *raw_status)
     char status[32];
 
     canonicalize_status(status, sizeof(status), raw_status);
-    if (status_is(status, "QUEUED") || status_is(status, "CREATED") ||
-        status_is(status, "PENDING") || status_is(status, "WAITING") ||
-        status_is(status, "NOT_STARTED")) {
+    if (status_is(status, "QUEUED") || status_is(status, "CREATING") ||
+        status_is(status, "IDLE")) {
         return WB_TASK_STATUS_QUEUED;
     }
-    if (status_is(status, "RUNNING") || status_is(status, "IN_PROGRESS") ||
-        status_is(status, "PROCESSING")) {
+    if (status_is(status, "RUNNING") || status_is(status, "PLANNING") ||
+        status_is(status, "WORKING")) {
         return WB_TASK_STATUS_RUNNING;
     }
-    if (status_is(status, "NEEDS_INPUT") || status_is(status, "NEED_INPUT") ||
-        status_is(status, "WAITING_INPUT") || status_is(status, "AWAITING_INPUT")) {
+    if (status_is(status, "NEEDS_INPUT") || status_is(status, "PENDING")) {
         return WB_TASK_STATUS_NEEDS_INPUT;
     }
-    if (status_is(status, "COMPLETED") || status_is(status, "SUCCEEDED") ||
-        status_is(status, "SUCCESS") || status_is(status, "FINISHED") ||
-        status_is(status, "DONE")) {
+    if (status_is(status, "COMPLETED")) {
         return WB_TASK_STATUS_COMPLETED;
     }
-    if (status_is(status, "FAILED") || status_is(status, "ERROR") ||
-        status_is(status, "CANCELLED") || status_is(status, "CANCELED") ||
-        status_is(status, "REJECTED") || status_is(status, "TERMINATED") ||
-        status_is(status, "TIMEOUT")) {
+    if (status_is(status, "FAILED")) {
         return WB_TASK_STATUS_FAILED;
     }
     return WB_TASK_STATUS_UNKNOWN;

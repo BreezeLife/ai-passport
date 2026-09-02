@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -333,18 +334,74 @@ static int test_cursor_deduplication_stale_and_focus_clamping(void)
 
 static int test_workbuddy_statuses_are_normalized(void)
 {
-    CHECK(wb_task_status_normalize("CREATED") == WB_TASK_STATUS_QUEUED);
-    CHECK(wb_task_status_normalize("pending") == WB_TASK_STATUS_QUEUED);
-    CHECK(wb_task_status_normalize("IN_PROGRESS") == WB_TASK_STATUS_RUNNING);
-    CHECK(wb_task_status_normalize("processing") == WB_TASK_STATUS_RUNNING);
-    CHECK(wb_task_status_normalize("WAITING_INPUT") == WB_TASK_STATUS_NEEDS_INPUT);
-    CHECK(wb_task_status_normalize("needs-input") == WB_TASK_STATUS_NEEDS_INPUT);
-    CHECK(wb_task_status_normalize("SUCCEEDED") == WB_TASK_STATUS_COMPLETED);
-    CHECK(wb_task_status_normalize("done") == WB_TASK_STATUS_COMPLETED);
-    CHECK(wb_task_status_normalize("CANCELLED") == WB_TASK_STATUS_FAILED);
-    CHECK(wb_task_status_normalize("error") == WB_TASK_STATUS_FAILED);
+    CHECK(wb_task_status_normalize("CREATING") == WB_TASK_STATUS_QUEUED);
+    CHECK(wb_task_status_normalize("idle") == WB_TASK_STATUS_QUEUED);
+    CHECK(wb_task_status_normalize("planning") == WB_TASK_STATUS_RUNNING);
+    CHECK(wb_task_status_normalize("working") == WB_TASK_STATUS_RUNNING);
+    CHECK(wb_task_status_normalize("pending") == WB_TASK_STATUS_NEEDS_INPUT);
+    CHECK(wb_task_status_normalize("completed") == WB_TASK_STATUS_COMPLETED);
+    CHECK(wb_task_status_normalize("failed") == WB_TASK_STATUS_FAILED);
+    CHECK(wb_task_status_normalize("archived") == WB_TASK_STATUS_UNKNOWN);
+    CHECK(wb_task_status_normalize("deleted") == WB_TASK_STATUS_UNKNOWN);
+    CHECK(wb_task_status_normalize("QUEUED") == WB_TASK_STATUS_QUEUED);
+    CHECK(wb_task_status_normalize("RUNNING") == WB_TASK_STATUS_RUNNING);
+    CHECK(wb_task_status_normalize("NEEDS_INPUT") == WB_TASK_STATUS_NEEDS_INPUT);
+    CHECK(wb_task_status_normalize("CREATED") == WB_TASK_STATUS_UNKNOWN);
     CHECK(wb_task_status_normalize("mystery") == WB_TASK_STATUS_UNKNOWN);
     CHECK(strcmp(wb_task_status_name(WB_TASK_STATUS_NEEDS_INPUT), "NEEDS_INPUT") == 0);
+    return 0;
+}
+
+static int test_invalid_utf8_transcripts_are_rejected(void)
+{
+    static const char invalid_lead[] = { (char)0x80, '\0' };
+    static const char truncated[] = { (char)0xE2, (char)0x82, '\0' };
+    static const char overlong[] = { (char)0xC0, (char)0xAF, '\0' };
+    static const char surrogate[] = { (char)0xED, (char)0xA0, (char)0x80, '\0' };
+    static const char too_high[] = {
+        (char)0xF4, (char)0x90, (char)0x80, (char)0x80, '\0'
+    };
+    static const char maximum_valid[] = {
+        (char)0xF4, (char)0x8F, (char)0xBF, (char)0xBF, '\0'
+    };
+    wb_model_t model;
+
+    wb_model_init(&model, 1U);
+    (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, 0U);
+    (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 1U);
+    CHECK(!wb_model_accept_transcript(&model, invalid_lead));
+    CHECK(!wb_model_accept_transcript(&model, truncated));
+    CHECK(!wb_model_accept_transcript(&model, overlong));
+    CHECK(!wb_model_accept_transcript(&model, surrogate));
+    CHECK(!wb_model_accept_transcript(&model, too_high));
+    CHECK(model.screen == WB_SCREEN_TRANSCRIBING);
+    CHECK(wb_model_accept_transcript(&model, maximum_valid));
+    CHECK(model.screen == WB_SCREEN_REVIEW);
+    return 0;
+}
+
+static int test_snapshot_fixed_arrays_are_sanitized_before_cursor_compare(void)
+{
+    wb_model_t model;
+    wb_snapshot_t snapshot;
+
+    memset(&snapshot, 0x7f, sizeof(snapshot));
+    snapshot.version = 1U;
+    snapshot.fresh = true;
+    snapshot.assistant_available = true;
+    snapshot.unread_count = UINT_MAX;
+    snapshot.active_task_count = UINT_MAX;
+    snapshot.message_count = SIZE_MAX;
+    snapshot.task_count = SIZE_MAX;
+    snapshot.output_count = SIZE_MAX;
+    memset(snapshot.cursor, 'c', sizeof(snapshot.cursor));
+
+    wb_model_init(&model, 1U);
+    CHECK(wb_model_apply_snapshot(&model, &snapshot));
+    CHECK(strlen(model.cursor) == WB_ID_MAX_BYTES);
+    CHECK(model.snapshot.cursor[WB_ID_CAP - 1U] == '\0');
+    CHECK(model.snapshot.messages[0].id[WB_ID_CAP - 1U] == '\0');
+    CHECK(!wb_model_apply_snapshot(&model, &snapshot));
     return 0;
 }
 
@@ -474,6 +531,8 @@ int main(void)
     RUN_TEST(test_review_submits_once_with_stable_action);
     RUN_TEST(test_cursor_deduplication_stale_and_focus_clamping);
     RUN_TEST(test_workbuddy_statuses_are_normalized);
+    RUN_TEST(test_invalid_utf8_transcripts_are_rejected);
+    RUN_TEST(test_snapshot_fixed_arrays_are_sanitized_before_cursor_compare);
     RUN_TEST(test_success_result_is_bounded_and_returns_to_context);
     RUN_TEST(test_failure_requires_explicit_retry_with_same_operation_id);
     RUN_TEST(test_nonretryable_failure_and_long_press_only_return);

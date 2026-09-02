@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +6,8 @@
 #include "workbuddy_protocol.h"
 
 static unsigned s_tests_run;
+static unsigned s_allocation_calls;
+static unsigned s_fail_allocation_at;
 
 #define CHECK(condition) do { \
     if (!(condition)) { \
@@ -41,7 +44,7 @@ static const char s_valid_snapshot[] =
         "\"id\":\"task-1\","
         "\"title\":\"Launch plan\","
         "\"preview\":\"Drafting\","
-        "\"status\":\"IN_PROGRESS\""
+        "\"status\":\"RUNNING\""
     "}],"
     "\"outputs\":[{"
         "\"id\":\"output-1\","
@@ -51,6 +54,20 @@ static const char s_valid_snapshot[] =
         "\"kind\":\"checklist\""
     "}]"
     "}";
+
+static void *failing_allocate(size_t size)
+{
+    ++s_allocation_calls;
+    if (s_allocation_calls == s_fail_allocation_at) {
+        return NULL;
+    }
+    return malloc(size);
+}
+
+static void test_deallocate(void *pointer)
+{
+    free(pointer);
+}
 
 static int test_parses_version_one_snapshot(void)
 {
@@ -300,6 +317,155 @@ static int test_serialization_reports_small_buffers_and_bad_arguments(void)
     return 0;
 }
 
+static int test_serialization_rejects_invalid_utf8(void)
+{
+    static const char invalid_lead[] = { (char)0x80, '\0' };
+    static const char truncated[] = { (char)0xE2, (char)0x82, '\0' };
+    static const char overlong[] = { (char)0xC0, (char)0xAF, '\0' };
+    static const char surrogate[] = { (char)0xED, (char)0xA0, (char)0x80, '\0' };
+    static const char too_high[] = {
+        (char)0xF4, (char)0x90, (char)0x80, (char)0x80, '\0'
+    };
+    char json[1024];
+
+    CHECK(wb_protocol_serialize_task_create("op", invalid_lead, json,
+                                            sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_task_create("op", truncated, json,
+                                            sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_reply("op", "message", overlong, json,
+                                      sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_task_followup("op", "task", surrogate, json,
+                                              sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_task_create("op", too_high, json,
+                                            sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_reply(invalid_lead, "message", "text", json,
+                                      sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_serialize_reply("op", invalid_lead, "text", json,
+                                      sizeof(json), NULL) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(strcmp(wb_protocol_result_name(WB_PROTOCOL_ERR_INVALID_UTF8),
+                 "INVALID_UTF8") == 0);
+    return 0;
+}
+
+static int test_parser_reports_injected_allocation_failure(void)
+{
+    wb_protocol_result_t result;
+    wb_snapshot_t snapshot;
+    unsigned allocation_count;
+    unsigned failure_index;
+
+    s_allocation_calls = 0U;
+    s_fail_allocation_at = UINT_MAX;
+    wb_protocol_set_allocator(failing_allocate, test_deallocate);
+    result = wb_protocol_parse_snapshot(s_valid_snapshot, strlen(s_valid_snapshot), &snapshot);
+    wb_protocol_reset_allocator();
+    CHECK(result == WB_PROTOCOL_OK);
+    allocation_count = s_allocation_calls;
+    CHECK(allocation_count > 1U);
+
+    for (failure_index = 1U; failure_index <= allocation_count; ++failure_index) {
+        s_allocation_calls = 0U;
+        s_fail_allocation_at = failure_index;
+        wb_protocol_set_allocator(failing_allocate, test_deallocate);
+        result = wb_protocol_parse_snapshot(s_valid_snapshot, strlen(s_valid_snapshot),
+                                            &snapshot);
+        wb_protocol_reset_allocator();
+        CHECK(result == WB_PROTOCOL_ERR_NO_MEMORY);
+    }
+    CHECK(strcmp(wb_protocol_result_name(WB_PROTOCOL_ERR_NO_MEMORY), "NO_MEMORY") == 0);
+    return 0;
+}
+
+static int test_parser_enforces_depth_and_integer_boundaries(void)
+{
+    const char fractional_version[] =
+        "{\"version\":1.5,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,"
+        "\"messages\":[],\"tasks\":[],\"outputs\":[]}";
+    const char oversized_count[] =
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,"
+        "\"unread_count\":4294967296,"
+        "\"messages\":[],\"tasks\":[],\"outputs\":[]}";
+    char nested[1024];
+    size_t used;
+    unsigned index;
+    wb_snapshot_t snapshot;
+
+    CHECK(wb_protocol_parse_snapshot(fractional_version, strlen(fractional_version),
+                                     &snapshot) == WB_PROTOCOL_ERR_TYPE);
+    CHECK(wb_protocol_parse_snapshot(oversized_count, strlen(oversized_count),
+                                     &snapshot) == WB_PROTOCOL_ERR_LIMIT);
+
+    used = (size_t)snprintf(
+        nested, sizeof(nested),
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,\"extra\":");
+    for (index = 0U; index < 15U; ++index) {
+        nested[used++] = '[';
+    }
+    nested[used++] = '0';
+    for (index = 0U; index < 15U; ++index) {
+        nested[used++] = ']';
+    }
+    used += (size_t)snprintf(&nested[used], sizeof(nested) - used,
+                             ",\"messages\":[],\"tasks\":[],\"outputs\":[]}");
+    CHECK(wb_protocol_parse_snapshot(nested, used, &snapshot) == WB_PROTOCOL_OK);
+
+    used = (size_t)snprintf(
+        nested, sizeof(nested),
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,\"extra\":");
+    for (index = 0U; index < 16U; ++index) {
+        nested[used++] = '[';
+    }
+    nested[used++] = '0';
+    for (index = 0U; index < 16U; ++index) {
+        nested[used++] = ']';
+    }
+    used += (size_t)snprintf(&nested[used], sizeof(nested) - used,
+                             ",\"messages\":[],\"tasks\":[],\"outputs\":[]}");
+    CHECK(wb_protocol_parse_snapshot(nested, used, &snapshot) == WB_PROTOCOL_ERR_LIMIT);
+    return 0;
+}
+
+static int test_snapshot_parser_enforces_unicode_boundaries(void)
+{
+    const char invalid_raw[] =
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,"
+        "\"messages\":[{\"id\":\"m\",\"preview\":\""
+        "\xc0\xaf"
+        "\"}],\"tasks\":[],\"outputs\":[]}";
+    const char lone_surrogate[] =
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,"
+        "\"messages\":[{\"id\":\"m\",\"preview\":\"\\ud800\"}],"
+        "\"tasks\":[],\"outputs\":[]}";
+    const char maximum_codepoint[] =
+        "{\"version\":1,\"request_id\":\"r\",\"cursor\":\"c\","
+        "\"fresh\":true,\"assistant_available\":true,"
+        "\"messages\":[{\"id\":\"m\",\"preview\":\"\\udbff\\udfff\"}],"
+        "\"tasks\":[],\"outputs\":[]}";
+    wb_snapshot_t snapshot;
+
+    CHECK(wb_protocol_parse_snapshot(invalid_raw, sizeof(invalid_raw) - 1U, &snapshot) ==
+          WB_PROTOCOL_ERR_INVALID_UTF8);
+    CHECK(wb_protocol_parse_snapshot(lone_surrogate, strlen(lone_surrogate), &snapshot) ==
+          WB_PROTOCOL_ERR_INVALID_JSON);
+    CHECK(wb_protocol_parse_snapshot(maximum_codepoint, strlen(maximum_codepoint),
+                                     &snapshot) == WB_PROTOCOL_OK);
+    CHECK(strcmp(snapshot.messages[0].preview, "\xf4\x8f\xbf\xbf") == 0);
+    return 0;
+}
+
 int main(void)
 {
     RUN_TEST(test_parses_version_one_snapshot);
@@ -314,6 +480,10 @@ int main(void)
     RUN_TEST(test_serializes_task_create_with_json_escaping);
     RUN_TEST(test_serializes_task_followup_and_generic_action);
     RUN_TEST(test_serialization_reports_small_buffers_and_bad_arguments);
+    RUN_TEST(test_serialization_rejects_invalid_utf8);
+    RUN_TEST(test_parser_reports_injected_allocation_failure);
+    RUN_TEST(test_parser_enforces_depth_and_integer_boundaries);
+    RUN_TEST(test_snapshot_parser_enforces_unicode_boundaries);
     printf("workbuddy protocol: %u tests passed\n", s_tests_run);
     return 0;
 }
