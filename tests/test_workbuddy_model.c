@@ -171,7 +171,7 @@ static int test_cover_long_press_starts_contextual_new_task_voice(void)
 
     wb_model_init(&model, UINT32_C(0x10203040));
     CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 55U) == WB_EFFECT_VOICE_STARTED);
-    CHECK(model.screen == WB_SCREEN_RECORDING);
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
     CHECK(model.voice_context == WB_VOICE_TASK_CREATE);
     CHECK(model.return_screen == WB_SCREEN_PRIVACY_COVER);
     CHECK(model.target_id[0] == '\0');
@@ -234,6 +234,52 @@ static int test_output_selection_opens_detail_without_voice(void)
     return 0;
 }
 
+static int test_recording_clock_starts_only_after_matching_audio_ready(void)
+{
+    wb_model_t model;
+    char operation_id[WB_ID_CAP];
+    uint32_t start = UINT32_MAX - 1000U;
+
+    wb_model_init(&model, 1U);
+    CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 10U) == WB_EFFECT_VOICE_STARTED);
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
+    CHECK(model.recording_started_ms == 0U);
+    snprintf(operation_id, sizeof(operation_id), "%s", model.operation_id);
+
+    CHECK(wb_model_tick(&model, 10U + WB_RECORDING_LIMIT_MS + 1000U) == WB_EFFECT_NONE);
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
+    CHECK(!wb_model_begin_recording(&model, "stale-operation", start));
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
+    CHECK(wb_model_begin_recording(&model, operation_id, start));
+    CHECK(model.screen == WB_SCREEN_RECORDING);
+    CHECK(model.recording_started_ms == start);
+    CHECK(wb_model_tick(&model, start + 4999U) == WB_EFFECT_NONE);
+    CHECK(wb_model_tick(&model, start + WB_RECORDING_LIMIT_MS) == WB_EFFECT_VOICE_FINISHED);
+    CHECK(model.screen == WB_SCREEN_TRANSCRIBING);
+    return 0;
+}
+
+static int test_preparing_input_is_ordered_before_audio_arm(void)
+{
+    wb_model_t model;
+    char cancelled_operation[WB_ID_CAP];
+
+    wb_model_init(&model, 1U);
+    CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 10U) ==
+          WB_EFFECT_VOICE_STARTED);
+    snprintf(cancelled_operation, sizeof(cancelled_operation), "%s",
+             model.operation_id);
+
+    CHECK(wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 11U) == WB_EFFECT_NONE);
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
+    CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 12U) ==
+          WB_EFFECT_VOICE_CANCELLED);
+    CHECK(model.screen == WB_SCREEN_PRIVACY_COVER);
+    CHECK(model.operation_id[0] == '\0');
+    CHECK(!wb_model_begin_recording(&model, cancelled_operation, 13U));
+    return 0;
+}
+
 static int test_recording_stops_early_or_at_five_seconds_across_wrap(void)
 {
     wb_model_t model;
@@ -241,6 +287,7 @@ static int test_recording_stops_early_or_at_five_seconds_across_wrap(void)
 
     wb_model_init(&model, 1U);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, start);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, start));
     CHECK(wb_model_tick(&model, start + 4999U) == WB_EFFECT_NONE);
     CHECK(model.screen == WB_SCREEN_RECORDING);
     CHECK(wb_model_tick(&model, start + WB_RECORDING_LIMIT_MS) == WB_EFFECT_VOICE_FINISHED);
@@ -248,6 +295,7 @@ static int test_recording_stops_early_or_at_five_seconds_across_wrap(void)
 
     wb_model_init(&model, 1U);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, 10U);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, 10U));
     CHECK(wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 20U) == WB_EFFECT_VOICE_FINISHED);
     CHECK(model.screen == WB_SCREEN_TRANSCRIBING);
     return 0;
@@ -260,18 +308,20 @@ static int test_review_can_rerecord_with_new_operation_or_cancel(void)
 
     wb_model_init(&model, 7U);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, 0U);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, 0U));
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 1U);
     CHECK(wb_model_accept_transcript(&model, "first draft"));
     CHECK(model.screen == WB_SCREEN_REVIEW);
     snprintf(first_operation, sizeof(first_operation), "%s", model.operation_id);
     CHECK(wb_model_handle_input(&model, WB_INPUT_DOWN_CLICK, 20U) == WB_EFFECT_VOICE_STARTED);
-    CHECK(model.screen == WB_SCREEN_RECORDING);
+    CHECK(model.screen == WB_SCREEN_VOICE_PREPARING);
     CHECK(model.transcript[0] == '\0');
     CHECK(strcmp(first_operation, model.operation_id) != 0);
     CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 21U) == WB_EFFECT_VOICE_CANCELLED);
     CHECK(model.screen == WB_SCREEN_PRIVACY_COVER);
 
     (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, 30U);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, 30U));
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 31U);
     CHECK(wb_model_accept_transcript(&model, "cancel me"));
     CHECK(wb_model_handle_input(&model, WB_INPUT_OK_LONG, 32U) == WB_EFFECT_VOICE_CANCELLED);
@@ -291,6 +341,7 @@ static int test_review_submits_once_with_stable_action(void)
     (void)wb_model_apply_snapshot(&model, &snapshot);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 0U);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 10U);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, 10U));
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 20U);
     CHECK(wb_model_accept_transcript(&model, "Ship the concise reply"));
     snprintf(operation_id, sizeof(operation_id), "%s", model.operation_id);
@@ -368,6 +419,7 @@ static int test_invalid_utf8_transcripts_are_rejected(void)
 
     wb_model_init(&model, 1U);
     (void)wb_model_handle_input(&model, WB_INPUT_OK_LONG, 0U);
+    CHECK(wb_model_begin_recording(&model, model.operation_id, 0U));
     (void)wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 1U);
     CHECK(!wb_model_accept_transcript(&model, invalid_lead));
     CHECK(!wb_model_accept_transcript(&model, truncated));
@@ -405,15 +457,19 @@ static int test_snapshot_fixed_arrays_are_sanitized_before_cursor_compare(void)
     return 0;
 }
 
-static void prepare_submitting_reply(wb_model_t *model, const wb_snapshot_t *snapshot)
+static bool prepare_submitting_reply(wb_model_t *model, const wb_snapshot_t *snapshot)
 {
     wb_model_init(model, 11U);
     (void)wb_model_apply_snapshot(model, snapshot);
     (void)wb_model_handle_input(model, WB_INPUT_OK_CLICK, 0U);
     (void)wb_model_handle_input(model, WB_INPUT_OK_CLICK, 1U);
+    if (!wb_model_begin_recording(model, model->operation_id, 1U)) {
+        return false;
+    }
     (void)wb_model_handle_input(model, WB_INPUT_OK_CLICK, 2U);
-    (void)wb_model_accept_transcript(model, "confirmed text");
-    (void)wb_model_handle_input(model, WB_INPUT_OK_CLICK, 3U);
+    return wb_model_accept_transcript(model, "confirmed text") &&
+           wb_model_handle_input(model, WB_INPUT_OK_CLICK, 3U) ==
+               WB_EFFECT_SUBMIT_REQUESTED;
 }
 
 static int test_success_result_is_bounded_and_returns_to_context(void)
@@ -424,7 +480,7 @@ static int test_success_result_is_bounded_and_returns_to_context(void)
 
     memset(receipt, 'r', sizeof(receipt) - 1U);
     receipt[sizeof(receipt) - 1U] = '\0';
-    prepare_submitting_reply(&model, &snapshot);
+    CHECK(prepare_submitting_reply(&model, &snapshot));
     CHECK(wb_model_complete_action(&model, true, receipt, false));
     CHECK(model.screen == WB_SCREEN_RESULT);
     CHECK(!model.submit_locked);
@@ -445,7 +501,7 @@ static int test_failure_requires_explicit_retry_with_same_operation_id(void)
 
     memset(error_code, 'e', sizeof(error_code) - 1U);
     error_code[sizeof(error_code) - 1U] = '\0';
-    prepare_submitting_reply(&model, &snapshot);
+    CHECK(prepare_submitting_reply(&model, &snapshot));
     snprintf(operation_id, sizeof(operation_id), "%s", model.operation_id);
     CHECK(wb_model_complete_action(&model, false, error_code, true));
     CHECK(model.screen == WB_SCREEN_ERROR);
@@ -457,7 +513,7 @@ static int test_failure_requires_explicit_retry_with_same_operation_id(void)
     CHECK(wb_model_handle_input(&model, WB_INPUT_OK_CLICK, 4U) == WB_EFFECT_NONE);
     CHECK(model.screen == WB_SCREEN_INBOX);
 
-    prepare_submitting_reply(&model, &snapshot);
+    CHECK(prepare_submitting_reply(&model, &snapshot));
     snprintf(operation_id, sizeof(operation_id), "%s", model.operation_id);
     CHECK(wb_model_complete_action(&model, false, "TIMEOUT", true));
     CHECK(wb_model_handle_input(&model, WB_INPUT_DOWN_CLICK, 5U) ==
@@ -472,7 +528,7 @@ static int test_nonretryable_failure_and_long_press_only_return(void)
     wb_model_t model;
     wb_snapshot_t snapshot = make_snapshot("cursor-1");
 
-    prepare_submitting_reply(&model, &snapshot);
+    CHECK(prepare_submitting_reply(&model, &snapshot));
     CHECK(wb_model_complete_action(&model, false, "AUTH", false));
     CHECK(!model.retryable);
     CHECK(wb_model_handle_input(&model, WB_INPUT_DOWN_CLICK, 4U) == WB_EFFECT_NONE);
@@ -526,6 +582,8 @@ int main(void)
     RUN_TEST(test_inbox_selection_starts_reply_for_focused_message);
     RUN_TEST(test_task_detail_starts_followup_for_focused_task);
     RUN_TEST(test_output_selection_opens_detail_without_voice);
+    RUN_TEST(test_recording_clock_starts_only_after_matching_audio_ready);
+    RUN_TEST(test_preparing_input_is_ordered_before_audio_arm);
     RUN_TEST(test_recording_stops_early_or_at_five_seconds_across_wrap);
     RUN_TEST(test_review_can_rerecord_with_new_operation_or_cancel);
     RUN_TEST(test_review_submits_once_with_stable_action);

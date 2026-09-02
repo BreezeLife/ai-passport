@@ -1,0 +1,85 @@
+menu "WorkBuddy AI Passport"
+
+config WB_DEMO_MODE
+    bool "Use deterministic offline demo data"
+    default y
+    help
+        Build a credential-free demo that exercises the same screens and state
+        machine without starting Wi-Fi. Disable this only after configuring the
+        gateway and Wi-Fi values below in the untracked sdkconfig file.
+
+config WB_WIFI_SSID
+    string "Wi-Fi SSID"
+    default ""
+    depends on !WB_DEMO_MODE
+    help
+        Stored in the local sdkconfig file. Do not add a real SSID to
+        sdkconfig.defaults or commit sdkconfig.
+
+config WB_WIFI_PASSWORD
+    string "Wi-Fi password"
+    default ""
+    depends on !WB_DEMO_MODE
+    help
+        Stored in the local sdkconfig file. It is never logged by the firmware.
+
+config WB_GATEWAY_URL
+    string "WorkBuddy gateway base URL"
+    default ""
+    depends on !WB_DEMO_MODE
+    help
+        Base URL for the versioned device gateway, without a trailing slash.
+        Live deployments should use an HTTPS URL whose certificate chains to
+        the ESP-IDF certificate bundle.
+
+config WB_DEVICE_TOKEN
+    string "Revocable gateway device token"
+    default ""
+    depends on !WB_DEMO_MODE
+    help
+        A gateway-scoped token, not a Tencent WorkBuddy OAuth token. WorkBuddy
+        client secrets, refresh tokens, access tokens, and ACP tickets must
+        remain on the gateway.
+
+config WB_ALLOW_INSECURE_HTTP
+    bool "Allow plain HTTP for an isolated development LAN"
+    default n
+    depends on !WB_DEMO_MODE
+    help
+        Development only. The transport rejects http:// gateway URLs unless
+        this option is explicitly enabled in the untracked sdkconfig.
+
+config WB_POLL_INTERVAL_SECONDS
+    int "Snapshot polling interval (seconds)"
+    range 10 600
+    default 30
+    help
+        Background polls are coalesced. User-triggered synchronization can run
+        sooner, but mutations and audio uploads are never overwritten.
+
+config WB_CONNECT_TIMEOUT_MS
+    int "Gateway connect timeout (milliseconds)"
+    range 1000 30000
+    default 5000
+
+config WB_HTTP_TIMEOUT_MS
+    int "Gateway request timeout (milliseconds)"
+    range 3000 60000
+    default 15000
+
+config WB_SNTP_SERVER
+    string "Time server used before HTTPS"
+    default "pool.ntp.org"
+    depends on !WB_DEMO_MODE
+    help
+        HTTPS certificate validity dates are checked only after this SNTP
+        source establishes a plausible system clock. Plain-HTTP development
+        builds do not wait for SNTP.
+
+config WB_TIME_SYNC_TIMEOUT_MS
+    int "Time synchronization attempt timeout (milliseconds)"
+    range 3000 30000
+    default 10000
+    depends on !WB_DEMO_MODE
+
+endmenu

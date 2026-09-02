@@ -20,5 +20,9 @@ esp_err_t bsp_audio_set_format(uint32_t hz, uint8_t bits, uint8_t ch);
 esp_err_t bsp_audio_write(const void *pcm, size_t bytes);
 esp_err_t bsp_audio_read(void *pcm, size_t bytes);
 
+// 重启 RX 引擎并丢弃调用前驱动可见的排队样本；不会擦除 DMA 内存或关闭 codec。
+// 只能在没有并发 bsp_audio_read() 时调用；行为固定于本项目使用的 ESP-IDF 5.5.3。
+esp_err_t bsp_audio_flush_input(void);
+
 // 输出音量 0..100(%)。
 void bsp_audio_set_volume(uint8_t percent);

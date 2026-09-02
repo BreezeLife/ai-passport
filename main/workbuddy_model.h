@@ -10,6 +10,7 @@ typedef enum {
     WB_SCREEN_TASK_DETAIL,
     WB_SCREEN_OUTPUT_DETAIL,
     WB_SCREEN_NAVIGATION,
+    WB_SCREEN_VOICE_PREPARING,
     WB_SCREEN_RECORDING,
     WB_SCREEN_TRANSCRIBING,
     WB_SCREEN_REVIEW,
@@ -80,6 +81,9 @@ typedef struct {
 void wb_model_init(wb_model_t *model, uint32_t operation_nonce);
 bool wb_model_apply_snapshot(wb_model_t *model, const wb_snapshot_t *snapshot);
 void wb_model_mark_stale(wb_model_t *model);
+bool wb_model_begin_recording(wb_model_t *model,
+                              const char *operation_id,
+                              uint32_t now_ms);
 wb_model_effect_t wb_model_handle_input(wb_model_t *model, wb_input_t input, uint32_t now_ms);
 wb_model_effect_t wb_model_tick(wb_model_t *model, uint32_t now_ms);
 bool wb_model_accept_transcript(wb_model_t *model, const char *transcript);

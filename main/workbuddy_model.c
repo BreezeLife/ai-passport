@@ -151,7 +151,8 @@ static wb_model_effect_t start_voice(wb_model_t *model,
 {
     model->voice_context = context;
     model->return_screen = return_screen;
-    model->recording_started_ms = now_ms;
+    (void)now_ms;
+    model->recording_started_ms = 0U;
     model->transcript[0] = '\0';
     model->receipt_id[0] = '\0';
     model->error_code[0] = '\0';
@@ -159,7 +160,7 @@ static wb_model_effect_t start_voice(wb_model_t *model,
     model->retryable = false;
     copy_utf8(model->target_id, sizeof(model->target_id), target_id);
     next_operation_id(model);
-    model->screen = WB_SCREEN_RECORDING;
+    model->screen = WB_SCREEN_VOICE_PREPARING;
     return WB_EFFECT_VOICE_STARTED;
 }
 
@@ -171,6 +172,7 @@ static void clear_voice(wb_model_t *model)
     model->transcript[0] = '\0';
     model->receipt_id[0] = '\0';
     model->error_code[0] = '\0';
+    model->recording_started_ms = 0U;
     model->submit_locked = false;
     model->retryable = false;
 }
@@ -313,6 +315,21 @@ void wb_model_mark_stale(wb_model_t *model)
     }
 }
 
+bool wb_model_begin_recording(wb_model_t *model,
+                              const char *operation_id,
+                              uint32_t now_ms)
+{
+    if (model == NULL || operation_id == NULL ||
+        model->screen != WB_SCREEN_VOICE_PREPARING ||
+        model->voice_context == WB_VOICE_NONE ||
+        strcmp(model->operation_id, operation_id) != 0) {
+        return false;
+    }
+    model->recording_started_ms = now_ms;
+    model->screen = WB_SCREEN_RECORDING;
+    return true;
+}
+
 wb_model_effect_t wb_model_handle_input(wb_model_t *model,
                                         wb_input_t input,
                                         uint32_t now_ms)
@@ -323,6 +340,15 @@ wb_model_effect_t wb_model_handle_input(wb_model_t *model,
 
     if (model->screen == WB_SCREEN_NAVIGATION) {
         return handle_navigation(model, input, now_ms);
+    }
+
+    if (model->screen == WB_SCREEN_VOICE_PREPARING) {
+        if (input == WB_INPUT_OK_LONG) {
+            model->screen = model->return_screen;
+            clear_voice(model);
+            return WB_EFFECT_VOICE_CANCELLED;
+        }
+        return WB_EFFECT_NONE;
     }
 
     if (model->screen == WB_SCREEN_RECORDING) {

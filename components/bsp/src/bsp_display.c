@@ -139,6 +139,13 @@ esp_lcd_panel_handle_t bsp_display_panel(void) { return s_panel; }
 
 esp_lcd_panel_io_handle_t bsp_display_io(void) { return s_io; }
 
+esp_err_t bsp_display_wait_idle(void) {
+    if (!s_io) return ESP_ERR_INVALID_STATE;
+    // tx_param is synchronous and first drains queued tx_color operations.
+    // -1 / NULL / 0 requests no additional command or parameter transfer.
+    return esp_lcd_panel_io_tx_param(s_io, -1, NULL, 0);
+}
+
 void bsp_display_backlight(uint8_t percent) {
     if (!s_bl_ready) return;
     if (percent > 100) percent = 100;

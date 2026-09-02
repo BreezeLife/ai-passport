@@ -4,3 +4,9 @@ sdkconfig.old
 managed_components/
 .vscode/
 .idea/
+.env
+.env.*
+!.env.example
+.workbuddy-gateway-state.json
+.workbuddy-gateway-state.json.bak
+.workbuddy-gateway-state.json.*.tmp

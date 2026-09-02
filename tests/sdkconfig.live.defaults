@@ -1,0 +1,6 @@
+# Compile-only live profile. Values are inert placeholders, never deployable secrets.
+CONFIG_WB_DEMO_MODE=n
+CONFIG_WB_WIFI_SSID="compile-test-network"
+CONFIG_WB_WIFI_PASSWORD="compile-test-password"
+CONFIG_WB_GATEWAY_URL="https://gateway.invalid"
+CONFIG_WB_DEVICE_TOKEN="compile-test-device-token"

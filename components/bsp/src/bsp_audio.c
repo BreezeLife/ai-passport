@@ -165,6 +165,23 @@ esp_err_t bsp_audio_read(void *pcm, size_t bytes) {
     return esp_codec_dev_read(s_dev, pcm, bytes) == 0 ? ESP_OK : ESP_FAIL;
 }
 
+esp_err_t bsp_audio_flush_input(void) {
+    if (!s_dev || !s_rx || !s_opened) return ESP_ERR_INVALID_STATE;
+
+    // ESP-IDF resets the RX message queue when the channel is enabled. Cycling
+    // only RX therefore discards samples collected while the upload/UI prepared.
+    esp_err_t e = i2s_channel_disable(s_rx);
+    if (e != ESP_OK) {
+        ESP_LOGE(TAG, "i2s rx flush disable failed: %s", esp_err_to_name(e));
+        return e;
+    }
+    e = i2s_channel_enable(s_rx);
+    if (e != ESP_OK) {
+        ESP_LOGE(TAG, "i2s rx flush enable failed: %s", esp_err_to_name(e));
+    }
+    return e;
+}
+
 void bsp_audio_set_volume(uint8_t percent) {
     if (s_dev) esp_codec_dev_set_out_vol(s_dev, percent);
 }
