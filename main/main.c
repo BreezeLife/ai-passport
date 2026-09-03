@@ -31,7 +31,6 @@ void app_main(void)
                  BSP_LCD_MOSI, BSP_LCD_SCLK, BSP_LCD_CS, BSP_LCD_DC, BSP_LCD_BL);
         return;
     }
-    bsp_display_backlight(80U);
 
     bool battery_available = bsp_battery_init() == ESP_OK;
     if (!battery_available) {
@@ -43,12 +42,22 @@ void app_main(void)
         return;
     }
     esp_err_t app_error = wb_app_start(battery_available);
+    esp_err_t first_frame_error = ESP_OK;
+    if (app_error == ESP_OK) {
+        first_frame_error = bsp_lvgl_refresh_now();
+    }
     bsp_lvgl_unlock();
     if (app_error != ESP_OK) {
         ESP_LOGE(TAG, "WorkBuddy application startup failed: %s",
                  esp_err_to_name(app_error));
         return;
     }
+    if (first_frame_error != ESP_OK) {
+        ESP_LOGE(TAG, "initial display refresh failed: %s",
+                 esp_err_to_name(first_frame_error));
+        return;
+    }
+    bsp_display_backlight(80U);
 
     esp_err_t button_error = bsp_button_init(wb_app_button_callback, NULL);
     if (button_error != ESP_OK) {

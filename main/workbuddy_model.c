@@ -275,36 +275,36 @@ void wb_model_init(wb_model_t *model, uint32_t operation_nonce)
 bool wb_model_apply_snapshot(wb_model_t *model, const wb_snapshot_t *snapshot)
 {
     bool cursor_advanced;
-    wb_snapshot_t sanitized;
+    wb_snapshot_t *sanitized;
 
     if (model == NULL || snapshot == NULL) {
         return false;
     }
 
-    sanitized = *snapshot;
-    if (sanitized.message_count > WB_MAX_ITEMS) {
-        sanitized.message_count = WB_MAX_ITEMS;
+    model->snapshot = *snapshot;
+    sanitized = &model->snapshot;
+    if (sanitized->message_count > WB_MAX_ITEMS) {
+        sanitized->message_count = WB_MAX_ITEMS;
     }
-    if (sanitized.task_count > WB_MAX_ITEMS) {
-        sanitized.task_count = WB_MAX_ITEMS;
+    if (sanitized->task_count > WB_MAX_ITEMS) {
+        sanitized->task_count = WB_MAX_ITEMS;
     }
-    if (sanitized.output_count > WB_MAX_ITEMS) {
-        sanitized.output_count = WB_MAX_ITEMS;
+    if (sanitized->output_count > WB_MAX_ITEMS) {
+        sanitized->output_count = WB_MAX_ITEMS;
     }
-    terminate_snapshot_strings(&sanitized);
+    terminate_snapshot_strings(sanitized);
 
-    cursor_advanced = sanitized.cursor[0] != '\0' &&
-        (!model->cursor_seen || strcmp(model->cursor, sanitized.cursor) != 0);
-    model->snapshot = sanitized;
+    cursor_advanced = sanitized->cursor[0] != '\0' &&
+        (!model->cursor_seen || strcmp(model->cursor, sanitized->cursor) != 0);
 
-    if (sanitized.cursor[0] != '\0') {
-        memcpy(model->cursor, sanitized.cursor, sizeof(model->cursor));
+    if (sanitized->cursor[0] != '\0') {
+        memcpy(model->cursor, sanitized->cursor, sizeof(model->cursor));
         model->cursor_seen = true;
     }
     model->inbox_focus = clamp_focus(model->inbox_focus, model->snapshot.message_count);
     model->task_focus = clamp_focus(model->task_focus, model->snapshot.task_count);
     model->output_focus = clamp_focus(model->output_focus, model->snapshot.output_count);
-    model->stale = !sanitized.fresh;
+    model->stale = !sanitized->fresh;
     return cursor_advanced;
 }
 

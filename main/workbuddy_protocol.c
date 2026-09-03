@@ -638,7 +638,7 @@ wb_protocol_result_t wb_protocol_parse_snapshot(const char *json,
 {
     const char *parse_end = NULL;
     cJSON *root;
-    wb_snapshot_t parsed = { 0 };
+    wb_snapshot_t *parsed;
     wb_protocol_result_t result;
 
     if (json == NULL || snapshot == NULL || json_length == 0U) {
@@ -668,11 +668,19 @@ wb_protocol_result_t wb_protocol_parse_snapshot(const char *json,
         return WB_PROTOCOL_ERR_INVALID_JSON;
     }
 
-    result = snapshot_from_dom(root, &parsed);
+    parsed = tracked_allocate(sizeof(*parsed));
+    if (parsed == NULL) {
+        cJSON_Delete(root);
+        return WB_PROTOCOL_ERR_NO_MEMORY;
+    }
+    memset(parsed, 0, sizeof(*parsed));
+
+    result = snapshot_from_dom(root, parsed);
     cJSON_Delete(root);
     if (result == WB_PROTOCOL_OK) {
-        *snapshot = parsed;
+        *snapshot = *parsed;
     }
+    tracked_deallocate(parsed);
     return result;
 }
 

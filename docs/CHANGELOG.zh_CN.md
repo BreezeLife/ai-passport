@@ -6,7 +6,9 @@
 
 ## Unreleased
 
-- 新增 WorkBuddy AI Passport V1 应用：包含无需凭据的演示模式、有明确容量上限的设备网关、语音转写确认、消息与云端任务视图、任务创建、产出物摘要和可再分发简体中文字库。Live 模式通过服务端 OAuth 边界调用腾讯 WorkBuddy `/openapi/v2`；收到与 operation 匹配的音频就绪确认后，先完成红色录音页像素传输并丢弃已排队 RX 样本，再保留最多五秒音频；所有音频控制都绑定 operation ID。HTTPS 先用 SNTP 完成本次启动校时，再校验证书日期。固件门同时覆盖 Demo 与 Live 编译配置及其安全关键生成项。ACP 任务追问仍明确不支持，本次不宣称完成真机验收。应用与 Recovery 分区契约保持不变。
+- 修复 WorkBuddy 启动白屏与循环重启：不再把完整的 11 KB snapshot 临时对象放在 main、network 或 LVGL task 栈上；main 启动栈提升为 8 KB，以承载同步首帧绘制；LVGL 内存池提升为 48 KB；背光仅在首帧传输完成后开启。主机门禁新增单函数栈帧、启动栈、LVGL 内存与背光顺序检查。仅刷写应用分区并保留 NVS、`cardid` 与 Recovery 后，ESP32-C3 真机在 835 毫秒到达 `WorkBuddy ready`，随后连续观察串口 35 秒，无 panic 或复位。
+
+- 新增 WorkBuddy AI Passport V1 应用：包含无需凭据的演示模式、有明确容量上限的设备网关、语音转写确认、消息与云端任务视图、任务创建、产出物摘要和可再分发简体中文字库。Live 模式通过服务端 OAuth 边界调用腾讯 WorkBuddy `/openapi/v2`；收到与 operation 匹配的音频就绪确认后，先完成红色录音页像素传输并丢弃已排队 RX 样本，再保留最多五秒音频；所有音频控制都绑定 operation ID。HTTPS 先用 SNTP 完成本次启动校时，再校验证书日期。固件门同时覆盖 Demo 与 Live 编译配置及其安全关键生成项。ACP 任务追问仍明确不支持。真机验收目前仅覆盖上述启动稳定性；Live 服务与其余交互路径仍未验证。应用与 Recovery 分区契约保持不变。
 
 - 加入厂家为优特利 520mAh 电芯生成的 80 字节 CW2017 profile，并实现内容与更新标志检查、写入后校验、规定的重启时序以及有上限的 SOC 就绪等待。
 

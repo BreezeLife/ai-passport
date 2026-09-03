@@ -37,3 +37,7 @@ struct _lv_display_t *bsp_lvgl_init(void);
 // LVGL 非线程安全:在【非 LVGL 任务】里操作任何 lv_* 对象前后必须加解锁。
 bool bsp_lvgl_lock(int timeout_ms);
 void bsp_lvgl_unlock(void);
+
+// 在已持有 LVGL 锁时立即生成并等待当前画面传输完成。
+// 首帧完成后再开背光，可避免用户看到未初始化的白色显存。
+esp_err_t bsp_lvgl_refresh_now(void);

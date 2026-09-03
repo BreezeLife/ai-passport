@@ -46,3 +46,9 @@ lv_display_t *bsp_lvgl_init(void) {
 
 bool bsp_lvgl_lock(int timeout_ms) { return lvgl_port_lock(timeout_ms); }
 void bsp_lvgl_unlock(void)         { lvgl_port_unlock(); }
+
+esp_err_t bsp_lvgl_refresh_now(void) {
+    if (!s_disp) return ESP_ERR_INVALID_STATE;
+    lv_refr_now(s_disp);
+    return bsp_display_wait_idle();
+}
