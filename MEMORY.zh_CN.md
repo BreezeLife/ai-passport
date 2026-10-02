@@ -19,3 +19,5 @@
 - 完整40种合并SHA-256：`4e8bc60b849cc95b3b89b3a00d351f26674d1257ea8a2844e606e51b33fe8ded`；应用2,888,960字节，合并6,715,166字节。匹配的schema-2 BIN/ELF/MAP/音频归档已复验。Pillow须与记录的11.3.0一致，可用DINO_ASSET_PYTHON独立选择素材Python；详见 `docs/dinobook40-validation.zh_CN.md`。未写设备。
 
 - 2026-10-02 GitHub 同步：旧 `/mnt/data/Dino-Passport-source-preview-v0.1.0.zip` 在本机不可取得，引用对话也无可取附件。保留现有40种实现，不声称合入8种旧 ZIP。保留 Gitee `origin`；现有账号对官方上游只读，使用其既有 GitHub fork `BreezeLife/ai-passport`，远端名为 `fork`。本地 Tingting 音频不进入公开 Git，源码支持明确的无语音镜像配置。所有原音频及同级工作原样保留。
+
+- GitHub 源码已同步：`feature/dino-passport` 上的 [93e9b166536fa64e3ca2aeec509259370ff89d2b](https://github.com/BreezeLife/ai-passport/commit/93e9b166536fa64e3ca2aeec509259370ff89d2b)。HTTPS 连接超时，既有 SSH 密钥认证为 BreezeLife 后完成非强制推送；仓库本地 `fork` 取回 URL 仍为 HTTPS，推送使用 `git@github.com:BreezeLife/ai-passport.git`。未重新登录、未改全局凭据、未发布固件、未刷机。

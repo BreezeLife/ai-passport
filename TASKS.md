@@ -19,12 +19,14 @@ English · [简体中文](TASKS.zh_CN.md)
 - [x] Complete forty-species LVGL checks and the full firmware gate.
 - [x] Complete the checked source/firmware/preview delivery package.
 
-Exact forty-species firmware: `4e8bc60b849cc95b3b89b3a00d351f26674d1257ea8a2844e606e51b33fe8ded`; see [evidence](docs/dinobook40-validation.md). After delivery, the remaining step is separately authorized [device acceptance](docs/dinobook.md). No device write has occurred. GitHub synchronization is in progress under the subsequent explicit authorization.
+Exact forty-species firmware: `4e8bc60b849cc95b3b89b3a00d351f26674d1257ea8a2844e606e51b33fe8ded`; see [evidence](docs/dinobook40-validation.md). After delivery, the remaining step is separately authorized [device acceptance](docs/dinobook.md). No device write has occurred. GitHub synchronization completed under the subsequent explicit authorization.
 
 The forty-species implementation is complete under [the plan](docs/dinobook40-plan.md). Historical eight-species archive `ece8d04aa6425a3a48a27fd1cfee5e6000c59dcf130bcf51f5755be13d03e8de` remains preserved.
 
 - [x] Resolve existing branch/baseline, source-package availability and authenticated GitHub fork.
 - [x] Preserve forty-species work and all local narration files.
-- [ ] Validate public source without redistributing Apple narration.
-- [ ] Commit and push `feature/dino-passport`; verify the remote SHA.
+- [x] Validate public source without redistributing Apple narration.
+- [x] Commit and push `feature/dino-passport`; verify the remote SHA.
 - [ ] Obtain redistributable narration before publishing audio-enabled artifacts.
+
+GitHub source commit: [93e9b166536fa64e3ca2aeec509259370ff89d2b](https://github.com/BreezeLife/ai-passport/commit/93e9b166536fa64e3ca2aeec509259370ff89d2b), verified on `fork/feature/dino-passport`. The fork is `BreezeLife/ai-passport`; Gitee origin is preserved. Existing keyring/SSH authentication was reused. Physical tests and redistributable narration remain pending.

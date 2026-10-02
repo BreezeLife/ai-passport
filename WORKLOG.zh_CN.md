@@ -43,3 +43,11 @@ Build: PASS — 应用2,888,960字节，合并6,715,166字节；SHA-256 `4e8bc60
 发布适配前重新执行完整门禁，ESP-IDF 5.5.3、Python 3.9、Pillow 11.3.0 通过。本地带语音合并镜像 SHA-256 为 `4aa6bb6b6ebcbb534071f77473236406d8bcd0bf97c0759fbfa31d9070d9bf4f`。独立真实 LVGL 通过19,608 UI状态、8,000连续帧、9,000压力渲染及1,675,740字形检查；缺字/裁切为零，UI内存稳定。未做真机测试或写入。
 
 审查确认 Apple 系统语音的公开发布限制。保留所有本地录音和旧归档，录音不进入公开 Git；加入可构建、明确报告缺少语音的公开源码配置。同步两份资料 README 的40种说明。公开配置验证与 Git 同步待完成。
+
+## 2026-10-02 — GitHub 源码推送并复核
+
+将已有40种实现和公开发布适配提交为 [93e9b166536fa64e3ca2aeec509259370ff89d2b](https://github.com/BreezeLife/ai-passport/commit/93e9b166536fa64e3ca2aeec509259370ff89d2b)；非强制推送到 `BreezeLife/ai-passport` 的 `feature/dino-passport`，独立复核远端 SHA。两次 HTTPS 连接超时后，复用既有 SSH 认证完成推送。Gitee origin 保留，分支跟踪 GitHub fork；未重新登录、未改全局认证配置。
+
+公开源码 Build: PASS — ESP-IDF 5.5.3 完整门禁、合并镜像及匹配归档通过。Host tests: PASS — 最终公开静态门禁和真实 LVGL 检查。公开源码语音资源检查: NOT RUN，依据 Apple 许可有意排除；完整本地带语音资源另已通过，287个原二进制文件保持不变。Device tests: NOT RUN；未打开端口或刷机。未上传固件、ELF/MAP、录音或历史交付 ZIP。
+
+详见 [GitHub 证据](docs/dinobook-github.zh_CN.md)。屏幕/帧时序、读音、按键、存档耐久、整机内存、功耗和 Recovery 仍待真机验收，公开带语音制品前需取得可再分发录音。

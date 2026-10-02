@@ -43,3 +43,11 @@ Located the existing forty-species working tree on `feature/dino-passport` at of
 Before publication adaptation, a fresh complete gate passed with ESP-IDF 5.5.3, Python 3.9 and Pillow 11.3.0. The private narrated merged image SHA-256 is `4aa6bb6b6ebcbb534071f77473236406d8bcd0bf97c0759fbfa31d9070d9bf4f`. Independent real-LVGL checks passed 19,608 UI states, 8,000 continuous frames, 9,000 stress renders and 1,675,740 glyph checks, with zero layout/glyph failures and stable UI memory. No device tests or writes.
 
 Review identified Apple system-voice publication restrictions. Keep all local recordings and old archives, exclude the recordings from public Git, and add a buildable public source profile with explicit absent-audio reporting. Align the two catalog READMEs with the current forty-species data. Public-profile validation and Git synchronization are pending.
+
+## 2026-10-02 — GitHub source pushed and verified
+
+Committed the existing forty-species implementation and publication adaptation as [93e9b166536fa64e3ca2aeec509259370ff89d2b](https://github.com/BreezeLife/ai-passport/commit/93e9b166536fa64e3ca2aeec509259370ff89d2b). The non-force push to `BreezeLife/ai-passport` created `feature/dino-passport`; the remote SHA was independently checked. Existing SSH authentication resolved two HTTPS connection timeouts. Gitee origin remains intact and the branch tracks the GitHub fork. No re-login or global authentication configuration changes.
+
+Public source Build: PASS — complete ESP-IDF 5.5.3 gate, merged image and matching archive verified. Host tests: PASS — final public static gate plus real-LVGL checks. Audio asset checks: NOT RUN for public source, explicitly omitted under Apple license restrictions. Complete local narrated assets had passed separately; all 287 original binaries remain unchanged. Device tests: NOT RUN; no port opened or flashing. No firmware/ELF/MAP, recording or historical delivery ZIP was uploaded.
+
+See [GitHub evidence](docs/dinobook-github.md). Remaining physical display/timing, narration, controls, save durability, total memory, power and Recovery checks are recorded there. Public narrated artifacts need redistributable audio.

@@ -19,12 +19,14 @@
 - [x] 完成40种LVGL检查和完整固件门禁。
 - [x] 完成经核验的源码/固件/预览交付包。
 
-完整40种固件：`4e8bc60b849cc95b3b89b3a00d351f26674d1257ea8a2844e606e51b33fe8ded`，详见[证据](docs/dinobook40-validation.zh_CN.md)。交付后剩余步骤为单独授权的[真机验收](docs/dinobook.zh_CN.md)。未写设备；后续明确授权的 GitHub 同步正在进行。
+完整40种固件：`4e8bc60b849cc95b3b89b3a00d351f26674d1257ea8a2844e606e51b33fe8ded`，详见[证据](docs/dinobook40-validation.zh_CN.md)。交付后剩余步骤为单独授权的[真机验收](docs/dinobook.zh_CN.md)。未写设备；后续明确授权的 GitHub 同步已完成。
 
 40种实现已完成，见[计划](docs/dinobook40-plan.zh_CN.md)。旧8种归档 `ece8d04aa6425a3a48a27fd1cfee5e6000c59dcf130bcf51f5755be13d03e8de` 保留为历史。
 
 - [x] 确认现有分支、基线、旧包可用性及已认证 GitHub fork。
 - [x] 保留完整40种工作和全部本地语音文件。
-- [ ] 验证不再分发 Apple 语音的公开源码。
-- [ ] 提交并推送 `feature/dino-passport`，复核远端 SHA。
+- [x] 验证不再分发 Apple 语音的公开源码。
+- [x] 提交并推送 `feature/dino-passport`，复核远端 SHA。
 - [ ] 公开带音频制品前取得可再分发语音。
+
+GitHub 源码提交：[93e9b166536fa64e3ca2aeec509259370ff89d2b](https://github.com/BreezeLife/ai-passport/commit/93e9b166536fa64e3ca2aeec509259370ff89d2b)，已在 `fork/feature/dino-passport` 复核。目标为 `BreezeLife/ai-passport`，Gitee origin 保留；复用既有钥匙串/SSH 认证。真机测试和可再分发语音尚待完成。
