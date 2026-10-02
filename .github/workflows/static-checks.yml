@@ -26,5 +26,11 @@ jobs:
           actionlint_bin="$(./tools/install-actionlint.sh "$RUNNER_TEMP/actionlint")"
           echo "ACTIONLINT_BIN=${actionlint_bin}" >> "$GITHUB_ENV"
 
+      - name: Prepare dinosaur asset checks
+        run: |
+          python3 -m venv "$RUNNER_TEMP/dino-assets"
+          "$RUNNER_TEMP/dino-assets/bin/python" -m pip install -r tools/requirements-dino-assets.txt
+          echo "DINO_ASSET_PYTHON=$RUNNER_TEMP/dino-assets/bin/python" >> "$GITHUB_ENV"
+
       - name: Validate repository and run host tests
         run: ./tools/validate.sh --static

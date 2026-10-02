@@ -1,0 +1,122 @@
+[
+  {
+    "index": 0,
+    "id": "tyrannosaurus",
+    "original": "originals/tyrannosaurus.png",
+    "original_size": [
+      1618,
+      972
+    ],
+    "original_sha256": "a1ea1377d7433ca8557d6f99ab262aa6d826a28ed6f84a773e424fc7e6c49d4d",
+    "preview": "tyrannosaurus-216x130.png",
+    "preview_sha256": "60beb9842939e5a9fe82dd196822ad6bdde3eafa1660b0c595f22e1990863a3a",
+    "rgb565": "tyrannosaurus.rgb565",
+    "rgb565_sha256": "2d75837d6b751d6cd1dc1e79c8bca468b2343492d0cd32c7dd14acacb37e20a1",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 1,
+    "id": "triceratops",
+    "original": "originals/triceratops.png",
+    "original_size": [
+      1618,
+      972
+    ],
+    "original_sha256": "c06905c987b0c51dc9adc6d482df567656d9c1d3109d1f9b059dc83f6faef72d",
+    "preview": "triceratops-216x130.png",
+    "preview_sha256": "12c086f81abe04c027c50c7aec524b2e68da0743bb75c948cb489bc4c373ff7a",
+    "rgb565": "triceratops.rgb565",
+    "rgb565_sha256": "46132c3159f3e55c1e5b614b9277f7b7e877754fe0c49a7da60cdf15e37cec36",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 2,
+    "id": "stegosaurus",
+    "original": "originals/stegosaurus.png",
+    "original_size": [
+      1617,
+      972
+    ],
+    "original_sha256": "f4cc6248bd19a8f01f1ae862c4608f1d7644b6e7ce1f670199183269b8687a74",
+    "preview": "stegosaurus-216x130.png",
+    "preview_sha256": "a981b28249e1f09f50b7342fb62e32151c012e195926dc48c34be1c72f679b5e",
+    "rgb565": "stegosaurus.rgb565",
+    "rgb565_sha256": "d9ace1908d707141b766a500a81def659e0fe8e659360384fe96b47f22757e5b",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 3,
+    "id": "brachiosaurus",
+    "original": "originals/brachiosaurus.png",
+    "original_size": [
+      1617,
+      972
+    ],
+    "original_sha256": "b803e4187c7866208d1dfc755ca2d6e66197dea55d392474f8bc96b7a0afccbd",
+    "preview": "brachiosaurus-216x130.png",
+    "preview_sha256": "e5439d836f21e679073659d3e6dcbf026ae62c83103a965ad9b7514047197f7d",
+    "rgb565": "brachiosaurus.rgb565",
+    "rgb565_sha256": "a17d06d512aa35ee1b9e2c834ec5dbff77cbb05c05800ef2d9d3a02b8c57aa2f",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 4,
+    "id": "diplodocus",
+    "original": "originals/diplodocus.png",
+    "original_size": [
+      1616,
+      973
+    ],
+    "original_sha256": "6623abbeb5cb82f2426cbf5ffdcfd303acf627e07b3c3849c031b2e941ac042e",
+    "preview": "diplodocus-216x130.png",
+    "preview_sha256": "d83234ce8514c0901ef342da492ad0e8836e5b09bde8c327e166c9611e081656",
+    "rgb565": "diplodocus.rgb565",
+    "rgb565_sha256": "c2ff41b6a1b12739a72e1db285d47cac03082395375daab778f5da9166527124",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 5,
+    "id": "ankylosaurus",
+    "original": "originals/ankylosaurus.png",
+    "original_size": [
+      1616,
+      973
+    ],
+    "original_sha256": "aedab8648b708f9247c03272ed27e42e0bd303037b278f4d304c77cce8e9ef07",
+    "preview": "ankylosaurus-216x130.png",
+    "preview_sha256": "503f4ff06380e75af5a195e289aad6469c8be8d9c1a06189f1166ee964fb5811",
+    "rgb565": "ankylosaurus.rgb565",
+    "rgb565_sha256": "7ccce0343a5abde7e5c392d49a45c28f860fe4839863a0cbbfc7180f39b3dbec",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 6,
+    "id": "spinosaurus",
+    "original": "originals/spinosaurus.png",
+    "original_size": [
+      1616,
+      973
+    ],
+    "original_sha256": "07d4c9ed00f08972b5505061767043bbc08233796af3bb8ffc27cf321860ec8f",
+    "preview": "spinosaurus-216x130.png",
+    "preview_sha256": "a76dd9d4fbfa32dd307e8e4a6824b7bf2606c8d6420139798e87c9149fe2a7fb",
+    "rgb565": "spinosaurus.rgb565",
+    "rgb565_sha256": "ab573df135055c66bc5036860a7ed0c3ac16d81dba801c73bc1dda11b4dcf119",
+    "rgb565_bytes": 56160
+  },
+  {
+    "index": 7,
+    "id": "velociraptor",
+    "original": "originals/velociraptor.png",
+    "original_size": [
+      1616,
+      973
+    ],
+    "original_sha256": "a18e57ef2b19e13168a4144ea224270a0d23c97cb16853220302dea2ffc2bafe",
+    "preview": "velociraptor-216x130.png",
+    "preview_sha256": "7b8c0f82d9da4ea7ac8158db12377c79c600fd763e3b33fa4be7d3dd1806c89c",
+    "rgb565": "velociraptor.rgb565",
+    "rgb565_sha256": "bb89103f222701981575450e72df512f6945a06659733d1bb623543873f9de5a",
+    "rgb565_bytes": 56160
+  }
+]

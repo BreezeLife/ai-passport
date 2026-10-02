@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "generated_on": "2026-10-02",
+  "generator": "Built-in image_gen.imagegen",
+  "transparent_background": false,
+  "operations_after_generation": [
+    "RGB color-mode conversion",
+    "aspect-ratio-preserving Lanczos resize",
+    "centering on 216x130 ivory canvas without cropping",
+    "little-endian RGB565 encoding"
+  ],
+  "width": 216,
+  "height": 130,
+  "stride": 432,
+  "data_size": 56160,
+  "images": [
+    {
+      "index": 0,
+      "id": "tyrannosaurus",
+      "name_en": "Tyrannosaurus rex",
+      "name_zh": "霸王龙",
+      "original": "originals/tyrannosaurus.png",
+      "preview": "tyrannosaurus-216x130.png",
+      "rgb565": "tyrannosaurus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Tyrannosaurus rex (霸王龙).\nRequired species traits: Soft moss-green body. Massive deep skull with a friendly small eye, two strong hindlegs, balancing tail; extremely SMALL short forearms, exactly TWO visible fingers on each forelimb. This is a T. rex, no horns, no sail, no plates, no feathers.\nPreferred body fill: #9EBC81."
+    },
+    {
+      "index": 1,
+      "id": "triceratops",
+      "name_en": "Triceratops",
+      "name_zh": "三角龙",
+      "original": "originals/triceratops.png",
+      "preview": "triceratops-216x130.png",
+      "rgb565": "triceratops.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Triceratops (三角龙).\nRequired species traits: Soft muted sage-turquoise body. Stocky quadruped, large bony NECK FRILL behind head, THREE HORNS: two distinct long brow horns plus one shorter nose horn. Horns and frill must be clearly visible from slightly three-quarter side view, retain clear full-body side silhouette.\nPreferred body fill: #8CB8A5."
+    },
+    {
+      "index": 2,
+      "id": "stegosaurus",
+      "name_en": "Stegosaurus",
+      "name_zh": "剑龙",
+      "original": "originals/stegosaurus.png",
+      "preview": "stegosaurus-216x130.png",
+      "rgb565": "stegosaurus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Stegosaurus (剑龙).\nRequired species traits: Soft ochre-gold body with dusty coral large bony dorsal plates. Quadruped with small low head, strongly arched back, distinctive TWO staggered rows of tall upright back PLATES; four long tail SPIKES in a clearly readable cluster on the end of its long tail. No head horns, no tail club.\nPreferred body fill: #D3B778."
+    },
+    {
+      "index": 3,
+      "id": "brachiosaurus",
+      "name_en": "Brachiosaurus",
+      "name_zh": "腕龙",
+      "original": "originals/brachiosaurus.png",
+      "preview": "brachiosaurus-216x130.png",
+      "rgb565": "brachiosaurus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Brachiosaurus (腕龙).\nRequired species traits: Soft muted blue-gray body. Long tall upward neck, small head, bulky sauropod torso; FRONT LEGS are visibly LONGER than hindlegs, giving elevated shoulders and descending back. Tail is moderate length compared with Diplodocus. Raise neck high but keep entire dinosaur within frame. No spines or plates.\nPreferred body fill: #92ADBA."
+    },
+    {
+      "index": 4,
+      "id": "diplodocus",
+      "name_en": "Diplodocus",
+      "name_zh": "梁龙",
+      "original": "originals/diplodocus.png",
+      "preview": "diplodocus-216x130.png",
+      "rgb565": "diplodocus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Diplodocus (梁龙).\nRequired species traits: Soft muted lilac-gray body. Long slender sauropod, low torso, delicate small head; long slim neck held at a LOW almost HORIZONTAL angle, and VERY LONG thin WHIP tail continuing behind in a graceful simple curve. Four column legs. Body slender compared with Brachiosaurus; no high vertical neck, no plates or sail.\nPreferred body fill: #B2A1B8."
+    },
+    {
+      "index": 5,
+      "id": "ankylosaurus",
+      "name_en": "Ankylosaurus",
+      "name_zh": "甲龙",
+      "original": "originals/ankylosaurus.png",
+      "preview": "ankylosaurus-216x130.png",
+      "rgb565": "ankylosaurus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Ankylosaurus (甲龙).\nRequired species traits: Soft warm earthy-brown body. Very low stocky wide quadruped, back covered by large simple rounded ARMOR SCUTES and small lateral bony spikes; low broad head; sturdy tail ending in a clearly large rounded bone TAIL CLUB. Show armor and tail club clearly. No upright stegosaur plates.\nPreferred body fill: #B99972."
+    },
+    {
+      "index": 6,
+      "id": "spinosaurus",
+      "name_en": "Spinosaurus",
+      "name_zh": "棘龙",
+      "original": "originals/spinosaurus.png",
+      "preview": "spinosaurus-216x130.png",
+      "rgb565": "spinosaurus.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Spinosaurus (棘龙).\nRequired species traits: Soft muted coral-orange body. Dinosaur with very prominent tall broad dorsal SAIL running over its back; LONG narrow crocodile-like SNOUT; small forelimbs with three fingers, strong hindlegs, long tail with moderate deep fin-like silhouette. Friendly educational silhouette, no fantasy dragon wings or horns.\nPreferred body fill: #D7A084."
+    },
+    {
+      "index": 7,
+      "id": "velociraptor",
+      "name_en": "Velociraptor",
+      "name_zh": "迅猛龙",
+      "original": "originals/velociraptor.png",
+      "preview": "velociraptor-216x130.png",
+      "rgb565": "velociraptor.rgb565",
+      "prompt": "Use case: scientific-educational.\nAsset type: one full-body dinosaur illustration for a children's offline natural-history field guide on a tiny screen.\nStyle: simple, cute, clear flat illustration; broad smooth FOREST-GREEN outlines (#214C37), flat natural-color fills, few details, readable silhouette. Friendly but anatomically recognizable, educational.\nBackdrop: perfectly plain solid warm ivory #F7F4E9; opaque background, no transparency, no floor shadows, no scenery or other objects.\nComposition: one dinosaur, full body including the entire tail and all feet; side profile facing right, centered; landscape canvas about 216:130 aspect ratio with generous 8 percent empty ivory margins; fit the whole dinosaur inside the frame. Clear readable shapes intended to be downscaled to 216 x 130 pixels.\nConstraints: exactly one dinosaur; no other dinosaurs or characters; no text, letters, numbers, labels, caption, decorative borders, sticker outline, white cutout edge, watermark, or brand. Do not crop any body part.\nSubject: Velociraptor (迅猛龙).\nRequired species traits: Soft olive-green body with subtle muted sandy FEATHERS. Small feathered theropod with a long balancing tail, narrow skull, two hindlegs, feathered wing-like forearms with claws, and a CLEAR upcurved enlarged SICKLE CLAW on the second toe of each foot. Feathers must be evident on forearms and tail, no featherless Jurassic movie raptor. Tiny-screen readable.\nPreferred body fill: #B7B584."
+    }
+  ]
+}

@@ -199,6 +199,7 @@ LICENSE                  仓库许可证
 
 | 入口 | 你可以找到 |
 | --- | --- |
+| [恐龙护照](dinobook.zh_CN.md) | 完整40种：知识、静音动作操作、存档迁移、外部音频、[精确验证](dinobook40-validation.zh_CN.md)、[计划](dinobook40-plan.zh_CN.md)及[亲子参考](dinobook-reference.zh_CN.md) |
 | [开发指南](development/README.zh_CN.md) | AI 工作流、工程规范、CI 与发布流程 |
 | [AI 技能](../skills/README.zh_CN.md) | 开发、环境准备、构建、真机测试与故障诊断 |
 | [硬件资料](hardware-design/README.zh_CN.md) | 板卡事实、接口边界、验收清单与排障 |

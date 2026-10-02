@@ -1,0 +1,1030 @@
+[
+  {
+    "id": "tyrannosaurus",
+    "name": "霸王龙",
+    "latin": "T. rex",
+    "period": "白垩纪晚期",
+    "diet": "肉食",
+    "trait": "大头 · 短前臂",
+    "facts": [
+      "霸王龙靠两条粗壮的后腿行走，前臂很短，是体型巨大的肉食恐龙。",
+      "霸王龙的下颌强而有力，牙齿能咬碎骨头，化石粪便里也发现过骨头碎片。"
+    ],
+    "spoken_facts": [
+      "霸王龙用粗壮的后腿行走，前臂却很短。",
+      "霸王龙的牙齿很强壮，能够咬碎坚硬骨头。"
+    ],
+    "question": "它用几条腿行走？",
+    "options": [
+      "两条腿",
+      "四条腿"
+    ],
+    "correct": 0,
+    "hint": "看看短前臂和粗壮的后腿。",
+    "anatomy_en": "Huge deep skull, massive jaws, tiny TWO-fingered forearms, powerful bipedal hind legs, thick balancing tail. No head horns.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/tyrannosaurus.html"
+  },
+  {
+    "id": "triceratops",
+    "name": "三角龙",
+    "latin": "Triceratops",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "三只角 · 大颈盾",
+    "facts": [
+      "三角龙头上有三只角，头后长着宽大的骨质颈盾，是一种吃植物的恐龙。",
+      "三角龙嘴前端的喙能剪断植物，后面一排排牙齿帮助切碎较硬的食物。"
+    ],
+    "spoken_facts": [
+      "三角龙头上有三只角，头后长着大颈盾。",
+      "三角龙用喙剪断植物，再用牙齿把它切碎。"
+    ],
+    "question": "它头上有几只角？",
+    "options": [
+      "两只角",
+      "三只角"
+    ],
+    "correct": 1,
+    "hint": "数数鼻子和眼睛上方的角。",
+    "anatomy_en": "Stocky quadruped, TWO long brow horns plus ONE shorter nasal horn, large solid rounded neck frill, parrot-like beak. Exactly THREE horns.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/triceratops.html"
+  },
+  {
+    "id": "stegosaurus",
+    "name": "剑龙",
+    "latin": "Stegosaurus",
+    "period": "侏罗纪晚期",
+    "diet": "植食",
+    "trait": "两排背板 · 尾刺",
+    "facts": [
+      "剑龙背上竖着两排骨板，尾巴末端长着尖刺，可能用来抵御其他动物。",
+      "剑龙吃植物，脑袋比身体小得多；宽大的背板有什么作用，科学家还在研究。"
+    ],
+    "spoken_facts": [
+      "剑龙的背上有两排骨板，尾巴还有尖刺。",
+      "剑龙主要吃植物，背板的作用还在研究。"
+    ],
+    "question": "它背上最显眼的是什么？",
+    "options": [
+      "两排骨板",
+      "一对翅膀"
+    ],
+    "correct": 0,
+    "hint": "沿着背部找一片片竖起的骨板。",
+    "anatomy_en": "Tiny low head, arched back with TWO staggered rows of tall upright plates, FOUR long spikes at tail tip, short front legs, taller hind legs. No club tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/stegosaurus.html"
+  },
+  {
+    "id": "brachiosaurus",
+    "name": "腕龙",
+    "latin": "Brachiosaurus",
+    "period": "侏罗纪晚期",
+    "diet": "植食",
+    "trait": "长脖子 · 前腿长",
+    "facts": [
+      "腕龙的前腿比后腿长，肩部高高抬起，长脖子可能帮助它够到高处叶子。",
+      "腕龙是一种巨大的植食恐龙，靠四条粗壮的腿支撑身体，化石发现于北美洲。"
+    ],
+    "spoken_facts": [
+      "腕龙的前腿比后腿长，身体前端比较高。",
+      "腕龙用四条腿站立，长脖子帮助吃叶子。"
+    ],
+    "question": "它哪一对腿更长？",
+    "options": [
+      "后腿",
+      "前腿"
+    ],
+    "correct": 1,
+    "hint": "比较前后腿，看看哪端更高。",
+    "anatomy_en": "Very long rising neck, small high-domed sauropod head, FRONT legs visibly LONGER than hind legs, high shoulders, pillar limbs, relatively short tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/brachiosaurus.html"
+  },
+  {
+    "id": "diplodocus",
+    "name": "梁龙",
+    "latin": "Diplodocus",
+    "period": "侏罗纪晚期",
+    "diet": "植食",
+    "trait": "长脖子 · 细长尾",
+    "facts": [
+      "梁龙有长脖子和像鞭子一样细长的尾巴，靠四条腿行走，主要吃植物。",
+      "梁龙细长的牙齿排得像小梳子，适合采食植物，它的化石发现于北美洲。"
+    ],
+    "spoken_facts": [
+      "梁龙的尾巴细细长长，像一条长长鞭子。",
+      "梁龙的牙齿像小梳子，能帮助采食植物。"
+    ],
+    "question": "它的尾巴像什么？",
+    "options": [
+      "长鞭子",
+      "大圆锤"
+    ],
+    "correct": 0,
+    "hint": "从尾根向末端看，尾巴越来越细。",
+    "anatomy_en": "Low slender sauropod body, extremely long thin whip tail, long near-horizontal neck, small elongated head, four pillar legs. No armor or tail club.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/diplodocus.html"
+  },
+  {
+    "id": "ankylosaurus",
+    "name": "甲龙",
+    "latin": "Ankylosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "骨质护甲 · 尾槌",
+    "facts": [
+      "甲龙身上覆盖着骨质护甲，尾巴末端长着沉重的骨锤，可能用于保护自己。",
+      "甲龙虽然披着护甲，却吃植物，嘴前面的喙和后面的牙齿帮助处理食物。"
+    ],
+    "spoken_facts": [
+      "甲龙全身披着骨质护甲，尾端还有骨锤。",
+      "甲龙虽然长着坚硬护甲，却是吃植物的。"
+    ],
+    "question": "它尾巴末端有什么？",
+    "options": [
+      "背帆",
+      "骨锤"
+    ],
+    "correct": 1,
+    "hint": "看看尾巴最末端那一大块骨头。",
+    "anatomy_en": "Broad low quadruped with small horned broad head, bony armor plates and low spikes, stiff tail ending in a large blunt bony CLUB. No upright sail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/ankylosaurus.html"
+  },
+  {
+    "id": "spinosaurus",
+    "name": "棘龙",
+    "latin": "Spinosaurus",
+    "period": "白垩纪晚期",
+    "diet": "肉食",
+    "trait": "长嘴巴 · 高背帆",
+    "facts": [
+      "棘龙背上的长骨刺撑起高背帆，嘴巴细长，圆锥形牙齿适合抓住鱼。",
+      "棘龙可能常在水边活动，尾巴宽得像桨；它怎样在水中移动，仍有争论。"
+    ],
+    "spoken_facts": [
+      "棘龙的嘴巴细长，背上长着高高的背帆。",
+      "棘龙尾巴像桨，水中活动方式仍有争论。"
+    ],
+    "question": "它背上最显眼的是什么？",
+    "options": [
+      "高高背帆",
+      "三只角"
+    ],
+    "correct": 0,
+    "hint": "看看背上向上伸出的长骨刺。",
+    "anatomy_en": "Long narrow crocodile-like toothed snout, VERY TALL dorsal sail, muscular three-fingered arms, relatively short hind legs, deep laterally flattened paddle-shaped tail. Modern reconstruction; no fixed swimming posture.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/spinosaurus.html"
+  },
+  {
+    "id": "velociraptor",
+    "name": "迅猛龙",
+    "latin": "Velociraptor",
+    "period": "白垩纪晚期",
+    "diet": "肉食",
+    "trait": "有羽毛 · 镰刀爪",
+    "facts": [
+      "迅猛龙是有羽毛的小型肉食恐龙，脚上弯弯的大爪像镰刀，可能帮助抓住猎物。",
+      "迅猛龙的前臂化石有羽毛附着的痕迹，说明它长有羽毛，却不能像鸟一样飞行。"
+    ],
+    "spoken_facts": [
+      "迅猛龙脚上有大弯爪，形状像一把镰刀。",
+      "迅猛龙身上长着羽毛，却不能像鸟飞行。"
+    ],
+    "question": "它脚上的大爪像什么？",
+    "options": [
+      "圆球",
+      "镰刀"
+    ],
+    "correct": 1,
+    "hint": "看看脚上那只向内弯曲的大爪。",
+    "anatomy_en": "Small feathered biped, low long toothed snout, three-fingered feathered arms, raised enlarged sickle claw on SECOND toe of EACH foot, long stiff feathered tail. Not an unfeathered movie raptor.",
+    "source": "https://www.nhm.ac.uk/discover/velociraptor-facts.html"
+  },
+  {
+    "id": "allosaurus",
+    "name": "异特龙",
+    "latin": "Allosaurus",
+    "period": "侏罗纪晚期",
+    "diet": "肉食",
+    "trait": "眼上骨脊 · 三指",
+    "facts": [
+      "异特龙靠两条后腿行走，眼睛上方有骨质突起，嘴里长着锋利的牙齿。",
+      "异特龙生活在侏罗纪晚期，前肢各有三根手指，是一种大型肉食恐龙。"
+    ],
+    "spoken_facts": [
+      "异特龙眼睛上方有骨质突起，牙齿锋利。",
+      "异特龙用两腿行走，前肢各有三根手指。"
+    ],
+    "question": "它的骨质突起在哪里？",
+    "options": [
+      "眼睛上方",
+      "尾巴末端"
+    ],
+    "correct": 0,
+    "hint": "看看两只眼睛上方的小突起。",
+    "anatomy_en": "Large bipedal theropod, elongated deep toothed skull with a pair of low ridges/horns above eyes, strong THREE-fingered arms, muscular hind legs, long tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/allosaurus.html"
+  },
+  {
+    "id": "apatosaurus",
+    "name": "迷惑龙",
+    "latin": "Apatosaurus",
+    "period": "侏罗纪晚期",
+    "diet": "植食",
+    "trait": "粗壮长颈 · 鞭尾",
+    "facts": [
+      "迷惑龙有粗壮的长脖子和细长的尾巴，靠四条柱子般的腿支撑巨大身体。",
+      "迷惑龙生活在侏罗纪晚期，主要吃植物，科学家在北美洲发现了它的化石。"
+    ],
+    "spoken_facts": [
+      "迷惑龙脖子粗壮，四条腿像结实的柱子。",
+      "迷惑龙吃植物，尾巴细长得像一条鞭子。"
+    ],
+    "question": "它的脖子是什么样？",
+    "options": [
+      "又短又细",
+      "又长又粗"
+    ],
+    "correct": 1,
+    "hint": "看看头和身体之间的长脖子。",
+    "anatomy_en": "Heavy robust sauropod, thick long neck, small elongated low skull, broad bulky body, four massive pillar limbs, long thin whip tail. Distinct genus from Brontosaurus.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/apatosaurus.html"
+  },
+  {
+    "id": "camarasaurus",
+    "name": "圆顶龙",
+    "latin": "Camarasaurus",
+    "period": "侏罗纪晚期",
+    "diet": "植食",
+    "trait": "圆短嘴 · 匙形牙",
+    "facts": [
+      "圆顶龙的脑袋短而高，嘴巴前端圆圆的，宽大的牙齿像小凿子，适合吃植物。",
+      "圆顶龙靠四条腿行走，脖子和尾巴比许多长颈恐龙短，化石发现于北美洲。"
+    ],
+    "spoken_facts": [
+      "圆顶龙的脑袋短而高，嘴巴前端圆圆的。",
+      "圆顶龙的牙齿宽宽的，能帮助采食植物。"
+    ],
+    "question": "它的嘴巴前端是什么样？",
+    "options": [
+      "短而圆",
+      "长而尖"
+    ],
+    "correct": 0,
+    "hint": "看看头部圆圆、短短的嘴巴。",
+    "anatomy_en": "Stocky quadrupedal sauropod with a distinctly short HIGH boxy skull and rounded blunt muzzle, large spoon/chisel teeth, moderately long neck and tail; forelegs slightly shorter than hind legs.",
+    "source": "https://nhmu.utah.edu/camarasaurus"
+  },
+  {
+    "id": "iguanodon",
+    "name": "禽龙",
+    "latin": "Iguanodon",
+    "period": "白垩纪早期",
+    "diet": "植食",
+    "trait": "尖拇指 · 鸟喙嘴",
+    "facts": [
+      "禽龙的手上有尖尖的拇指，嘴前端像鸟喙，后面的牙齿能帮助嚼碎植物。",
+      "禽龙可以用两条或四条腿活动，尖拇指可能用于防御，具体作用还在研究。"
+    ],
+    "spoken_facts": [
+      "禽龙的拇指像尖刺，嘴巴的前端像鸟喙。",
+      "禽龙可以用两腿活动，也可以用四腿走路。"
+    ],
+    "question": "它手上最特别的是什么？",
+    "options": [
+      "尾锤",
+      "尖拇指"
+    ],
+    "correct": 1,
+    "hint": "看看前肢旁边那根尖尖的拇指。",
+    "anatomy_en": "Robust beaked ornithopod, conspicuous conical THUMB SPIKE on each hand, three central weight-bearing fingers, long muscular tail, strong hind legs. No nose horn.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/iguanodon.html"
+  },
+  {
+    "id": "parasaurolophus",
+    "name": "副栉龙",
+    "latin": "Parasaurolophus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "长管头冠 · 鸭嘴",
+    "facts": [
+      "副栉龙头上长着向后伸出的长管状头冠，里面连接鼻腔的通道弯弯曲曲。",
+      "副栉龙的嘴巴像鸭嘴，主要吃植物，头冠可能帮助发声，科学家仍在研究。"
+    ],
+    "spoken_facts": [
+      "副栉龙头顶的长管状头冠，向后面伸出。",
+      "副栉龙主要吃植物，头冠可能帮助它发声。"
+    ],
+    "question": "它的头冠像什么？",
+    "options": [
+      "长管子",
+      "小圆球"
+    ],
+    "correct": 0,
+    "hint": "沿头顶看看向后伸出的长管。",
+    "anatomy_en": "Duck-billed hadrosaur with a single VERY LONG backward-projecting curved tubular hollow crest, long tail, strong hind legs and shorter forelegs. Crest is on the head, not the back.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/parasaurolophus.html"
+  },
+  {
+    "id": "corythosaurus",
+    "name": "盔龙",
+    "latin": "Corythosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "头盔状冠 · 鸭嘴",
+    "facts": [
+      "盔龙头上有像头盔一样高高拱起的头冠，冠内有鼻腔通道，嘴巴像鸭嘴。",
+      "盔龙主要吃植物，一些化石保存了皮肤的印痕，帮助科学家了解它的身体。"
+    ],
+    "spoken_facts": [
+      "盔龙的头冠高高拱起，形状像一顶头盔。",
+      "盔龙主要吃植物，有些化石留着皮肤印痕。"
+    ],
+    "question": "它的头冠像什么？",
+    "options": [
+      "细长管子",
+      "圆拱头盔"
+    ],
+    "correct": 1,
+    "hint": "看看头顶高高拱起的圆形轮廓。",
+    "anatomy_en": "Duck-billed hadrosaur with a tall rounded semicircular HELMET-like hollow head crest, not a long tube and not a hatchet; long tail, robust hind legs.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/corythosaurus.html",
+    "sources": [
+      "https://www.amnh.org/exhibitions/permanent/ornithischian-dinosaurs/corythosaurus"
+    ]
+  },
+  {
+    "id": "lambeosaurus",
+    "name": "赖氏龙",
+    "latin": "Lambeosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "斧状头冠 · 鸭嘴",
+    "facts": [
+      "赖氏龙的头冠轮廓像一把小斧子，里面有鼻腔通道，嘴前端扁扁的像鸭嘴。",
+      "赖氏龙是吃植物的恐龙，后腿比前腿长，头冠可能用于发声或展示自己。"
+    ],
+    "spoken_facts": [
+      "赖氏龙头顶的头冠，轮廓像一把小斧子。",
+      "赖氏龙的后腿比前腿长，嘴巴形状像鸭嘴。"
+    ],
+    "question": "它的头冠像什么？",
+    "options": [
+      "小斧子",
+      "长鞭子"
+    ],
+    "correct": 0,
+    "hint": "看看头冠上宽宽的那一部分。",
+    "anatomy_en": "Lambeosaurus lambei: duck-billed hadrosaur with a HATCHET-shaped hollow head crest, broad forward blade and small backward spur; shorter forelimbs, strong long hind limbs.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/lambeosaurus.html",
+    "sources": [
+      "https://www.sdnhm.org/exhibitions/fossil-mysteries/fossil-field-guide-a-z/lambeosaurus/"
+    ]
+  },
+  {
+    "id": "edmontosaurus",
+    "name": "埃德蒙顿龙",
+    "latin": "Edmontosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "宽鸭嘴 · 多排牙",
+    "facts": [
+      "埃德蒙顿龙的嘴前端宽宽的像鸭嘴，嘴后密集的牙齿能磨碎植物食物。",
+      "埃德蒙顿龙生活在白垩纪晚期，一些化石保存了皮肤印痕，颜色却无法直接看见。"
+    ],
+    "spoken_facts": [
+      "埃德蒙顿龙的嘴巴，宽宽扁扁的像鸭嘴。",
+      "埃德蒙顿龙用密集的牙齿，来磨碎植物。"
+    ],
+    "question": "它的嘴巴像什么？",
+    "options": [
+      "尖鸟嘴",
+      "宽鸭嘴"
+    ],
+    "correct": 1,
+    "hint": "看看嘴巴前端宽宽、扁扁的样子。",
+    "anatomy_en": "Large robust hadrosaur with a broad flat duck-bill, elongated low head with NO tall bony crest, heavy torso, strong hind legs, shorter forelimbs and long muscular tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/edmontosaurus.html"
+  },
+  {
+    "id": "maiasaura",
+    "name": "慈母龙",
+    "latin": "Maiasaura",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "鸭嘴 · 育幼化石",
+    "facts": [
+      "慈母龙的巢中发现过幼龙化石，科学家认为成龙可能照顾幼龙，但细节仍在研究。",
+      "慈母龙的嘴巴前端像鸭嘴，后面密集的牙齿可以帮助嚼碎各种植物。"
+    ],
+    "spoken_facts": [
+      "慈母龙巢里有幼龙化石，可能照顾幼龙。",
+      "慈母龙的嘴巴像鸭嘴，用牙齿嚼碎植物。"
+    ],
+    "question": "它的嘴巴像什么？",
+    "options": [
+      "宽鸭嘴",
+      "鳄鱼长嘴"
+    ],
+    "correct": 0,
+    "hint": "看看嘴巴前端扁扁宽宽的形状。",
+    "anatomy_en": "Robust duck-billed hadrosaur, broad flattened beak, low small rounded ridge near eyes rather than a tall hollow crest, long tail, strong hind legs, shorter forelimbs.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/maiasaura.html",
+    "sources": [
+      "https://www.nhm.ac.uk/discover/were-dinosaurs-good-parents.html"
+    ]
+  },
+  {
+    "id": "pachycephalosaurus",
+    "name": "厚头龙",
+    "latin": "Pachycephalosaurus",
+    "period": "白垩纪晚期",
+    "diet": "食性待研究",
+    "trait": "圆顶头骨 · 头缘突起",
+    "facts": [
+      "厚头龙的头骨顶部长着厚厚的圆顶，周围还有小突起，靠两条后腿行走。",
+      "厚头龙的圆顶究竟有什么作用，科学家还在研究；它吃哪些食物也有争论。"
+    ],
+    "spoken_facts": [
+      "厚头龙头骨顶上有圆顶，周围有小突起。",
+      "厚头龙圆顶的作用，科学家们仍在研究。"
+    ],
+    "question": "它头顶是什么形状？",
+    "options": [
+      "平平的",
+      "圆圆凸起"
+    ],
+    "correct": 1,
+    "hint": "看看头骨顶上高高隆起的部分。",
+    "anatomy_en": "Bipedal pachycephalosaur, very thick high rounded skull DOME, ring of small bony knobs and short spikes at back/sides of head, beaked snout, sturdy long tail. No large neck frill.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/pachycephalosaurus.html"
+  },
+  {
+    "id": "homalocephale",
+    "name": "平头龙",
+    "latin": "Homalocephale",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "平头顶 · 小体型",
+    "facts": [
+      "已发现的平头龙化石头顶比较平，和厚头龙高高隆起的圆顶形成明显对比。",
+      "平头龙的化石发现于蒙古，它是一种小型恐龙，靠两条后腿支撑身体。"
+    ],
+    "spoken_facts": [
+      "平头龙化石的头顶较平，没有高高圆顶。",
+      "平头龙的身体比较小，用两条后腿行走。"
+    ],
+    "question": "它的头顶是什么样？",
+    "options": [
+      "比较平",
+      "高高圆顶"
+    ],
+    "correct": 0,
+    "hint": "看看头顶平平的轮廓。",
+    "anatomy_en": "Small biped based on known Homalocephale specimen, broad FLAT thick skull roof with low knobs around rim, beak, slim body and long stiff tail. NO high dome; avoid asserting adult growth stage.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/homalocephale.html",
+    "sources": [
+      "https://www.ldeo.columbia.edu/~polsen/nbcp/mongol16.html"
+    ]
+  },
+  {
+    "id": "psittacosaurus",
+    "name": "鹦鹉嘴龙",
+    "latin": "Psittacosaurus",
+    "period": "白垩纪早期",
+    "diet": "植食",
+    "trait": "鹦鹉喙 · 小体型",
+    "facts": [
+      "鹦鹉嘴龙的嘴巴像鹦鹉弯弯的喙，可以帮助采食植物，身体比三角龙小得多。",
+      "鹦鹉嘴龙是角龙的早期亲戚，头后没有三角龙那样宽大的颈盾和长角。"
+    ],
+    "spoken_facts": [
+      "鹦鹉嘴龙的嘴巴，像鹦鹉弯弯的小鸟喙。",
+      "鹦鹉嘴龙头上没有长角，也没有大颈盾。"
+    ],
+    "question": "它的嘴巴像什么？",
+    "options": [
+      "鸭嘴",
+      "鹦鹉喙"
+    ],
+    "correct": 1,
+    "hint": "看看嘴巴前端向下弯曲的小喙。",
+    "anatomy_en": "Small early ceratopsian, strongly curved parrot-like beak, small cheek projections, mainly bipedal pose, short forearms, long tail; NO long horns or large neck frill.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/psittacosaurus.html",
+    "sources": [
+      "https://www.amnh.org/explore/ology/paleontology/face-to-fossil2/what-does-protoceratops-mean"
+    ]
+  },
+  {
+    "id": "protoceratops",
+    "name": "原角龙",
+    "latin": "Protoceratops",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "颈盾 · 鼻部小凸起",
+    "facts": [
+      "原角龙的头后长着颈盾，嘴巴像鹦鹉喙，却没有三角龙那样长长的眉角。",
+      "原角龙靠四条腿行走，鼻子上只有小凸起；它的牙齿显示它主要吃植物。"
+    ],
+    "spoken_facts": [
+      "原角龙头后有颈盾，却没有长长的眉角。",
+      "原角龙用四条腿行走，主要采食各种植物。"
+    ],
+    "question": "它头后长着什么？",
+    "options": [
+      "颈盾",
+      "背帆"
+    ],
+    "correct": 0,
+    "hint": "看看头后那一圈宽宽的骨板。",
+    "anatomy_en": "Low stocky quadrupedal ceratopsian, large skull with prominent rounded neck frill, parrot-like beak and slight nasal BUMP, NO long brow horns and NO prominent nasal horn.",
+    "source": "https://www.amnh.org/explore/ology/ology-cards/012-protoceratops-andrewsi",
+    "sources": [
+      "https://www.amnh.org/explore/ology/ology-cards/044-protoceratopsian-baby"
+    ]
+  },
+  {
+    "id": "styracosaurus",
+    "name": "戟龙",
+    "latin": "Styracosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "鼻长角 · 颈盾长刺",
+    "facts": [
+      "戟龙鼻子上长着一根长角，颈盾边缘还有向外伸出的长刺，看起来很威风。",
+      "戟龙靠四条腿行走，嘴前端有喙，虽然长着角和尖刺，却是一种吃植物的恐龙。"
+    ],
+    "spoken_facts": [
+      "戟龙鼻子上有长角，颈盾边缘也有长刺。",
+      "戟龙虽然头上长着角，却是主要吃植物的。"
+    ],
+    "question": "它的长刺主要在哪里？",
+    "options": [
+      "尾巴末端",
+      "颈盾边缘"
+    ],
+    "correct": 1,
+    "hint": "看看头后骨盾边缘伸出的长刺。",
+    "anatomy_en": "Stocky quadrupedal ceratopsian, ONE long nasal horn, dramatic fan of several LONG outward-pointing spikes on neck frill, short brow projections, beak. No pair of long brow horns.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/styracosaurus.html"
+  },
+  {
+    "id": "centrosaurus",
+    "name": "尖角龙",
+    "latin": "Centrosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "鼻角 · 短颈盾",
+    "facts": [
+      "尖角龙鼻子上有一根明显的角，头后是较短的颈盾，边缘长着小突起。",
+      "尖角龙的嘴前端像鸟喙，后面的牙齿能处理植物，四条腿支撑着粗壮的身体。"
+    ],
+    "spoken_facts": [
+      "尖角龙鼻子上有一根角，头后有短颈盾。",
+      "尖角龙用四条粗壮的腿站立，主要吃植物。"
+    ],
+    "question": "它的大角长在哪里？",
+    "options": [
+      "鼻子上",
+      "尾巴上"
+    ],
+    "correct": 0,
+    "hint": "看看鼻子上方那根明显的角。",
+    "anatomy_en": "Quadrupedal ceratopsian with ONE prominent nasal horn, comparatively short rounded neck frill bearing small rim spikes/hooks, low brow knobs and parrot-like beak. No huge radial frill spikes.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/centrosaurus.html"
+  },
+  {
+    "id": "pachyrhinosaurus",
+    "name": "厚鼻龙",
+    "latin": "Pachyrhinosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "厚鼻骨包 · 颈盾",
+    "facts": [
+      "厚鼻龙鼻子上没有细长的角，而是长着厚厚的扁平骨包，头后也有颈盾。",
+      "厚鼻龙主要吃植物，成年和幼年个体的化石曾一起发现，可能成群活动。"
+    ],
+    "spoken_facts": [
+      "厚鼻龙的鼻子上，是厚骨包而不是长角。",
+      "厚鼻龙主要吃植物，可能与同伴成群活动。"
+    ],
+    "question": "它鼻子上是什么？",
+    "options": [
+      "细长尖角",
+      "厚厚骨包"
+    ],
+    "correct": 1,
+    "hint": "看看鼻子上宽宽厚厚的骨质部分。",
+    "anatomy_en": "Heavy quadrupedal ceratopsian, broad flattened thick NASAL BOSS rather than an elongated horn, smaller bosses above eyes, large neck frill with small spikes, parrot beak.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/pachyrhinosaurus.html"
+  },
+  {
+    "id": "carnotaurus",
+    "name": "食肉牛龙",
+    "latin": "Carnotaurus",
+    "period": "白垩纪晚期",
+    "diet": "肉食",
+    "trait": "双眉角 · 极短前臂",
+    "facts": [
+      "食肉牛龙两只眼睛上方各有一只角，前臂非常短，靠强壮的后腿行走。",
+      "食肉牛龙的化石发现于阿根廷，保存的皮肤印痕显示身上有大小不同的鳞片。"
+    ],
+    "spoken_facts": [
+      "食肉牛龙眼睛上有两只角，前臂特别短。",
+      "食肉牛龙的皮肤化石，留下了鳞片印痕。"
+    ],
+    "question": "它头上的两只角在哪里？",
+    "options": [
+      "眼睛上方",
+      "鼻子前端"
+    ],
+    "correct": 0,
+    "hint": "看看两只眼睛上方粗粗的角。",
+    "anatomy_en": "Bipedal carnivore with TWO stout laterally projecting horns directly above eyes, deep short blunt skull, EXTREMELY tiny forearms, powerful hind legs, scaly body and long muscular tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/carnotaurus.html"
+  },
+  {
+    "id": "ceratosaurus",
+    "name": "角鼻龙",
+    "latin": "Ceratosaurus",
+    "period": "侏罗纪晚期",
+    "diet": "肉食",
+    "trait": "鼻上角 · 背部小骨片",
+    "facts": [
+      "角鼻龙的鼻子上有一只突出的角，背部还有一排小骨片，是一种肉食恐龙。",
+      "角鼻龙靠两条后腿行走，嘴里有锋利的牙齿；鼻角的具体作用仍在研究。"
+    ],
+    "spoken_facts": [
+      "角鼻龙鼻子上有角，背上有一排小骨片。",
+      "角鼻龙用两条后腿走路，嘴里牙齿很锋利。"
+    ],
+    "question": "它最明显的角在哪里？",
+    "options": [
+      "尾巴末端",
+      "鼻子上"
+    ],
+    "correct": 1,
+    "hint": "看看鼻梁上向上突出的角。",
+    "anatomy_en": "Bipedal theropod with a single prominent nasal HORN and small low eye ridges, deep toothed skull, row of small bony scutes along back, short FOUR-fingered hands and long tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/ceratosaurus.html"
+  },
+  {
+    "id": "dilophosaurus",
+    "name": "双冠龙",
+    "latin": "Dilophosaurus",
+    "period": "侏罗纪早期",
+    "diet": "肉食",
+    "trait": "双头冠 · 长后腿",
+    "facts": [
+      "双冠龙头顶有两片并排的骨质头冠，靠两条后腿行走，是早期肉食恐龙。",
+      "双冠龙头冠的具体作用还在研究，化石没有证明它会喷毒或长着大颈褶。"
+    ],
+    "spoken_facts": [
+      "双冠龙的头顶有两片并排的骨质头冠。",
+      "没有化石证据显示双冠龙喷毒或有颈褶。"
+    ],
+    "question": "它头上有几片头冠？",
+    "options": [
+      "两片",
+      "一片"
+    ],
+    "correct": 0,
+    "hint": "看看头顶左右并排的两片骨冠。",
+    "anatomy_en": "Early theropod with TWO thin parallel semicircular crests atop a long narrow head, slender bipedal body, grasping arms and long tail. Absolutely NO expandable neck frill, NO venom effects.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/dilophosaurus.html"
+  },
+  {
+    "id": "coelophysis",
+    "name": "腔骨龙",
+    "latin": "Coelophysis",
+    "period": "三叠纪晚期",
+    "diet": "肉食",
+    "trait": "纤细身躯 · 长尾",
+    "facts": [
+      "腔骨龙的身体轻巧而纤细，脖子和尾巴都很长，靠两条后腿支撑身体。",
+      "腔骨龙生活在三叠纪晚期，嘴里细小而锋利的牙齿适合捕食小型动物。"
+    ],
+    "spoken_facts": [
+      "腔骨龙身体纤细，长长的尾巴帮助平衡。",
+      "腔骨龙有细小的尖牙，主要捕食小动物。"
+    ],
+    "question": "它的身体是什么样？",
+    "options": [
+      "宽厚披甲",
+      "轻巧纤细"
+    ],
+    "correct": 1,
+    "hint": "看看细长的脖子、身体和尾巴。",
+    "anatomy_en": "Very slender early bipedal theropod, long narrow toothed snout, long S-curved neck, narrow torso, thin long legs and extremely long fine tail. No crests, armor or horns.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/coelophysis.html"
+  },
+  {
+    "id": "compsognathus",
+    "name": "美颌龙",
+    "latin": "Compsognathus",
+    "period": "侏罗纪晚期",
+    "diet": "肉食",
+    "trait": "小体型 · 细长尾",
+    "facts": [
+      "美颌龙的身体很小，后腿细长，尾巴也长长的，是侏罗纪晚期的肉食恐龙。",
+      "美颌龙嘴里有细小而锋利的牙齿，靠两条后腿行走，主要捕食小型脊椎动物。"
+    ],
+    "spoken_facts": [
+      "美颌龙身体很小，后腿和尾巴都很细长。",
+      "美颌龙用细小的尖牙，捕食小型脊椎动物。"
+    ],
+    "question": "它的尾巴是什么样？",
+    "options": [
+      "细细长长",
+      "短短圆圆"
+    ],
+    "correct": 0,
+    "hint": "从身体后面找那条细长的尾巴。",
+    "anatomy_en": "Tiny gracile bipedal theropod, small narrow pointed toothed head, short arms, long slim hind legs, very long thin tapering tail. No horns or crest.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/compsognathus.html"
+  },
+  {
+    "id": "gallimimus",
+    "name": "似鸡龙",
+    "latin": "Gallimimus",
+    "period": "白垩纪晚期",
+    "diet": "食性待研究",
+    "trait": "长颈长腿 · 无齿喙",
+    "facts": [
+      "似鸡龙长着细长的脖子和后腿，脑袋小小的，整体轮廓有些像今天的鸵鸟。",
+      "似鸡龙嘴前端有不带牙齿的喙，它究竟吃哪些食物，科学家仍在研究。"
+    ],
+    "spoken_facts": [
+      "似鸡龙的脖子和后腿很长，轮廓像鸵鸟。",
+      "似鸡龙的嘴巴没有牙齿，食物仍在研究。"
+    ],
+    "question": "它的脖子是什么样？",
+    "options": [
+      "又短又粗",
+      "又细又长"
+    ],
+    "correct": 1,
+    "hint": "看看小脑袋下方细长的脖子。",
+    "anatomy_en": "Ostrich-like ornithomimid biped, small elongated toothless beaked head, long slender neck, very long running legs, long three-fingered arms and balancing tail. Feather covering inferred from relatives.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/gallimimus.html"
+  },
+  {
+    "id": "ornithomimus",
+    "name": "似鸟龙",
+    "latin": "Ornithomimus",
+    "period": "白垩纪晚期",
+    "diet": "食性待研究",
+    "trait": "羽毛 · 长跑腿",
+    "facts": [
+      "似鸟龙长着细长的脖子和后腿，嘴巴没有牙齿，化石还保留过羽毛的痕迹。",
+      "似鸟龙成年个体前臂上可能有较长的羽毛，但这些小翅膀不能让它飞起来。"
+    ],
+    "spoken_facts": [
+      "似鸟龙的脖子和腿很长，身上长着羽毛。",
+      "似鸟龙前臂的长羽毛，不能帮助它飞行。"
+    ],
+    "question": "它的身体覆盖着什么？",
+    "options": [
+      "羽毛",
+      "骨质护甲"
+    ],
+    "correct": 0,
+    "hint": "看看身体和前臂上柔软的羽毛。",
+    "anatomy_en": "Feathered ostrich-like biped, small toothless beak, long thin neck, long running legs, adult arms with wing-like feathers, long feathered balancing tail. Not capable of powered flight.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/ornithomimus.html",
+    "sources": [
+      "https://www.tyrrellmuseum.com/sites/default/files/media/DL_FP-AG.pdf"
+    ]
+  },
+  {
+    "id": "oviraptor",
+    "name": "偷蛋龙",
+    "latin": "Oviraptor",
+    "period": "白垩纪晚期",
+    "diet": "食性待研究",
+    "trait": "无齿喙 · 头冠",
+    "facts": [
+      "偷蛋龙长着没有牙齿的喙，头上有骨质头冠，科学家还在研究它的食物。",
+      "偷蛋龙的名字源于早年的误解，相关化石中的蛋后来被发现属于它们自己的家族。"
+    ],
+    "spoken_facts": [
+      "偷蛋龙的嘴巴没有牙齿，头上有骨质冠。",
+      "偷蛋龙的名字来自误解，那些蛋属于它们。"
+    ],
+    "question": "它的嘴巴有什么特点？",
+    "options": [
+      "长满尖牙",
+      "没有牙齿"
+    ],
+    "correct": 1,
+    "hint": "看看嘴前端像鸟喙的部分。",
+    "anatomy_en": "Small bird-like feathered oviraptorid biped, short deep TOOTHLESS beak and modest rounded nasal crest, three-fingered feathered arms, strong hind legs, tail feathers. Avoid giant exaggerated Citipati crest.",
+    "source": "https://www.amnh.org/explore/ology/ology-cards/019-oviraptor-philoceratops",
+    "sources": [
+      "https://www.amnh.org/dinosaurs/dinosaur-eggs"
+    ]
+  },
+  {
+    "id": "therizinosaurus",
+    "name": "镰刀龙",
+    "latin": "Therizinosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "巨型手爪 · 长颈",
+    "facts": [
+      "镰刀龙前肢上长着三根又长又弯的巨爪，虽然名字威风，却主要吃植物。",
+      "镰刀龙的完整身体还没有被发现，许多复原细节来自近亲，巨爪的作用仍在研究。"
+    ],
+    "spoken_facts": [
+      "镰刀龙前肢有三根长长的弯爪，吃植物。",
+      "镰刀龙的身体复原，有些参考了它的近亲。"
+    ],
+    "question": "它前肢最显眼的是什么？",
+    "options": [
+      "长长弯爪",
+      "圆圆骨锤"
+    ],
+    "correct": 0,
+    "hint": "看看手上又长又弯的三根爪子。",
+    "anatomy_en": "Large feathered therizinosaur reconstructed partly from relatives: long neck, small beaked head, bulky pot belly, upright biped, THREE extremely long curved claws on EACH hand, four-toed feet.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/therizinosaurus.html"
+  },
+  {
+    "id": "deinonychus",
+    "name": "恐爪龙",
+    "latin": "Deinonychus",
+    "period": "白垩纪早期",
+    "diet": "肉食",
+    "trait": "镰刀脚爪 · 长硬尾",
+    "facts": [
+      "恐爪龙脚上的第二根趾头长着弯曲的大爪，活动时可能把这根大爪抬起来。",
+      "恐爪龙的长尾巴比较僵直，能帮助身体保持平衡，科学家认为它很可能长有羽毛。"
+    ],
+    "spoken_facts": [
+      "恐爪龙脚上第二趾的大爪，弯得像镰刀。",
+      "恐爪龙的长尾巴比较硬，帮助身体平衡。"
+    ],
+    "question": "它的大弯爪长在哪里？",
+    "options": [
+      "鼻子上",
+      "脚趾上"
+    ],
+    "correct": 1,
+    "hint": "看看脚上抬起的那根弯曲大爪。",
+    "anatomy_en": "Feathered dromaeosaur biped larger and more robust than Velociraptor, strong three-fingered arms, large raised sickle claw on SECOND toe of EACH foot, long stiff straight balancing tail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/deinonychus.html"
+  },
+  {
+    "id": "microraptor",
+    "name": "小盗龙",
+    "latin": "Microraptor",
+    "period": "白垩纪早期",
+    "diet": "肉食",
+    "trait": "四翼羽毛 · 小体型",
+    "facts": [
+      "小盗龙前肢和后肢都长着长羽毛，形成四片像翅膀的表面，身体却很小。",
+      "小盗龙的化石发现于中国，科学家还在研究它怎样利用这些羽毛在空中移动。"
+    ],
+    "spoken_facts": [
+      "小盗龙前肢和后肢，都长着长长的羽毛。",
+      "小盗龙怎样在空中移动，科学家还在研究。"
+    ],
+    "question": "它的长羽毛长在哪里？",
+    "options": [
+      "前肢和后肢",
+      "只有头顶"
+    ],
+    "correct": 0,
+    "hint": "看看四条肢体旁展开的羽毛。",
+    "anatomy_en": "Very small feathered dromaeosaur with FOUR wing surfaces: long flight feathers on BOTH arms AND hind legs, feathered tail ending in a fan, small toothed head. Do not remove hind-leg wings.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/microraptor.html"
+  },
+  {
+    "id": "baryonyx",
+    "name": "重爪龙",
+    "latin": "Baryonyx",
+    "period": "白垩纪早期",
+    "diet": "肉食",
+    "trait": "鳄鱼长嘴 · 大拇指爪",
+    "facts": [
+      "重爪龙的嘴巴又长又窄，像鳄鱼的嘴，胃部附近的化石曾发现鱼类遗骸。",
+      "重爪龙前肢拇指上有一根巨大的弯爪，它怎样用大爪获取食物，仍在研究。"
+    ],
+    "spoken_facts": [
+      "重爪龙的嘴巴又长又窄，像一张鳄鱼嘴。",
+      "重爪龙前肢的拇指上，有一根巨大弯爪。"
+    ],
+    "question": "它的大爪长在哪里？",
+    "options": [
+      "尾巴末端",
+      "前肢拇指"
+    ],
+    "correct": 1,
+    "hint": "看看前肢旁边那根很大的弯爪。",
+    "anatomy_en": "Bipedal spinosaurid with long narrow crocodile-like snout and conical teeth, strong THREE-fingered arms with an enlarged curved THUMB claw, low back, long tail. NO tall Spinosaurus sail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/baryonyx.html"
+  },
+  {
+    "id": "suchomimus",
+    "name": "似鳄龙",
+    "latin": "Suchomimus",
+    "period": "白垩纪早期",
+    "diet": "肉食",
+    "trait": "细长鳄嘴 · 低背脊",
+    "facts": [
+      "似鳄龙的嘴巴细长得像鳄鱼，前肢很有力，拇指上还有一根明显的大爪。",
+      "似鳄龙的化石发现于非洲，它和棘龙是近亲，嘴和牙齿显示它可能吃鱼。"
+    ],
+    "spoken_facts": [
+      "似鳄龙嘴巴很细长，前肢拇指上有大爪。",
+      "似鳄龙和棘龙是近亲，可能会捕食鱼类。"
+    ],
+    "question": "它的嘴巴像什么？",
+    "options": [
+      "鳄鱼长嘴",
+      "宽扁鸭嘴"
+    ],
+    "correct": 0,
+    "hint": "看看又长又窄、带牙齿的嘴巴。",
+    "anatomy_en": "Bipedal spinosaurid with a very long narrow crocodile-like snout, powerful long three-fingered arms with oversized THUMB claws, modest low raised back ridge, long tail. NO very tall Spinosaurus sail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/suchomimus.html",
+    "sources": [
+      "https://paulsereno.uchicago.edu/exhibits_casts/african_dinosaurs/suchomimus/",
+      "https://magazine.uchicago.edu/0112/research/invest-dino.html"
+    ]
+  },
+  {
+    "id": "giganotosaurus",
+    "name": "南方巨兽龙",
+    "latin": "Giganotosaurus",
+    "period": "白垩纪晚期",
+    "diet": "肉食",
+    "trait": "巨大头颅 · 锯齿牙",
+    "facts": [
+      "南方巨兽龙是体型很大的肉食恐龙，嘴里长着像刀片一样扁而锋利的牙齿。",
+      "南方巨兽龙靠两条后腿行走，化石发现于阿根廷，完整大小仍需更多化石确认。"
+    ],
+    "spoken_facts": [
+      "南方巨兽龙的牙齿，像锋利的薄薄刀片。",
+      "南方巨兽龙体型很大，用两条后腿行走。"
+    ],
+    "question": "它用几条腿行走？",
+    "options": [
+      "四条腿",
+      "两条腿"
+    ],
+    "correct": 1,
+    "hint": "看看支撑身体的两条粗壮后腿。",
+    "anatomy_en": "Very large bipedal carcharodontosaur, long low elongated skull, blade-like serrated teeth, low brow ridges, THREE-fingered forearms, massive hind legs and long balancing tail. No sail or large horns.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/giganotosaurus.html"
+  },
+  {
+    "id": "argentinosaurus",
+    "name": "阿根廷龙",
+    "latin": "Argentinosaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "巨型身躯 · 长颈",
+    "facts": [
+      "阿根廷龙是已知最大的恐龙之一，脖子和尾巴都很长，四条腿支撑巨大身体。",
+      "阿根廷龙只发现了部分骨骼，准确体重和身长仍需估算，科学家还在研究。"
+    ],
+    "spoken_facts": [
+      "阿根廷龙身体巨大，脖子和尾巴都很长。",
+      "阿根廷龙只发现部分骨骼，大小仍需估算。"
+    ],
+    "question": "它的脖子是什么样？",
+    "options": [
+      "长长的",
+      "短短的"
+    ],
+    "correct": 0,
+    "hint": "看看头和巨大身体之间的长脖子。",
+    "anatomy_en": "Enormous titanosaur sauropod, very long neck and tail, huge rounded torso, small head, FOUR massive pillar legs. Reconstruction from fragmentary fossils; no invented horns or sail.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/argentinosaurus.html"
+  },
+  {
+    "id": "saltasaurus",
+    "name": "萨尔塔龙",
+    "latin": "Saltasaurus",
+    "period": "白垩纪晚期",
+    "diet": "植食",
+    "trait": "长颈 · 小骨质护甲",
+    "facts": [
+      "萨尔塔龙是一种长脖子的植食恐龙，皮肤里有小块骨质护甲，像一颗颗硬疙瘩。",
+      "萨尔塔龙靠四条腿行走，尾巴长长的；它的护甲不是甲龙那样巨大的尾锤。"
+    ],
+    "spoken_facts": [
+      "萨尔塔龙皮肤里有小骨甲，像硬硬疙瘩。",
+      "萨尔塔龙脖子长长的，用四条粗壮腿行走。"
+    ],
+    "question": "它身上的小硬块是什么？",
+    "options": [
+      "柔软羽毛",
+      "骨质护甲"
+    ],
+    "correct": 1,
+    "hint": "看看背上那些一颗颗的硬疙瘩。",
+    "anatomy_en": "Stocky quadrupedal titanosaur sauropod, moderately long neck and tail, small blunt head, bony nodules and small osteoderms embedded across back skin, four pillar limbs. No tail club or giant spikes.",
+    "source": "https://www.nhm.ac.uk/discover/dino-directory/saltasaurus.html"
+  }
+]

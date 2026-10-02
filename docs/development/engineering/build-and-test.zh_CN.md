@@ -7,6 +7,13 @@
 使用 ESP-IDF 5.5.3。全新机器或缺少工具链时，先按
 [环境引导](environment-setup.zh_CN.md)完成安装。
 
+DinoBook 的完整/静态门禁还会核验全部320张动画帧，需安装
+`tools/requirements-dino-assets.txt` 固定的 Pillow 图片依赖。ESP-IDF 的 Python
+未带 Pillow 时，保留工具链环境，通过 `DINO_ASSET_PYTHON=/path/to/venv/bin/python`
+指定已有素材虚拟环境。新环境可先运行 `python3 -m venv /path/to/venv`，再运行
+`/path/to/venv/bin/python -m pip install -r tools/requirements-dino-assets.txt`。
+门禁不自动安装依赖，CI 单独准备自己的素材环境。
+
 > **向设备下载（烧录）新固件前，无需备份设备内部原有固件。** 不要求先读出
 > 原固件，也不把原固件备份作为烧录前置条件。烧录会覆盖原固件，不会自动恢复
 > 原固件。这不代表用户数据会被保留：如果需要保留已有设置或记录，应事先
@@ -88,6 +95,7 @@ Microsoft Defender 可使用其
 
 - 已校验合并镜像及其应用 ELF、MAP、应用镜像。
 - `bootloader/bootloader.bin`、`partition_table/partition-table.bin` 和 `flash_args`。
+- `flash_args` 列出的所有额外镜像，包括 `dino_audio/audio.bin`。
 
 不重新构建、不写入归档即可复验：
 
@@ -105,10 +113,18 @@ python3 tools/archive_firmware.py verify <archive-directory>
 留存和清单哈希保护；固件／ELF 与其他保留文件逐字节一致时，重复归档复用
 首份已验证归档及 MAP，因为临时构建路径可能改变 MAP 内容。不覆盖冲突归档。
 
-额外自定义分区镜像不作为独立文件留存，但其内容仍可能包含在合并镜像中；
-这**不是**完整的分段烧录包，也不保证已脱敏。用户特定分段烧录需要的额外
-匹配镜像，应在审核内容后另行保留。把 `flash_args` 当作数据，不作为 shell
-脚本执行。
+包含额外镜像的新归档使用清单 schema 2，独立保留全部镜像，并检查哈希、
+边界及其与合并镜像的逐字节一致性。历史 schema-1 归档仍可读取，不会被重写；
+历史归档中的额外载荷可能仅存在于合并镜像内。没有额外镜像的构建继续使用
+schema 1。归档不保证脱敏。把 `flash_args` 当作数据，不作为 shell 脚本执行。
+
+DinoBook 在配置构建时暂存 `assets/audio/dinobook40/audio.bin`，并将其注册到
+`0x35A000`。音频库缺失、为空或大于 `0x3A6000` 字节都会导致配置失败。
+固件验证器强制检查 DinoBook 固定布局，不允许身份或 Recovery 镜像。
+schema-2 清单记录合并烧录范围及身份区 FF 填充。**从 `0x0` 写入合并镜像会
+擦除 `0x356000..0x35A000` 的身份数据**，即使没有身份载荷。需要保留身份时，
+必须使用兼容的分段写入避开该区域，并单独取得设备写入授权。
+详见[资源布局](firmware-layout.zh_CN.md#dinobook-资源布局)。
 
 验证失败可能仍保留旧 `build/FoloToy-AI-Passport-full.bin` 和历史归档，
 不能将它们当成本轮失败构建的新产物。交接时给出实际成功归档路径和完整
@@ -144,3 +160,7 @@ cc -std=c11 -Wall -Wextra -Werror -Imain \
 
 社区只能上传验证通过的 `build/FoloToy-AI-Passport-full.bin`，不得上传应用单镜像
 `build/FoloToy-AI-Passport.bin`，后者不包含完整且经校验的固件布局。
+
+## 恐龙护照公开源码
+
+GitHub 检出不包含本地 Apple 系统语音录音及资源镜像。使用同一门禁：上游及应用逻辑、字体、动画和固件检查仍须通过。仅在语音镜像及 WAV 全部不存在时，语音资源验证报告 `NOT RUN`；存在但不完整或损坏的资源仍为错误。缺少讲解是明确的静音构建配置，不能把失败检查称为通过。详见[语音来源](../../../assets/audio/README.zh_CN.md)和 [GitHub 验证](../../dinobook-github.zh_CN.md)。

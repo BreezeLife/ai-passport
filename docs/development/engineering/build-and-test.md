@@ -7,6 +7,14 @@
 Use ESP-IDF 5.5.3. On a clean machine or when the toolchain is missing, follow
 the [environment bootstrap](environment-setup.md) first.
 
+DinoBook's full/static gate also verifies all 320 generated animation frames.
+Use Python with the pinned Pillow dependency in `tools/requirements-dino-assets.txt`.
+When ESP-IDF's Python lacks Pillow, keep the toolchain environment and select an
+existing asset virtual environment with `DINO_ASSET_PYTHON=/path/to/venv/bin/python`.
+For a new asset environment, run `python3 -m venv /path/to/venv` and then
+`/path/to/venv/bin/python -m pip install -r tools/requirements-dino-assets.txt`.
+The gate never installs packages automatically; CI prepares its own asset environment.
+
 > **No original-firmware backup is required before downloading (flashing) new
 > firmware to the device.** Reading out the installed firmware is not a
 > prerequisite. Flashing replaces the installed firmware and does not provide
@@ -98,6 +106,7 @@ file's size and hash. The archive includes:
 
 - The verified merged image and its application ELF, MAP, and application image.
 - `bootloader/bootloader.bin`, `partition_table/partition-table.bin`, and `flash_args`.
+- Every additional image named in `flash_args`, including `dino_audio/audio.bin`.
 
 Verify a bundle without rebuilding or writing to it:
 
@@ -119,11 +128,22 @@ manifest checksum. For byte-identical firmware/ELF and other retained files,
 repeat archival reuses the first verified bundle and MAP; temporary build paths
 may otherwise change MAP contents. Existing conflicting bundles are not replaced.
 
-Extra custom partition images are not retained as separate files. Their payloads
-can still be inside the merged image; this is **not** a complete segmented-flash
-package or a sanitization guarantee. Preserve any additional matching images
-needed for a user-specific segmented workflow separately, after reviewing their
-content. Treat `flash_args` as data, not a shell script.
+Archives with additional images use manifest schema 2 and retain all of those
+images separately, checking their hashes, bounds and exact merged bytes.
+Historical schema-1 bundles remain readable without rewriting; a historical
+schema-1 bundle may contain additional payloads only inside its merged image.
+Unchanged builds without additional images continue using schema 1. Archived
+images are not sanitized. Treat `flash_args` as data, not a shell script.
+
+DinoBook stages `assets/audio/dinobook40/audio.bin` at build configuration time
+and registers it at `0x35A000`. Configuration fails if the bank is missing,
+empty or larger than `0x3A6000` bytes. The firmware verifier enforces the fixed
+DinoBook layout and excludes identity and Recovery images. Its schema-2
+manifest records the merged flash range and identity FF padding. **Writing
+this merged image at `0x0` erases identity at `0x356000..0x35A000`**, although
+it contains no identity payload. Preserve identity with compatible segmented
+writes that avoid that region, and obtain separate device-write authorization.
+See [the resource layout](firmware-layout.md#dinobook-resource-layout).
 
 A failed validation may leave a previous `build/FoloToy-AI-Passport-full.bin`
 and older bundles intact. Never present those as the failed run's new output.
@@ -169,3 +189,7 @@ Hardware-affecting changes must also run the applicable on-device checklist in t
 Never upload the app-only `build/FoloToy-AI-Passport.bin` to the community. Only
 the validated `build/FoloToy-AI-Passport-full.bin` contains the complete checked
 firmware layout.
+
+## Public Dino Passport source
+
+The GitHub checkout excludes the local Apple system-voice recordings and bank. Run the same gate: all upstream/application logic, fonts, animation and firmware checks remain required. Audio asset verification reports `NOT RUN` only for a completely absent bank/WAV set. A present but incomplete or corrupted resource is an error. Missing narration is an explicit silent build profile, not a failed check reported as passing. See [audio provenance](../../../assets/audio/README.md) and [GitHub validation](../../dinobook-github.md).

@@ -205,6 +205,7 @@ provide reference material. Choose the entry that matches your task.
 
 | Resource | What you will find |
 | --- | --- |
+| [Dino Passport](dinobook.md) | Complete 40 species: learning, silent motion controls, save migration, external audio, [exact validation](dinobook40-validation.md), [plan](dinobook40-plan.md), and [parent-child reference](dinobook-reference.md) |
 | [Development](development/README.md) | AI workflow, engineering conventions, CI, and release guidance |
 | [AI skills](../skills/README.md) | Development, environment setup, builds, device testing, and debugging |
 | [Hardware](hardware-design/README.md) | Board facts, interface boundaries, acceptance checklists, and troubleshooting |

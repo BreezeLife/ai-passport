@@ -2,6 +2,8 @@ build/
 sdkconfig
 sdkconfig.old
 managed_components/
+node_modules/
+*.aiff
 .vscode/
 .idea/
 
@@ -11,3 +13,14 @@ managed_components/
 /.agents/skills/passport-build
 /.agents/skills/passport-device-test
 /.agents/skills/passport-debug
+
+# Local Project Pulse aggregation; continuity records remain versioned.
+/STATUS.md
+/.project-pulse/
+
+# Apple system-voice recordings stay local; public source retains text/metadata.
+/assets/audio/dinobook/*.wav
+/assets/audio/dinobook/*.adpcm
+/assets/audio/dinobook40/*.wav
+/assets/audio/dinobook40/audio.bin
+/assets/audio/dinobook40/generation_progress.json

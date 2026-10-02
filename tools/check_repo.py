@@ -27,6 +27,11 @@ SECRET_PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
 }
 ROOT_MARKDOWN_ALLOWLIST = {
+    # User-required cross-device project continuity records.
+    "PROJECT.md", "PROJECT.zh_CN.md",
+    "MEMORY.md", "MEMORY.zh_CN.md",
+    "TASKS.md", "TASKS.zh_CN.md",
+    "WORKLOG.md", "WORKLOG.zh_CN.md",
     "AGENTS.md",
     "AGENTS.zh_CN.md",
     "CLAUDE.md",
@@ -129,7 +134,10 @@ def check_required_files(errors: list[str]) -> None:
     if ignored.returncode == 0:
         errors.append("dependencies.lock must be tracked, not ignored")
 
-    for path in sorted(ROOT.glob("*.md")):
+    # Use the same repository inventory as the link, language and secret checks.
+    # Ignored local generators are absent; tracked files remain in the inventory
+    # even when a later ignore rule matches them.
+    for path in sorted(path for path in git_files() if path.parent == ROOT and path.suffix == ".md"):
         if path.name not in ROOT_MARKDOWN_ALLOWLIST:
             errors.append(
                 f"{path.name}: root Markdown must move to docs/ or .github/"

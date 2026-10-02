@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import os
+import shutil
 import struct
 import subprocess
 import sys
@@ -26,6 +28,14 @@ SPEC.loader.exec_module(VERIFY)
 DEFAULT_TABLE_OFFSET = 0x8000
 DEFAULT_APP_OFFSET = 0x10000
 DEFAULT_APP_SIZE = VERIFY.FLASH_SIZE - DEFAULT_APP_OFFSET
+DINO_ENTRIES = (
+    (1, 2, 0x9000, 0x6000, "nvs"),
+    (1, 1, 0xF000, 0x1000, "phy_init"),
+    (0, 0, 0x10000, 0x300000, "factory"),
+    (1, 2, 0x356000, 0x4000, "cardid"),
+    (1, 0x40, 0x35A000, 0x3A6000, "dino_audio"),
+    (0, 0x20, 0x700000, 0x100000, "recovery"),
+)
 
 
 def sample_table(entries: tuple[tuple[int, int, int, int, str], ...] | None = None) -> bytes:
@@ -169,6 +179,139 @@ class FlashArgsTest(unittest.TestCase):
             VERIFY.parse_flash_args("0x20000\n")
 
 
+@unittest.skipUnless(shutil.which("cmake"), "CMake is required for the configure contract tests")
+class AudioCmakeTest(unittest.TestCase):
+    """Execute the root CMake staging/validation against small IDF API stubs.
+
+    The complete firmware gate separately exercises the actual ESP-IDF APIs.
+    These tests catch asset failures before an expensive firmware compilation.
+    """
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="dinobook-cmake-tests-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.source = self.root / "source"
+        self.source.mkdir()
+        cmake = (ROOT / "CMakeLists.txt").read_text()
+        self.source.joinpath("CMakeLists.txt").write_text(cmake.replace(
+            "project(FoloToy-AI-Passport)", "project(FoloToy-AI-Passport LANGUAGES NONE)"
+        ))
+        self.audio = self.source / "assets/audio/dinobook40/audio.bin"
+        self.audio.parent.mkdir(parents=True)
+        self.idf = self.root / "idf"
+        include = self.idf / "tools/cmake/project.cmake"
+        include.parent.mkdir(parents=True)
+        include.write_text('''
+function(partition_table_get_partition_info output filter field)
+  if(NOT "${filter}" STREQUAL "--partition-name dino_audio" OR NOT "${field}" STREQUAL "size")
+    message(FATAL_ERROR "wrong partition query")
+  endif()
+  set(${output} 0x3a6000 PARENT_SCOPE)
+endfunction()
+function(esptool_py_flash_to_partition target partition image)
+  if(NOT "${target}" STREQUAL "flash" OR NOT "${partition}" STREQUAL "dino_audio")
+    message(FATAL_ERROR "wrong flash registration")
+  endif()
+  file(RELATIVE_PATH relative "${CMAKE_BINARY_DIR}" "${image}")
+  file(WRITE "${CMAKE_BINARY_DIR}/flash_args" "0x35a000 ${relative}\\n")
+endfunction()
+''')
+
+    def configure(self) -> subprocess.CompletedProcess[str]:
+        return subprocess.run([shutil.which("cmake"), "-S", str(self.source), "-B", str(self.root / "build")],
+                              env={**os.environ, "IDF_PATH": str(self.idf)},
+                              capture_output=True, text=True, check=False)
+
+    def test_registers_and_refreshes_the_exact_staged_audio_bank(self) -> None:
+        self.audio.write_bytes(b"first narration")
+        result = self.configure()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        staged = self.root / "build/dino_audio/audio.bin"
+        self.assertEqual(staged.read_bytes(), self.audio.read_bytes())
+        self.assertEqual((self.root / "build/flash_args").read_text(), "0x35a000 dino_audio/audio.bin\n")
+        self.audio.write_bytes(b"revised narration")
+        result = self.configure()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(staged.read_bytes(), self.audio.read_bytes())
+
+    def test_missing_bank_builds_a_public_source_profile_without_audio(self) -> None:
+        result = self.configure()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Narration bank omitted", result.stderr)
+        self.assertFalse((self.root / "build/dino_audio/audio.bin").exists())
+        self.assertFalse((self.root / "build/flash_args").exists())
+
+    def test_empty_bank_cannot_be_staged(self) -> None:
+        self.audio.write_bytes(b"")
+        result = self.configure()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must not be empty", result.stderr)
+        self.assertFalse((self.root / "build/dino_audio/audio.bin").exists())
+
+    def test_oversized_bank_cannot_be_staged(self) -> None:
+        self.audio.write_bytes(b"x" * (0x3A6000 + 1))
+        result = self.configure()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("exceeds its", result.stderr)
+        self.assertFalse((self.root / "build/dino_audio/audio.bin").exists())
+
+
+class AudioStaticGateTest(unittest.TestCase):
+    """Exercise the shell gate's resource profiles with a tiny verifier fixture."""
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="dinobook-audio-gate-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.audio = self.root / "assets/audio/dinobook40"
+        self.audio.mkdir(parents=True)
+        tools = self.root / "tools"
+        tools.mkdir()
+        # Execute the actual shell functions without the full compiler gate.
+        script = (ROOT / "tools/validate.sh").read_text().split('\ncd "${repo_root}"\n', 1)[0]
+        self.script = tools / "validate_audio_test.sh"
+        self.script.write_text(script + "\nrun_dino_audio_checks\n")
+        (tools / "generate_dino_audio.py").write_text(
+            "from pathlib import Path\n"
+            "assert Path('assets/audio/dinobook40/audio.bin').read_bytes() == b'valid bank'\n"
+            "assert Path('assets/audio/dinobook40/000_name.wav').read_bytes() == b'valid wav'\n"
+            "print('Audio verifier executed')\n"
+        )
+
+    def run_gate(self) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(["bash", str(self.script)], cwd=self.root,
+                              capture_output=True, text=True, check=False)
+
+    def test_public_source_profile_reports_audio_checks_not_run(self) -> None:
+        result = self.run_gate()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Audio asset checks: NOT RUN", result.stdout)
+        self.assertNotIn("Audio asset checks: PASS", result.stdout)
+        self.assertNotIn("Audio verifier executed", result.stdout)
+
+    def test_partial_audio_resources_are_rejected_instead_of_skipped(self) -> None:
+        (self.audio / "000_name.wav").write_bytes(b"valid wav")
+        result = self.run_gate()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Incomplete DinoBook narration resources", result.stderr)
+        self.assertNotIn("Audio asset checks: NOT RUN", result.stdout)
+
+    def test_present_bank_runs_the_audio_verifier(self) -> None:
+        (self.audio / "audio.bin").write_bytes(b"valid bank")
+        (self.audio / "000_name.wav").write_bytes(b"valid wav")
+        result = self.run_gate()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Audio verifier executed", result.stdout)
+        self.assertIn("Audio asset checks: PASS", result.stdout)
+
+    def test_corrupt_bank_is_not_misreported_as_an_omitted_resource(self) -> None:
+        (self.audio / "audio.bin").write_bytes(b"corrupt bank")
+        (self.audio / "000_name.wav").write_bytes(b"valid wav")
+        result = self.run_gate()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("Audio asset checks: NOT RUN", result.stdout)
+        self.assertNotIn("Audio asset checks: PASS", result.stdout)
+
+
 class FirmwareCliTest(unittest.TestCase):
     CUSTOM_ENTRIES = (
         (1, 2, 0x9000, 0x6000, "nvs"),
@@ -210,7 +353,7 @@ class FirmwareCliTest(unittest.TestCase):
         (self.build_dir / "FoloToy-AI-Passport-full.bin").write_bytes(merged)
         (self.build_dir / "flash_args").write_text("\n".join(flash_args) + "\n")
 
-    def run_verifier(self, error: str | None = None) -> None:
+    def run_verifier(self, error: str | None = None) -> subprocess.CompletedProcess[str]:
         result = subprocess.run(
             [sys.executable, str(ROOT / "tools/verify_firmware.py"), str(self.build_dir)],
             capture_output=True,
@@ -225,6 +368,102 @@ class FirmwareCliTest(unittest.TestCase):
             self.assertIn(error, result.stderr)
             self.assertNotIn("Merged firmware: PASS", result.stdout)
             self.assertNotIn("Traceback", result.stderr)
+        return result
+
+    def test_dinobook_audio_and_identity_flash_impact_are_verified(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"audio"),), DINO_ENTRIES)
+        result = self.run_verifier()
+        self.assertIn("Flashing this merged image erases identity data", result.stdout)
+        self.assertIn("Recovery contents excluded", result.stdout)
+        full = (self.build_dir / "FoloToy-AI-Passport-full.bin").read_bytes()
+        self.assertEqual(full[0x356000:0x35A000], b"\xff" * 0x4000)
+        self.assertLess(len(full), 0x700000)
+
+    def test_dinobook_public_source_profile_accepts_an_omitted_audio_image(self) -> None:
+        self.create_build(entries=DINO_ENTRIES)
+        result = self.run_verifier()
+        self.assertIn("DinoBook audio: NOT INCLUDED", result.stdout)
+        self.assertNotIn("DinoBook audio: PASS", result.stdout)
+        self.assertIn("ends before cardid", result.stdout)
+
+    def test_dinobook_silent_profile_still_requires_the_fixed_partition_layout(self) -> None:
+        entries = tuple(
+            (kind, subtype, 0x355000 if label == "cardid" else offset, size, label)
+            for kind, subtype, offset, size, label in DINO_ENTRIES
+        )
+        self.create_build(entries=entries)
+        self.run_verifier("partition 'cardid' must retain its fixed layout")
+
+    def test_dinobook_silent_profile_rejects_protected_partition_payloads(self) -> None:
+        for label, offset in (("cardid", 0x356000), ("recovery", 0x700000)):
+            with self.subTest(label=label):
+                self.create_build(((f"{label}.bin", offset, b"payload"),), DINO_ENTRIES)
+                self.run_verifier(f"must not write the {label} partition")
+
+    def test_dinobook_rejects_an_audio_image_registered_under_another_name(self) -> None:
+        self.create_build((("unexpected-audio.bin", 0x35A000, b"audio"),), DINO_ENTRIES)
+        self.run_verifier("requires dino_audio/audio.bin at its partition start")
+
+    def test_dinobook_registered_audio_cannot_be_empty(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b""),), DINO_ENTRIES)
+        self.run_verifier("dino_audio/audio.bin is empty")
+
+    def test_dinobook_silent_profile_still_rejects_non_ff_identity_padding(self) -> None:
+        self.create_build(entries=DINO_ENTRIES)
+        path = self.build_dir / "FoloToy-AI-Passport-full.bin"
+        merged = bytearray(path.read_bytes().ljust(0x356001, b"\xff"))
+        merged[0x356000] = ord("X")
+        path.write_bytes(merged)
+        self.run_verifier("identity hole must contain only FF padding")
+
+    def test_dinobook_silent_profile_still_excludes_recovery_contents(self) -> None:
+        self.create_build(entries=DINO_ENTRIES)
+        path = self.build_dir / "FoloToy-AI-Passport-full.bin"
+        path.write_bytes(path.read_bytes().ljust(0x700001, b"\xff"))
+        self.run_verifier("must end before Recovery contents")
+
+    def test_dinobook_audio_must_start_at_the_partition_offset(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A010, b"audio"),), DINO_ENTRIES)
+        self.run_verifier("requires dino_audio/audio.bin at its partition start")
+
+    def test_dinobook_audio_cannot_overflow_into_recovery(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"a" * (0x3A6000 + 1)),), DINO_ENTRIES)
+        self.run_verifier("must fit entirely within one partition")
+
+    def test_dinobook_audio_can_fill_its_partition_without_touching_recovery(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"a" * 0x3A6000),), DINO_ENTRIES)
+        self.run_verifier()
+        self.assertEqual((self.build_dir / "FoloToy-AI-Passport-full.bin").stat().st_size, 0x700000)
+
+    def test_dinobook_partition_contract_cannot_drift(self) -> None:
+        entries = tuple(
+            (kind, subtype, 0x355000 if label == "cardid" else offset, size, label)
+            for kind, subtype, offset, size, label in DINO_ENTRIES
+        )
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"audio"),), entries)
+        self.run_verifier("partition 'cardid' must retain its fixed layout")
+
+    def test_dinobook_rejects_separate_identity_and_recovery_payloads(self) -> None:
+        for label, offset in (("cardid", 0x356000), ("recovery", 0x700000)):
+            with self.subTest(label=label):
+                self.create_build((
+                    ("dino_audio/audio.bin", 0x35A000, b"audio"),
+                    (f"{label}.bin", offset, b"payload"),
+                ), DINO_ENTRIES)
+                self.run_verifier(f"must not write the {label} partition")
+
+    def test_dinobook_identity_hole_must_be_ff_padding(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"audio"),), DINO_ENTRIES)
+        with (self.build_dir / "FoloToy-AI-Passport-full.bin").open("r+b") as full:
+            full.seek(0x356000)
+            full.write(b"X")
+        self.run_verifier("identity hole must contain only FF padding")
+
+    def test_dinobook_merged_tail_cannot_include_recovery_padding(self) -> None:
+        self.create_build((("dino_audio/audio.bin", 0x35A000, b"audio"),), DINO_ENTRIES)
+        path = self.build_dir / "FoloToy-AI-Passport-full.bin"
+        path.write_bytes(path.read_bytes().ljust(0x700001, b"\xff"))
+        self.run_verifier("must end before Recovery contents")
 
     def test_accepts_default_minimal_layout(self) -> None:
         self.create_build()

@@ -82,7 +82,8 @@ class FirmwareArchiveTest(unittest.TestCase):
         path.write_bytes(data)
 
     def merge(self) -> None:
-        merged = bytearray(b"\xff" * 0x11000)
+        end = max(0x11000, *(offset + (self.build / name).stat().st_size for name, offset in self.offsets.items()))
+        merged = bytearray(b"\xff" * end)
         for name, offset in self.offsets.items():
             image = (self.build / name).read_bytes()
             merged[offset : offset + len(image)] = image
@@ -207,10 +208,10 @@ class FirmwareArchiveTest(unittest.TestCase):
             self.create()
         self.assertFalse(self.output.exists())
 
-    def test_custom_partition_payload_remains_in_full_image_without_separate_copy(self) -> None:
+    def add_resource(self, name: str = "assets/audio/audio.bin") -> bytes:
         data_offset = 0x20000
         payload = b"synthetic private user partition"
-        self.write("data.bin", payload)
+        self.write(name, payload)
         table = bytearray(b"\xff" * 0xC00)
         for index, (kind, subtype, offset, size, label) in enumerate((
             (0, 0, 0x10000, 0x10000, b"factory"),
@@ -227,15 +228,160 @@ class FirmwareArchiveTest(unittest.TestCase):
         merged = (self.build / self.full_name).read_bytes()
         self.write(self.full_name, merged.ljust(data_offset, b"\xff") + payload)
         args = (self.build / "flash_args").read_bytes()
-        self.write("flash_args", args + b"0x20000 data.bin\n")
+        self.write("flash_args", args + f"0x20000 {name}\n".encode())
+        return payload
+
+    def test_every_custom_image_is_retained_with_matching_schema_2_hash(self) -> None:
+        name = "assets/audio/audio.bin"
+        payload = self.add_resource(name)
         directory = self.create()
         manifest = ARCHIVE.verify_archive(directory)
-        self.assertEqual(manifest["image_offsets"]["data.bin"], data_offset)
-        self.assertFalse((directory / "data.bin").exists())
-        self.assertNotIn("data.bin", manifest["files"])
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["image_offsets"][name], 0x20000)
+        self.assertEqual((directory / name).read_bytes(), payload)
+        self.assertEqual(manifest["files"][name], {
+            "sha256": hashlib.sha256(payload).hexdigest(), "size": len(payload),
+        })
         archived_full = (directory / self.full_name).read_bytes()
-        self.assertEqual(archived_full[data_offset : data_offset + len(payload)], payload)
+        self.assertEqual(archived_full[0x20000 : 0x20000 + len(payload)], payload)
         self.assertEqual(archived_full, (self.build / self.full_name).read_bytes())
+        self.assertEqual(self.create(), directory)
+
+    def test_dinobook_audio_archive_records_the_identity_erasure_effect(self) -> None:
+        self.configure_dinobook_layout()
+        name = "dino_audio/audio.bin"
+        payload = b"synthetic 40-species audio bank"
+        self.write(name, payload)
+        self.offsets[name] = 0x35A000
+        self.write("flash_args", (self.build / "flash_args").read_bytes() + b"0x35a000 dino_audio/audio.bin\n")
+        self.merge()
+        directory = self.create()
+        manifest = ARCHIVE.verify_archive(directory)
+        effects = manifest["merged_flash_effects"]
+        self.assertEqual((directory / name).read_bytes(), payload)
+        self.assertEqual(effects["cardid_ff_padding"], {"offset": 0x356000, "size": 0x4000})
+        self.assertTrue(effects["cardid_erased_by_merged_flash"])
+        self.assertFalse(effects["recovery_contents_included"])
+        self.assertEqual(effects["end_exclusive"], 0x35A000 + len(payload))
+        self.assertEqual(effects["erase_end_exclusive"], 0x35B000)
+        self.assertNotIn("cardid.bin", manifest["image_offsets"])
+        self.assertNotIn("recovery.bin", manifest["image_offsets"])
+        with self.assertRaisesRegex(ValueError, "requires archive schema 2"):
+            ARCHIVE.inspect_build(directory, archive_schema=1)
+
+    def configure_dinobook_layout(self) -> None:
+        entries = (
+            (1, 2, 0x9000, 0x6000, "nvs"),
+            (1, 1, 0xF000, 0x1000, "phy_init"),
+            (0, 0, 0x10000, 0x300000, "factory"),
+            (1, 2, 0x356000, 0x4000, "cardid"),
+            (1, 0x40, 0x35A000, 0x3A6000, "dino_audio"),
+            (0, 0x20, 0x700000, 0x100000, "recovery"),
+        )
+        table = bytearray(b"\xff" * 0xC00)
+        for index, (kind, subtype, offset, size, label) in enumerate(entries):
+            struct.pack_into("<HBBII16sI", table, index * 32, 0x50AA,
+                             kind, subtype, offset, size, label.encode().ljust(16, b"\0"), 0)
+        marker = len(entries) * 32
+        struct.pack_into("<H", table, marker, 0xEBEB)
+        table[marker + 16:marker + 32] = hashlib.md5(table[:marker]).digest()
+        self.write("partition_table/partition-table.bin", bytes(table))
+
+    def test_dinobook_without_registered_bank_round_trips_in_schema_1(self) -> None:
+        self.configure_dinobook_layout()
+        self.merge()
+        directory = self.create()
+        manifest = ARCHIVE.verify_archive(directory)
+        effects = manifest["merged_flash_effects"]
+        self.assertEqual(manifest["schema_version"], 1)
+        self.assertEqual(manifest["image_offsets"], self.offsets)
+        self.assertEqual(set(manifest["files"]), set(ARCHIVE.ARTIFACTS))
+        self.assertFalse((directory / "dino_audio/audio.bin").exists())
+        self.assertEqual(effects["cardid_ff_padding"], {"offset": 0x356000, "size": 0})
+        self.assertFalse(effects["cardid_erased_by_merged_flash"])
+        self.assertFalse(effects["recovery_contents_included"])
+        self.assertEqual(effects["end_exclusive"], (self.build / self.full_name).stat().st_size)
+        self.assertEqual((directory / self.full_name).read_bytes(), (self.build / self.full_name).read_bytes())
+        self.assertEqual(self.create(), directory)
+
+    def test_dinobook_without_bank_still_checks_fixed_layout_and_protected_contents(self) -> None:
+        self.configure_dinobook_layout()
+        original_table = (self.build / "partition_table/partition-table.bin").read_bytes()
+        table = bytearray(original_table)
+        struct.pack_into("<I", table, 2 * 32 + 8, 0x2F0000)
+        table[6 * 32 + 16:6 * 32 + 32] = hashlib.md5(table[:6 * 32]).digest()
+        self.write("partition_table/partition-table.bin", bytes(table))
+        self.merge()
+        with self.assertRaisesRegex(ValueError, "fixed layout"):
+            self.create()
+        self.assertFalse(self.output.exists())
+
+        self.write("partition_table/partition-table.bin", original_table)
+        self.merge()
+        original_merged = (self.build / self.full_name).read_bytes()
+        for offset, error in ((0x356000, "identity hole"), (0x700000, "Recovery")):
+            with self.subTest(offset=offset):
+                merged = bytearray(original_merged.ljust(offset + 1, b"\xff"))
+                merged[offset] = 0
+                self.write(self.full_name, bytes(merged))
+                with self.assertRaisesRegex(ValueError, error):
+                    self.create()
+                self.assertFalse(self.output.exists())
+
+    def test_legacy_schema_1_custom_image_archive_remains_readable_and_unchanged(self) -> None:
+        self.add_resource()
+        manifest, artifacts = ARCHIVE.inspect_build(self.build, archive_schema=1)
+        directory = self.destination()
+        directory.mkdir(parents=True)
+        for name, data in artifacts.items():
+            path = directory / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        original = json.dumps(manifest, sort_keys=True).encode()
+        (directory / "manifest.json").write_bytes(original)
+        self.assertEqual(ARCHIVE.verify_archive(directory), manifest)
+        with self.assertRaisesRegex(ValueError, "different build artifacts"):
+            self.create()
+        self.assertEqual((directory / "manifest.json").read_bytes(), original)
+        self.assertFalse((directory / "assets/audio/audio.bin").exists())
+
+    def test_missing_empty_mismatched_and_oversized_extra_image_fail_before_archiving(self) -> None:
+        name = "assets/audio/audio.bin"
+        payload = self.add_resource(name)
+        path = self.build / name
+        for data in (None, b"", b"different", b"x" * 0x1001):
+            with self.subTest(data=data is None or len(data)):
+                if data is None:
+                    path.unlink()
+                else:
+                    path.write_bytes(data)
+                with self.assertRaises((OSError, ValueError)):
+                    self.create()
+                self.assertFalse(self.output.exists())
+                path.write_bytes(payload)
+
+    def test_extra_image_digest_tampering_and_symlinks_are_rejected(self) -> None:
+        name = "assets/audio/audio.bin"
+        payload = self.add_resource(name)
+        directory = self.create()
+        path = directory / name
+        path.write_bytes(b"changed")
+        with self.assertRaises(ValueError):
+            ARCHIVE.verify_archive(directory)
+        path.unlink()
+        self.symlink(path, self.build / name)
+        with self.assertRaisesRegex(ValueError, "symlink"):
+            ARCHIVE.verify_archive(directory)
+        self.assertEqual((self.build / name).read_bytes(), payload)
+
+    def test_unsupported_archive_schema_is_rejected(self) -> None:
+        directory = self.create()
+        path = directory / "manifest.json"
+        manifest = json.loads(path.read_text())
+        manifest["schema_version"] = 99
+        path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, "unsupported archive schema"):
+            ARCHIVE.verify_archive(directory)
 
     def test_unsafe_flash_args_are_rejected_without_execution(self) -> None:
         original = (self.build / "flash_args").read_bytes()

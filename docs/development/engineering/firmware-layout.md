@@ -4,13 +4,13 @@
 
 # Firmware Layout
 
-This repository is a minimal base for user-defined firmware targeting an
-ESP32-C3 with 8 MB Flash. Its default does not reserve product-specific
-identity, OTA, or unused data partitions.
+The upstream minimal base targets an ESP32-C3 with 8 MB Flash. Its default
+does not reserve product-specific identity, OTA, or unused data partitions.
+This DinoBook derivative uses the fixed resource layout documented below.
 
-## Default layout
+## Upstream default layout
 
-The default partition table contains exactly:
+The upstream default partition table contains exactly:
 
 | Partition | Type/subtype | Offset | Size | Purpose |
 | --- | --- | ---: | ---: | --- |
@@ -29,6 +29,35 @@ partitions, or other application-specific data. Keep the 8 MB device boundary,
 avoid overlaps, and make sure the application image is flashed at the start of
 an app partition large enough to contain it. When a derivative changes its
 layout, update that project's documentation and flashing instructions.
+
+## DinoBook resource layout
+
+The current `partitions.csv` contains:
+
+| Partition | Type/subtype | Offset | Size | Purpose |
+| --- | --- | ---: | ---: | --- |
+| `nvs` | data/NVS | `0x9000` | `0x6000` | Shared and application settings |
+| `phy_init` | data/PHY | `0xF000` | `0x1000` | PHY initialization data |
+| `factory` | app/factory | `0x10000` | `0x300000` | Application, fonts and compact animations |
+| `cardid` | data/NVS | `0x356000` | `0x4000` | Existing device identity reservation |
+| `dino_audio` | data/`0x40` | `0x35A000` | `0x3A6000` | External narration bank |
+| `recovery` | app/test | `0x700000` | `0x100000` | Existing Recovery reservation |
+
+The root CMake stages `assets/audio/dinobook40/audio.bin` into
+`dino_audio/audio.bin` and registers it with ESP-IDF's `flash` target. Therefore
+both segmented flash arguments and `idf.py merge-bin` include the same bank.
+The validator requires this bank at its partition start and within its bounds,
+while retaining the fixed application, identity and Recovery reservations.
+No identity or Recovery payload is registered or archived.
+
+The merged image extends beyond the identity region because narration starts
+after it. Its `0x356000..0x35A000` hole is FF-filled, **which does not preserve
+identity when flashing the merged image**: write-flash erases those sectors.
+Recovery contents are beyond the merged image and excluded. To preserve identity
+and NVS, use the exact archived component images and compatible segmented writes
+that avoid those regions; do not add full-chip erasure. Any device write requires
+separate authorization for the exact artifact and data impact. Building and
+archiving perform no device writes.
 
 ## Enforced validation
 
@@ -78,3 +107,7 @@ and flash targets that do not overwrite those data regions. `idf.py erase-flash`
 erases all user data. Do not add it as a routine prerequisite: use it only when
 a complete erase is explicitly intended and any data that must be kept has
 been saved.
+
+## Public source without narration
+
+If the local narration bank is absent, CMake omits its flash entry while retaining the same fixed partitions. The public merged image contains only bootloader, partition table and application; its verified erase range determines whether identity is covered. Do not apply the narrated image's identity-erasure statement to a shorter silent image. NVS still lies inside an offset-0 merged flash. Both profiles enforce identity/Recovery payload exclusion and partition bounds. Replacing an application without a resource does not erase a previously installed bank; a matching bank may still be accepted by the runtime. No device write is part of source synchronization.

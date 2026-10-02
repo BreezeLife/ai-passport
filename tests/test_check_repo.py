@@ -6,6 +6,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,6 +20,45 @@ CHECKS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECKS)
 
 UPSTREAM_DOC = "# Upstream\n\n[Guide](upstream-only.md)\n"
+
+
+class RepositoryInventoryTest(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="ai-passport-inventory-tests-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        root_patch = patch.object(CHECKS, "ROOT", self.root)
+        root_patch.start()
+        self.addCleanup(root_patch.stop)
+        (self.root / ".gitignore").write_text("/STATUS.md\n/.project-pulse/\n")
+        self.status = self.root / "STATUS.md"
+        self.status.write_text("# Local generated status\n")
+
+    def location_errors(self) -> list[str]:
+        errors: list[str] = []
+        CHECKS.check_required_files(errors)
+        return [error for error in errors if "root Markdown" in error]
+
+    def test_ignored_generated_status_is_preserved_and_outside_repo_checks(self) -> None:
+        self.assertNotIn(self.status, CHECKS.git_files())
+        self.assertEqual(self.location_errors(), [])
+        self.assertTrue(self.status.is_file())
+
+    def test_tracked_status_is_still_rejected_and_scanned_for_secrets(self) -> None:
+        self.status.write_text("# Status\n" + "ghp_" + "x" * 24)
+        subprocess.run(["git", "add", "-f", "STATUS.md"], cwd=self.root, check=True)
+        self.assertIn(self.status, CHECKS.git_files())
+        self.assertEqual(len(self.location_errors()), 1)
+        errors: list[str] = []
+        CHECKS.check_sensitive_content(CHECKS.text_files(), errors)
+        self.assertEqual(errors, ["STATUS.md: possible GitHub token"])
+
+    def test_unignored_root_notes_remain_rejected(self) -> None:
+        note = self.root / "notes.md"
+        note.write_text("# Working notes\n")
+        self.assertIn(note, CHECKS.git_files())
+        self.assertEqual(self.location_errors(), ["notes.md: root Markdown must move to docs/ or .github/"])
 
 
 class VendoredDocumentationTest(unittest.TestCase):

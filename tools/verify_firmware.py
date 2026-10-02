@@ -97,15 +97,22 @@ def parse_flash_args(raw: str) -> dict[str, int]:
 
 
 def verify_flash_images(
-    merged: bytes, build_dir: Path, image_offsets: dict[str, int]
+    merged: bytes, build_dir: Path, image_offsets: dict[str, int],
+    image_data: dict[str, bytes] | None = None,
 ) -> dict[str, int]:
     """Verify every configured image, not just the minimum bootable set."""
     image_sizes: dict[str, int] = {}
+    images: dict[str, bytes] = {}
     for name, offset in image_offsets.items():
-        image_path = build_dir / name
-        if not image_path.is_file():
-            raise ValueError(f"missing image {image_path}")
-        size = image_path.stat().st_size
+        if image_data is None:
+            image_path = build_dir / name
+            if not image_path.is_file():
+                raise ValueError(f"missing image {image_path}")
+            image = image_path.read_bytes()
+        else:
+            image = image_data[name]
+        images[name] = image
+        size = len(image)
         if not size:
             raise ValueError(f"image {name} is empty")
         if offset < 0 or offset + size > FLASH_SIZE:
@@ -118,7 +125,7 @@ def verify_flash_images(
             raise ValueError(f"images {left!r} and {right!r} overlap")
 
     for name, offset in image_offsets.items():
-        image = (build_dir / name).read_bytes()
+        image = images[name]
         if merged[offset : offset + len(image)] != image:
             raise ValueError(f"{name} differs at merged offset 0x{offset:x}")
         print(f"Verified {name}: {len(image)} bytes at 0x{offset:x}")
@@ -186,6 +193,79 @@ def verify_extra_image_partitions(
             raise ValueError(f"image {name} must fit entirely within one partition")
 
 
+def verify_dinobook_resources(
+    merged: bytes, image_offsets: dict[str, int], image_sizes: dict[str, int],
+    partitions: list[Partition],
+) -> dict | None:
+    """Enforce the DinoBook layout while retaining support for other applications.
+
+    A merged image includes FF-filled holes. Their sectors are still erased by
+    write-flash; retaining partition contents requires a separate segmented flash.
+    """
+    by_label = {part.label: part for part in partitions}
+    if "dino_audio" not in by_label:
+        return None
+    required = {
+        "factory": (0, 0, 0x10000, 0x300000),
+        "cardid": (1, 2, 0x356000, 0x4000),
+        "dino_audio": (1, 0x40, 0x35A000, 0x3A6000),
+        "recovery": (0, 0x20, 0x700000, 0x100000),
+    }
+    for label, expected in required.items():
+        part = by_label.get(label)
+        if part is None or (part.kind, part.subtype, part.offset, part.size) != expected:
+            raise ValueError(f"DinoBook partition {label!r} must retain its fixed layout")
+    audio_name = "dino_audio/audio.bin"
+    audio = by_label["dino_audio"]
+    has_audio = audio_name in image_offsets
+    if has_audio:
+        if image_offsets[audio_name] != audio.offset:
+            raise ValueError("DinoBook requires dino_audio/audio.bin at its partition start")
+        if image_sizes[audio_name] > audio.size:
+            raise ValueError("DinoBook audio bank exceeds its partition")
+    elif any(audio.offset <= offset < audio.end for offset in image_offsets.values()):
+        raise ValueError("DinoBook requires dino_audio/audio.bin at its partition start")
+    for label in ("cardid", "recovery"):
+        protected = by_label[label]
+        for name, offset in image_offsets.items():
+            if offset < protected.end and offset + image_sizes[name] > protected.offset:
+                raise ValueError(f"image {name} must not write the {label} partition")
+    identity = by_label["cardid"]
+    identity_padding_size = max(0, min(len(merged), identity.end) - identity.offset)
+    if merged[identity.offset:identity.end] != b"\xff" * identity_padding_size:
+        raise ValueError("DinoBook merged identity hole must contain only FF padding")
+    if len(merged) > by_label["recovery"].offset:
+        raise ValueError("DinoBook merged image must end before Recovery contents")
+    erased_end = (len(merged) + PARTITION_TABLE_SECTOR_SIZE - 1) // PARTITION_TABLE_SECTOR_SIZE * PARTITION_TABLE_SECTOR_SIZE
+    effects = {
+        "start": 0, "end_exclusive": len(merged),
+        "erase_end_exclusive": erased_end,
+        "cardid_ff_padding": {"offset": identity.offset, "size": identity_padding_size},
+        "cardid_erased_by_merged_flash": erased_end > identity.offset,
+        "recovery_contents_included": False,
+    }
+    if has_audio:
+        print(
+            f"DinoBook audio: PASS ({image_sizes[audio_name]} / {audio.size} bytes "
+            f"at 0x{audio.offset:x}; Recovery contents excluded)"
+        )
+    else:
+        print("DinoBook audio: NOT INCLUDED (public source profile; narration omitted)")
+    if effects["cardid_erased_by_merged_flash"]:
+        print(
+            f"FLASH IMPACT: merged 0x0..0x{len(merged):x} includes FF padding over "
+            "cardid 0x356000..0x35a000. Flashing this merged image erases identity "
+            "data; FF padding does not preserve it. Separate authorization is required."
+        )
+    else:
+        print(
+            f"FLASH IMPACT: merged 0x0..0x{len(merged):x} ends before cardid; "
+            "identity and Recovery contents are outside this image. "
+            "Stored NVS data can still reset when flashing the merged image."
+        )
+    return effects
+
+
 def main() -> int:
     build_dir = Path(sys.argv[1] if len(sys.argv) > 1 else "build").resolve()
     merged_path = build_dir / "FoloToy-AI-Passport-full.bin"
@@ -216,6 +296,7 @@ def main() -> int:
             image_offsets["FoloToy-AI-Passport.bin"],
         )
         verify_extra_image_partitions(image_offsets, image_sizes, partitions)
+        verify_dinobook_resources(merged, image_offsets, image_sizes, partitions)
     except (OSError, UnicodeDecodeError, ValueError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1

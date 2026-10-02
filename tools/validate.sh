@@ -8,9 +8,36 @@ usage() {
     echo "Usage: $0 [--all|--static|--firmware]" >&2
 }
 
+# Public source distributions omit restricted development narration. A complete
+# local bank still receives every source/hash/decoder check; partial resources
+# must fail rather than silently taking the omitted-audio profile.
+run_dino_audio_checks() {
+    local audio_dir="assets/audio/dinobook40"
+    local audio_source="${audio_dir}/audio.bin"
+    if [[ -e "${audio_source}" || -L "${audio_source}" ]]; then
+        PYTHONDONTWRITEBYTECODE=1 python3 tools/generate_dino_audio.py --verify
+        echo "Audio asset checks: PASS"
+    elif compgen -G "${audio_dir}/*.wav" >/dev/null || \
+         compgen -G "${audio_dir}/*.adpcm" >/dev/null; then
+        echo "ERROR: Incomplete DinoBook narration resources: audio.bin is missing; restore the complete compatible bank or omit all narration binaries." >&2
+        return 1
+    else
+        echo "Audio asset checks: NOT RUN (public source profile; narration binaries omitted)"
+    fi
+}
+
 run_static_checks() {
     local actionlint_bin
     local test_dir
+    local gc_sections_flag="-Wl,--gc-sections"
+    local asset_python="${DINO_ASSET_PYTHON:-python3}"
+    if ! "${asset_python}" -c 'import PIL' >/dev/null 2>&1; then
+        echo "ERROR: Dino animation checks need Pillow. Install tools/requirements-dino-assets.txt in a virtual environment and set DINO_ASSET_PYTHON to its Python." >&2
+        return 1
+    fi
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        gc_sections_flag="-Wl,-dead_strip"
+    fi
 
     python3 tools/check_repo.py
 
@@ -57,7 +84,7 @@ run_static_checks() {
     for demo in audio low_power ble wifi; do
         "${CC:-cc}" -std=c11 -Wall -Wextra -Werror \
             -ffunction-sections -fdata-sections -Itests/demo_stubs -Imain \
-            "tests/test_demo_${demo}_runtime.c" -Wl,--gc-sections \
+            "tests/test_demo_${demo}_runtime.c" "${gc_sections_flag}" \
             -o "${test_dir}/test_demo_${demo}_runtime"
         "${test_dir}/test_demo_${demo}_runtime"
     done
@@ -66,6 +93,22 @@ run_static_checks() {
     PYTHONDONTWRITEBYTECODE=1 python3 tests/test_verify_firmware.py
     PYTHONDONTWRITEBYTECODE=1 python3 tests/test_archive_firmware.py
     PYTHONDONTWRITEBYTECODE=1 python3 tests/test_install_passport_skills.py
+    PYTHONDONTWRITEBYTECODE=1 python3 tests/run_dino_tests.py
+    PYTHONDONTWRITEBYTECODE=1 python3 tests/run_dino_animation_tests.py
+    PYTHONDONTWRITEBYTECODE=1 "${asset_python}" tests/test_generate_dino_animation.py
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_dino_adpcm.c main/dino_adpcm.c \
+        -o "${test_dir}/test_dino_adpcm"
+    "${test_dir}/test_dino_adpcm"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -pedantic \
+        -Itests/dino_stubs -Imain tests/test_dino_runtime.c \
+        main/dino_model.c main/dino_catalog.c main/dino_adpcm.c \
+        -o "${test_dir}/test_dino_runtime"
+    "${test_dir}/test_dino_runtime"
+    PYTHONDONTWRITEBYTECODE=1 python3 tools/generate_dino_fonts.py --check
+    PYTHONDONTWRITEBYTECODE=1 python3 tools/generate_dino_catalog.py --verify
+    run_dino_audio_checks
+    PYTHONDONTWRITEBYTECODE=1 "${asset_python}" tools/generate_dino_animation.py --verify
     rm -rf "${test_dir}"
     echo "Host tests: PASS"
 }

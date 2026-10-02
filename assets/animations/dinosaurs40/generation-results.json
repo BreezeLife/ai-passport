@@ -1,0 +1,345 @@
+{
+  "date": "2026-10-02",
+  "requested_model": "gpt-image-2",
+  "execution_tool": "image_gen.imagegen",
+  "observed_model_id": "not exposed by host tool",
+  "species_count": 40,
+  "frames_per_species": 8,
+  "manual_review": {
+    "method": "Inspected every original atlas shown by the native image tool, including whole-body framing, visible limb-pose changes and defining identification traits.",
+    "repaired_species": [
+      "corythosaurus"
+    ],
+    "limitations": "Stylized AI walking illustrations; no measured extinct-animal gait, scientific reconstruction certification, device footage or measured device frame rate."
+  },
+  "species": [
+    {
+      "id": "tyrannosaurus",
+      "original": "originals/tyrannosaurus.png",
+      "prompt": "prompts/tyrannosaurus.txt",
+      "native_artifact": "exec-c7cdbda3-a595-45e7-8c62-49cbb5e460bd.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "triceratops",
+      "original": "originals/triceratops.png",
+      "prompt": "prompts/triceratops.txt",
+      "native_artifact": "exec-75195404-e7d5-4fe8-aaa0-1af160e76098.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "stegosaurus",
+      "original": "originals/stegosaurus.png",
+      "prompt": "prompts/stegosaurus.txt",
+      "native_artifact": "exec-d159a2b1-c03d-454f-aa01-924043a0285d.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "brachiosaurus",
+      "original": "originals/brachiosaurus.png",
+      "prompt": "prompts/brachiosaurus.txt",
+      "native_artifact": "exec-5a734abc-1dbb-43cd-aefc-59bd137a400f.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "diplodocus",
+      "original": "originals/diplodocus.png",
+      "prompt": "prompts/diplodocus.txt",
+      "native_artifact": "exec-3a6b7a76-227b-427a-9f2d-18ffd34eb660.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "ankylosaurus",
+      "original": "originals/ankylosaurus.png",
+      "prompt": "prompts/ankylosaurus.txt",
+      "native_artifact": "exec-525f07a5-dff6-4d42-8864-d7ae81544858.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "spinosaurus",
+      "original": "originals/spinosaurus.png",
+      "prompt": "prompts/spinosaurus.txt",
+      "native_artifact": "exec-3fe4471e-f1ad-4329-a183-21046d1108e9.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "velociraptor",
+      "original": "originals/velociraptor.png",
+      "prompt": "prompts/velociraptor.txt",
+      "native_artifact": "exec-56c503e8-fc76-41ca-b279-057e0da1cbae.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "allosaurus",
+      "original": "originals/allosaurus.png",
+      "prompt": "prompts/allosaurus.txt",
+      "native_artifact": "exec-ca291143-9b51-40bc-96c5-5a8de254b0cd.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "apatosaurus",
+      "original": "originals/apatosaurus.png",
+      "prompt": "prompts/apatosaurus.txt",
+      "native_artifact": "exec-c2d1805f-c084-4973-98a5-d5bc217f9966.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "camarasaurus",
+      "original": "originals/camarasaurus.png",
+      "prompt": "prompts/camarasaurus.txt",
+      "native_artifact": "exec-4e7ef5f5-c866-48aa-ab93-046e6ff88f9b.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "iguanodon",
+      "original": "originals/iguanodon.png",
+      "prompt": "prompts/iguanodon.txt",
+      "native_artifact": "exec-166c9de0-94fb-4fcf-a909-557a0cfeb9cd.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "parasaurolophus",
+      "original": "originals/parasaurolophus.png",
+      "prompt": "prompts/parasaurolophus.txt",
+      "native_artifact": "exec-18ab8528-68cd-4d60-a7e8-b1e780530381.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "corythosaurus",
+      "original": "originals/corythosaurus.png",
+      "prompt": "prompts/corythosaurus.txt",
+      "native_artifact": "exec-4716cf69-7116-45a5-a76f-6d0b61417239.png",
+      "visual_review": "reviewed",
+      "revision": 2
+    },
+    {
+      "id": "lambeosaurus",
+      "original": "originals/lambeosaurus.png",
+      "prompt": "prompts/lambeosaurus.txt",
+      "native_artifact": "exec-51dc2ea6-a6de-48a8-a769-859df47b73b9.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "edmontosaurus",
+      "original": "originals/edmontosaurus.png",
+      "prompt": "prompts/edmontosaurus.txt",
+      "native_artifact": "exec-c7163c44-b02c-47e6-9034-30f02e2336f0.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "maiasaura",
+      "original": "originals/maiasaura.png",
+      "prompt": "prompts/maiasaura.txt",
+      "native_artifact": "exec-f4b1975d-21ba-4e2c-9531-dccfe47ede35.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "pachycephalosaurus",
+      "original": "originals/pachycephalosaurus.png",
+      "prompt": "prompts/pachycephalosaurus.txt",
+      "native_artifact": "exec-e0378fd3-4e99-4e6e-951b-c61f679ee430.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "homalocephale",
+      "original": "originals/homalocephale.png",
+      "prompt": "prompts/homalocephale.txt",
+      "native_artifact": "exec-a33090c6-772e-4fd3-bf18-bce6b83257e2.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "psittacosaurus",
+      "original": "originals/psittacosaurus.png",
+      "prompt": "prompts/psittacosaurus.txt",
+      "native_artifact": "exec-ec233e49-5779-47a2-9fec-ceeea713fbf2.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "protoceratops",
+      "original": "originals/protoceratops.png",
+      "prompt": "prompts/protoceratops.txt",
+      "native_artifact": "exec-90f71904-b6e6-4da3-9ce0-2548e359e832.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "styracosaurus",
+      "original": "originals/styracosaurus.png",
+      "prompt": "prompts/styracosaurus.txt",
+      "native_artifact": "exec-d7044077-15c2-447c-b7e8-6a4b48c0ada4.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "centrosaurus",
+      "original": "originals/centrosaurus.png",
+      "prompt": "prompts/centrosaurus.txt",
+      "native_artifact": "exec-f4b1017f-6773-4b56-a8d6-42c53731c3af.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "pachyrhinosaurus",
+      "original": "originals/pachyrhinosaurus.png",
+      "prompt": "prompts/pachyrhinosaurus.txt",
+      "native_artifact": "exec-2c4c559b-5ed0-41b5-b831-69245a90afd5.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "carnotaurus",
+      "original": "originals/carnotaurus.png",
+      "prompt": "prompts/carnotaurus.txt",
+      "native_artifact": "exec-68069134-5d7e-4e44-b316-29650722e019.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "ceratosaurus",
+      "original": "originals/ceratosaurus.png",
+      "prompt": "prompts/ceratosaurus.txt",
+      "native_artifact": "exec-4269dca8-574e-4d83-bc5a-2ef116e3411c.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "dilophosaurus",
+      "original": "originals/dilophosaurus.png",
+      "prompt": "prompts/dilophosaurus.txt",
+      "native_artifact": "exec-4108ebc3-c60e-4468-8a5d-6304c0676462.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "coelophysis",
+      "original": "originals/coelophysis.png",
+      "prompt": "prompts/coelophysis.txt",
+      "native_artifact": "exec-f9285ab4-d722-4c8a-9f18-4e0a9af11b23.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "compsognathus",
+      "original": "originals/compsognathus.png",
+      "prompt": "prompts/compsognathus.txt",
+      "native_artifact": "exec-449d30f5-3bad-4334-8f7b-8907c236764a.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "gallimimus",
+      "original": "originals/gallimimus.png",
+      "prompt": "prompts/gallimimus.txt",
+      "native_artifact": "exec-626d839e-07f4-4f26-9ebe-0f3870a118e6.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "ornithomimus",
+      "original": "originals/ornithomimus.png",
+      "prompt": "prompts/ornithomimus.txt",
+      "native_artifact": "exec-06371a1b-defd-4c41-aefb-a2c42ee65355.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "oviraptor",
+      "original": "originals/oviraptor.png",
+      "prompt": "prompts/oviraptor.txt",
+      "native_artifact": "exec-db8e7917-d4f6-4c85-b506-b4bd80edf049.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "therizinosaurus",
+      "original": "originals/therizinosaurus.png",
+      "prompt": "prompts/therizinosaurus.txt",
+      "native_artifact": "exec-859a161d-476f-4527-b769-75ac99567356.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "deinonychus",
+      "original": "originals/deinonychus.png",
+      "prompt": "prompts/deinonychus.txt",
+      "native_artifact": "exec-9361a2ba-7087-4a48-bbc2-1a2bc5112459.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "microraptor",
+      "original": "originals/microraptor.png",
+      "prompt": "prompts/microraptor.txt",
+      "native_artifact": "exec-6d9388a9-890e-4b51-91d0-e86662aa8d00.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "baryonyx",
+      "original": "originals/baryonyx.png",
+      "prompt": "prompts/baryonyx.txt",
+      "native_artifact": "exec-d43808f1-4a36-448b-81ae-7576c2c06f03.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "suchomimus",
+      "original": "originals/suchomimus.png",
+      "prompt": "prompts/suchomimus.txt",
+      "native_artifact": "exec-cf5eb6e6-ff60-47f0-ba63-32f19cc2122c.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "giganotosaurus",
+      "original": "originals/giganotosaurus.png",
+      "prompt": "prompts/giganotosaurus.txt",
+      "native_artifact": "exec-102d8769-01d4-44d2-886a-934042bb6a46.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "argentinosaurus",
+      "original": "originals/argentinosaurus.png",
+      "prompt": "prompts/argentinosaurus.txt",
+      "native_artifact": "exec-ac71adfd-5155-40b6-ac89-be5719917677.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    },
+    {
+      "id": "saltasaurus",
+      "original": "originals/saltasaurus.png",
+      "prompt": "prompts/saltasaurus.txt",
+      "native_artifact": "exec-18adc398-433c-42b1-ad9d-042979c87737.png",
+      "visual_review": "reviewed",
+      "revision": 1
+    }
+  ],
+  "revisions": [
+    {
+      "id": "corythosaurus",
+      "previous_original": "revisions/corythosaurus-v1.png",
+      "edit_prompt": "revisions/corythosaurus-v2-prompt.txt",
+      "reason": "Replaced curled crest with a broad rounded helmet crest."
+    }
+  ]
+}

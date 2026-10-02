@@ -1,0 +1,2 @@
+# Pinned image encoding dependency for Dino animation checks and previews.
+Pillow==11.3.0

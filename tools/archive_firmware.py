@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Retain and verify the debug artifacts belonging to one checked ESP32-C3 build.
 
-Only the explicit artifact allowlist is copied. flash_args is parsed as data,
-never executed; sdkconfig, logs, and extra partition images are not copied as
-separate files. The full image can still contain custom NVS or resource data;
-this archive does not sanitize firmware contents.
+The debug artifact allowlist and every image named in flash_args are copied.
+flash_args is parsed as data, never executed; sdkconfig and logs are not copied.
+Images can contain custom NVS or resource data; this archive does not sanitize
+firmware contents. Historical schema-1 archives remain readable without changes.
 """
 
 from __future__ import annotations
@@ -22,7 +22,10 @@ from pathlib import Path
 
 # Standalone verification must not create a tools/__pycache__ as a side effect.
 sys.dont_write_bytecode = True
-from verify_firmware import FLASH_SIZE, REQUIRED_IMAGES, verify_firmware_layout
+from verify_firmware import (
+    FLASH_SIZE, REQUIRED_IMAGES, verify_firmware_layout, verify_flash_images,
+    verify_extra_image_partitions, verify_dinobook_resources,
+)
 
 
 APP = "FoloToy-AI-Passport"
@@ -162,18 +165,22 @@ def application_descriptor(app: bytes) -> dict[str, str]:
     }
 
 
-def inspect_build(directory: Path) -> tuple[dict, dict[str, bytes]]:
+def inspect_build(directory: Path, *, archive_schema: int | None = None) -> tuple[dict, dict[str, bytes]]:
     """Read one artifact snapshot and validate the firmware/ELF correspondence."""
     directory = safe_path(directory)
     if not directory.is_dir():
         raise ValueError(f"build directory does not exist: {directory}")
     artifacts = {name: read_artifact(directory, name) for name in ARTIFACTS}
     offsets = parse_flash_args(artifacts["flash_args"])
-    # Extra partition images are not copied separately, but their contents may
-    # remain in the full image. Reject symlink paths even though these entries
-    # are never opened or executed; no firmware contents are sanitized here.
+    extra_images = set(offsets) - set(REQUIRED_IMAGES)
+    schema = archive_schema if archive_schema is not None else (2 if extra_images else 1)
+    if type(schema) is not int or schema not in (1, 2):
+        raise ValueError(f"unsupported archive schema: {schema}")
     for name in offsets:
         safe_path(directory / name)
+    if schema == 2:
+        for name in sorted(extra_images):
+            artifacts[name] = read_artifact(directory, name)
     merged = artifacts[FULL_BIN]
     if len(merged) > FLASH_SIZE:
         raise ValueError("merged firmware exceeds 8 MB")
@@ -182,9 +189,19 @@ def inspect_build(directory: Path) -> tuple[dict, dict[str, bytes]]:
         image = artifacts[name]
         if merged[offset : offset + len(image)] != image:
             raise ValueError(f"{name} differs in merged firmware at 0x{offset:x}")
-    verify_firmware_layout(
+    partitions = verify_firmware_layout(
         merged, directory, offsets["partition_table/partition-table.bin"], offsets[f"{APP}.bin"]
     )
+    dinobook = any(part.label == "dino_audio" for part in partitions)
+    # Public builds can retain the DinoBook layout without registering a bank.
+    # Any registered DinoBook resource must still be retained in schema 2.
+    if schema == 1 and dinobook and extra_images:
+        raise ValueError("DinoBook audio bank requires archive schema 2")
+    flash_effects = None
+    if schema == 2 or dinobook:
+        sizes = verify_flash_images(merged, directory, offsets, image_data=artifacts)
+        verify_extra_image_partitions(offsets, sizes, partitions)
+        flash_effects = verify_dinobook_resources(merged, offsets, sizes, partitions)
     elf = artifacts[f"{APP}.elf"]
     if len(elf) < 52 or elf[:6] != b"\x7fELF\x01\x01" or struct.unpack_from("<H", elf, 18)[0] != 243:
         raise ValueError("application ELF must be a 32-bit little-endian RISC-V ELF")
@@ -196,8 +213,8 @@ def inspect_build(directory: Path) -> tuple[dict, dict[str, bytes]]:
     elf_sha = files[f"{APP}.elf"]["sha256"]
     if descriptor["embedded_elf_sha256"] != elf_sha:
         raise ValueError("application descriptor ELF SHA256 does not match the application ELF")
-    return {
-        "schema_version": 1,
+    manifest = {
+        "schema_version": schema,
         "target": "esp32c3",
         "flash_size_bytes": FLASH_SIZE,
         "full_bin_sha256": files[FULL_BIN]["sha256"],
@@ -205,7 +222,10 @@ def inspect_build(directory: Path) -> tuple[dict, dict[str, bytes]]:
         "app_descriptor": descriptor,
         "image_offsets": offsets,
         "files": files,
-    }, artifacts
+    }
+    if flash_effects is not None:
+        manifest["merged_flash_effects"] = flash_effects
+    return manifest, artifacts
 
 
 def unique_json_object(pairs: list[tuple[str, object]]) -> dict:
@@ -225,12 +245,16 @@ def verify_archive(directory: Path) -> dict:
     expected = json.loads(
         read_artifact(directory, MANIFEST).decode("utf-8"), object_pairs_hook=unique_json_object
     )
-    actual, _ = inspect_build(directory)
+    if not isinstance(expected, dict):
+        raise ValueError("archive manifest must be a JSON object")
+    actual, _ = inspect_build(directory, archive_schema=expected.get("schema_version"))
     if expected != actual:
         raise ValueError("archive manifest does not match its artifacts")
     if directory.name != actual["full_bin_sha256"]:
         raise ValueError("archive directory name does not match the full firmware SHA256")
-    allowed = set(ARTIFACTS) | {MANIFEST, "bootloader", "partition_table"}
+    allowed = set(actual["files"]) | {MANIFEST}
+    for name in tuple(allowed):
+        allowed.update(parent.as_posix() for parent in Path(name).parents if parent != Path("."))
     for parent, directories, files in os.walk(directory, followlinks=False):
         for name in directories + files:
             child = Path(parent) / name
@@ -259,7 +283,7 @@ def create_archive(build_dir: Path, archive_root: Path) -> Path:
         # identical; do not replace it or rewrite the original manifest.
         if any(existing[key] != expected[key] for key in expected if key != "files") or any(
             existing["files"][name] != expected["files"][name]
-            for name in ARTIFACTS if name != f"{APP}.map"
+            for name in expected["files"] if name != f"{APP}.map"
         ):
             raise ValueError("existing archive belongs to different build artifacts")
         return destination
@@ -282,10 +306,13 @@ def create_archive(build_dir: Path, archive_root: Path) -> Path:
 
     try:
         for name, data in artifacts.items():
-            parent = destination / name
-            if parent.parent != destination and not parent.parent.exists():
-                parent.parent.mkdir()
-                created_directories.append(parent.parent)
+            for relative in reversed(Path(name).parents):
+                if relative == Path("."):
+                    continue
+                parent = safe_path(destination / relative)
+                if not parent.exists():
+                    parent.mkdir()
+                    created_directories.append(parent)
             write_file(name, data)
         actual, _ = inspect_build(destination)
         if actual != expected:

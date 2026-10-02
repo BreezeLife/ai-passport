@@ -10,6 +10,8 @@
 
 可复用的字库文件与生成的字库源码放在 `fonts/`。
 
+恐龙护照的思源黑体子集、OFL 许可与可复现转换记录在 [`fonts/README.zh_CN.md`](fonts/README.zh_CN.md)。
+
 - 命名要能反映字族、字重、字级与格式。
 - 记录来源、许可、字符范围、转换命令与目标放置路径。
 - 添加字库前评估 Flash 与内部 RAM 影响；ESP32-C3 无 PSRAM。
@@ -18,6 +20,10 @@
 ## 图片（images）
 
 可复用的源图与生成的显示资产放在 `images/`。
+
+40 种动作来源、Image2 请求、八帧图集、索引转换及宿主预览边界记录在 [`animations/dinosaurs40/README.zh_CN.md`](animations/dinosaurs40/README.zh_CN.md)。旧八张静态插画与 RGB565 转换保留为历史来源，见 [`images/dinosaurs/README.zh_CN.md`](images/dinosaurs/README.zh_CN.md)，不链接进 40 种版本。
+
+可编辑的[恐龙目录](data/dinosaurs.json)保留 40 条记录、博物馆 / 研究来源、形态描述、80 条显示知识、独立短朗读及 40 道观察题。运行 `python3 tools/generate_dino_catalog.py --verify` 检查固定顺序、文字长度、正确选项交替和生成固件目录。
 
 | 文件 | 尺寸与格式 | 用途与来源 |
 | --- | --- | --- |
@@ -34,6 +40,8 @@
 ## 音乐与音效（music）
 
 可复用的音乐与音效源码放在 `music/`。
+
+恐龙护照的 202 段离线讲解存放在 `audio/dinobook40/`。外部 `audio.bin` 为 3,200,798 字节，包含 64 字节身份头，写入位置为 `0x35a000`；C 资源只包含描述符。开发语音来源、8 kHz ADPCM 格式、完整离线校验和待验收扬声器项目记录在 [`audio/README.zh_CN.md`](audio/README.zh_CN.md)。旧 `audio/dinobook/` 四十二段版本保留为历史，不链接进当前应用。
 
 - 记录来源、许可、采样率、位深、声道、转换命令与目标路径。
 - 与当前 BSP 音频路径匹配时优先采用 16 kHz、16 位单声道 PCM。

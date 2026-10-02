@@ -43,8 +43,10 @@ python3 tools/archive_firmware.py verify <archive-directory>
 
 Report the actual archive path, full-image hash, and matching ELF identity from
 `manifest.json`. The archive retains ELF, MAP, merged, application, bootloader,
-and partition-table images, and `flash_args`. Extra custom partition images are
-not retained separately; obtain them if needed for segmented flashing. A repeat
+and partition-table images, and `flash_args`. Schema-2 archives additionally
+retain every custom image named in `flash_args`; historical schema-1 archives
+remain readable and may lack separate custom images. Check the actual manifest
+before planning segmented flashing. A repeat
 archive of identical firmware reuses its first verified MAP as documented in the
 build guide. Do not substitute an ELF from a later rebuild,
 especially for a dirty checkout. The recorded hashes bind artifacts together;
@@ -53,7 +55,10 @@ they are not a claim of hardware acceptance or cryptographic trust in a vendor.
 Deliver the verified merged `full.bin` for flashing from `0x0`, never the
 application-only `.bin` at that offset. Explain that a merged flash can reset
 stored data; keeping settings may require a compatible segmented-flash workflow
-under the firmware-layout policy. No original-firmware backup is required, but
+under the firmware-layout policy. DinoBook's merged image contains FF padding
+over device identity at `0x356000..0x35A000`; writing it erases that identity.
+Preserving identity requires segmented writes that avoid the region, with
+separate authorization for the exact device write. No original-firmware backup is required, but
 that does not authorize a full-chip erase.
 
 Keep generated binaries and debugging bundles out of commits. Firmware/ELF can

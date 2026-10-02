@@ -1,0 +1,295 @@
+{
+  "requested_model": "gpt-image-2",
+  "mode": "Host-Native (Mode B)",
+  "execution_tool": "image_gen.imagegen",
+  "observed_model_id": "not exposed by host tool",
+  "frames": 8,
+  "grid": [
+    3,
+    3
+  ],
+  "width": 144,
+  "height": 88,
+  "species": [
+    {
+      "id": "tyrannosaurus",
+      "name": "Tyrannosaurus rex",
+      "anatomy": "Massive deep skull, tiny two-fingered forearms, strong two hind legs and balancing tail; no horns, plates or sail.",
+      "color": "moss-green",
+      "gait": "biped"
+    },
+    {
+      "id": "triceratops",
+      "name": "Triceratops",
+      "anatomy": "Exactly THREE horns: two long brow horns and one shorter nose horn, wide bony neck frill, beak, four stout legs.",
+      "color": "ochre-brown",
+      "gait": "quadruped"
+    },
+    {
+      "id": "stegosaurus",
+      "name": "Stegosaurus",
+      "anatomy": "Two staggered rows of large upright back plates, four long tail spikes, tiny head, short front legs and higher hindquarters.",
+      "color": "muted terracotta",
+      "gait": "quadruped"
+    },
+    {
+      "id": "brachiosaurus",
+      "name": "Brachiosaurus",
+      "anatomy": "Very long upright neck, small head, FRONT legs noticeably longer than hind legs, high shoulders, long tail; no plates.",
+      "color": "sage-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "diplodocus",
+      "name": "Diplodocus",
+      "anatomy": "Long low horizontal neck, tiny narrow head, long slender whip-like tail, four columnar legs with lower front than Brachiosaurus.",
+      "color": "warm ochre",
+      "gait": "quadruped"
+    },
+    {
+      "id": "ankylosaurus",
+      "name": "Ankylosaurus",
+      "anatomy": "Wide low armored body with broad bony back scutes, small low head, FOUR stout legs, conspicuous blunt bony TAIL CLUB.",
+      "color": "olive-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "spinosaurus",
+      "name": "Spinosaurus",
+      "anatomy": "Tall curved back sail, elongated narrow crocodile-like snout, strong hind legs, long deep flattened tail, grasping forelimbs; no horns.",
+      "color": "dusty blue-green",
+      "gait": "biped"
+    },
+    {
+      "id": "velociraptor",
+      "name": "Velociraptor",
+      "anatomy": "Small lightly built FEATHERED raptor, wing-like feathered arms, long feathered tail, enlarged raised sickle-shaped second toe claws, no naked scaly movie raptor.",
+      "color": "rust-brown",
+      "gait": "biped"
+    },
+    {
+      "id": "allosaurus",
+      "name": "Allosaurus",
+      "anatomy": "Large meat-eating biped, THREE fingers per forelimb, low paired crests above eyes, large head and long balancing tail.",
+      "color": "muted olive",
+      "gait": "biped"
+    },
+    {
+      "id": "apatosaurus",
+      "name": "Apatosaurus",
+      "anatomy": "Robust long-necked sauropod, thick muscular neck held forward, long tapering tail and FOUR sturdy columnar legs; no sails or horns.",
+      "color": "cool gray-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "camarasaurus",
+      "name": "Camarasaurus",
+      "anatomy": "Sturdy long-necked sauropod, relatively boxy blunt skull, high arched snout, broad body, four thick legs, fairly stout tail.",
+      "color": "warm tan",
+      "gait": "quadruped"
+    },
+    {
+      "id": "iguanodon",
+      "name": "Iguanodon",
+      "anatomy": "Large herbivore with a beaked muzzle, long tail, robust hind legs and shorter forelegs, a pointed THUMB SPIKE on each hand.",
+      "color": "fern-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "parasaurolophus",
+      "name": "Parasaurolophus",
+      "anatomy": "Duck-billed herbivore, conspicuous long smooth TUBULAR crest sweeping backwards from head, four legs, long tail; crest is not a horn.",
+      "color": "dusty golden brown",
+      "gait": "quadruped"
+    },
+    {
+      "id": "corythosaurus",
+      "name": "Corythosaurus",
+      "anatomy": "Duck-billed herbivore with a high rounded HELMET-shaped head crest, long balancing tail and four walking legs.",
+      "color": "sage-brown",
+      "gait": "quadruped"
+    },
+    {
+      "id": "lambeosaurus",
+      "name": "Lambeosaurus",
+      "anatomy": "Duck-billed herbivore with a hatchet-shaped hollow head crest: broad forward blade and small backward projecting spur; long tail.",
+      "color": "muted orange-brown",
+      "gait": "quadruped"
+    },
+    {
+      "id": "edmontosaurus",
+      "name": "Edmontosaurus",
+      "anatomy": "Large broad flat duck bill, NO tall bony head crest or horns, bulky herbivore body, four walking limbs and long balancing tail.",
+      "color": "lichen-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "maiasaura",
+      "name": "Maiasaura",
+      "anatomy": "Gentle duck-billed herbivore, small low bony bump above eyes rather than a giant crest, broad bill, four legs and long tail.",
+      "color": "soft muted ochre",
+      "gait": "quadruped"
+    },
+    {
+      "id": "pachycephalosaurus",
+      "name": "Pachycephalosaurus",
+      "anatomy": "Bipedal herbivore with a very thick smoothly rounded skull DOME, small bumps around the rear skull, short forelimbs and long tail.",
+      "color": "muted teal-green",
+      "gait": "biped"
+    },
+    {
+      "id": "homalocephale",
+      "name": "Homalocephale",
+      "anatomy": "Small bipedal plant-eater with a FLAT relatively broad skull roof instead of a tall dome, tiny forelimbs and slender long tail.",
+      "color": "warm sage",
+      "gait": "biped"
+    },
+    {
+      "id": "psittacosaurus",
+      "name": "Psittacosaurus",
+      "anatomy": "Small bipedal herbivore with a curved PARROT-like beak, NO long face horns or large neck frill, short forelimbs and tail with a sparse bristle fringe.",
+      "color": "soft terracotta",
+      "gait": "biped"
+    },
+    {
+      "id": "protoceratops",
+      "name": "Protoceratops",
+      "anatomy": "Small stout FOUR-legged herbivore with a parrot-like beak and a large bony neck frill but NO long brow horns; small nose bump only.",
+      "color": "sandy tan",
+      "gait": "quadruped"
+    },
+    {
+      "id": "styracosaurus",
+      "name": "Styracosaurus",
+      "anatomy": "FOUR-legged horned herbivore, ONE long nose horn and conspicuous long spikes projecting from the rim of the neck frill; no Triceratops long brow horns.",
+      "color": "olive-brown",
+      "gait": "quadruped"
+    },
+    {
+      "id": "centrosaurus",
+      "name": "Centrosaurus",
+      "anatomy": "FOUR-legged horned herbivore with a prominent single nasal horn, short neck frill with small rim knobs and paired inward-curving hook ornaments at top.",
+      "color": "warm brown-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "pachyrhinosaurus",
+      "name": "Pachyrhinosaurus",
+      "anatomy": "Stout FOUR-legged horned herbivore with a broad thick blunt bony nasal BOSS, NOT a long pointed nose horn, and a bony neck frill with small rim ornaments.",
+      "color": "dusty rust",
+      "gait": "quadruped"
+    },
+    {
+      "id": "carnotaurus",
+      "name": "Carnotaurus",
+      "anatomy": "Bipedal meat-eater with TWO short thick horns above the eyes, deep short blunt skull, extremely tiny forearms and long muscular tail.",
+      "color": "muted brick brown",
+      "gait": "biped"
+    },
+    {
+      "id": "ceratosaurus",
+      "name": "Ceratosaurus",
+      "anatomy": "Bipedal meat-eater with a clear single short NOSE HORN, low ridges above eyes and a row of small bony bumps along back, long tail.",
+      "color": "gray olive",
+      "gait": "biped"
+    },
+    {
+      "id": "dilophosaurus",
+      "name": "Dilophosaurus",
+      "anatomy": "Slender biped with TWO thin parallel arched crests atop the head, long tail and forearms; NO neck frill, NO venom effect or fantasy wings.",
+      "color": "rusty gold",
+      "gait": "biped"
+    },
+    {
+      "id": "coelophysis",
+      "name": "Coelophysis",
+      "anatomy": "Slender early bipedal meat-eater with a long narrow pointed head, thin curved neck, slim body, delicate forelimbs and long thin tail.",
+      "color": "dusty olive",
+      "gait": "biped"
+    },
+    {
+      "id": "compsognathus",
+      "name": "Compsognathus",
+      "anatomy": "Very small lightly built biped with a narrow head, long neck and tail and thin legs; short feather fringe may be understated, no head horns.",
+      "color": "warm pale brown",
+      "gait": "biped"
+    },
+    {
+      "id": "gallimimus",
+      "name": "Gallimimus",
+      "anatomy": "Ostrich-like biped, small toothless beaked head, long neck, very long running legs, feathered body and forearms and long tail, no wings suited for flight.",
+      "color": "warm cinnamon",
+      "gait": "biped"
+    },
+    {
+      "id": "ornithomimus",
+      "name": "Ornithomimus",
+      "anatomy": "Slender bird-mimic biped with small toothless beak, long neck, long legs, conspicuous feathered wing-like arms and long balancing tail.",
+      "color": "muted cream-brown",
+      "gait": "biped"
+    },
+    {
+      "id": "oviraptor",
+      "name": "Oviraptor",
+      "anatomy": "Small feathered biped with a short deep parrot-like toothless beak, a modest head crest, feathered wing-like arms, long tail plume and no stolen eggs.",
+      "color": "warm teal-green",
+      "gait": "biped"
+    },
+    {
+      "id": "therizinosaurus",
+      "name": "Therizinosaurus",
+      "anatomy": "Large feathered bipedal plant-eater with a small beaked head, long neck, broad pot belly, and THREE extraordinarily long gently curved CLAWS on each long forearm.",
+      "color": "soft moss brown",
+      "gait": "biped"
+    },
+    {
+      "id": "deinonychus",
+      "name": "Deinonychus",
+      "anatomy": "FEATHERED raptor with long feathered forearms, rigid balancing tail, enlarged sickle-shaped raised second toe claw and bigger deep head than Velociraptor.",
+      "color": "muted rust-green",
+      "gait": "biped"
+    },
+    {
+      "id": "microraptor",
+      "name": "Microraptor",
+      "anatomy": "Very small fully FEATHERED dinosaur with long feathers on BOTH forelimbs and hindlimbs (four wing surfaces), long feathered tail and tiny head; gentle walking wing-folded cycle.",
+      "color": "charcoal with teal accents",
+      "gait": "biped"
+    },
+    {
+      "id": "baryonyx",
+      "name": "Baryonyx",
+      "anatomy": "Biped with a long narrow crocodile-like snout, low back without giant sail, ONE large curved thumb claw per grasping forelimb and long tail.",
+      "color": "dusty slate-green",
+      "gait": "biped"
+    },
+    {
+      "id": "suchomimus",
+      "name": "Suchomimus",
+      "anatomy": "Biped with a very long narrow crocodile-like snout and small low raised ridge along back rather than a towering Spinosaurus sail; long forearms and tail.",
+      "color": "soft blue-brown",
+      "gait": "biped"
+    },
+    {
+      "id": "giganotosaurus",
+      "name": "Giganotosaurus",
+      "anatomy": "Huge bipedal meat-eater with a long low deep skull, THREE clawed fingers per forelimb, powerful hind legs and long balancing tail; no horns or sail.",
+      "color": "olive-gray",
+      "gait": "biped"
+    },
+    {
+      "id": "argentinosaurus",
+      "name": "Argentinosaurus",
+      "anatomy": "Enormous long-necked plant-eating sauropod, extremely broad heavy torso, four thick columnar legs, long neck and tapering tail, small head; no back sail.",
+      "color": "warm fern-green",
+      "gait": "quadruped"
+    },
+    {
+      "id": "saltasaurus",
+      "name": "Saltasaurus",
+      "anatomy": "Compact relatively small sauropod with long neck and tail, four columnar legs and distinctive small rounded bony armor scutes across the back; no tail club.",
+      "color": "dusty golden green",
+      "gait": "quadruped"
+    }
+  ]
+}

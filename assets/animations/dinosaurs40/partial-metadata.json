@@ -1,0 +1,3487 @@
+{
+  "format_version": 1,
+  "complete": false,
+  "species_count": 21,
+  "planned_species_count": 40,
+  "width": 144,
+  "height": 88,
+  "frames": 8,
+  "palette_colors": 16,
+  "packed_format": "I4 low nibble first",
+  "palette_format": "RGB565 little endian",
+  "frame_interval_ms": 125,
+  "frame_bytes": 6336,
+  "payload_bytes": 1065120,
+  "source_plan_sha256": "d0f0ec2ecd75db0f2557cdedcbd1561394b1bca92546bee91c1600b451485ca7",
+  "requested_model": "gpt-image-2",
+  "observed_model_id": "not exposed by host tool",
+  "pillow_version": "11.3.0",
+  "transform": "full-cell RGBA composite, contain Lanczos letterbox, shared median-cut 16 colors, no dither",
+  "missing_originals": [
+    "styracosaurus",
+    "centrosaurus",
+    "pachyrhinosaurus",
+    "carnotaurus",
+    "ceratosaurus",
+    "dilophosaurus",
+    "coelophysis",
+    "compsognathus",
+    "gallimimus",
+    "ornithomimus",
+    "oviraptor",
+    "therizinosaurus",
+    "deinonychus",
+    "microraptor",
+    "baryonyx",
+    "suchomimus",
+    "giganotosaurus",
+    "argentinosaurus",
+    "saltasaurus"
+  ],
+  "species": [
+    {
+      "id": "tyrannosaurus",
+      "index": 0,
+      "source": {
+        "path": "originals/tyrannosaurus.png",
+        "sha256": "085d3503f00c274198ee1247b1ad1065a4dc48d496aa31d41589f04b274cb35c",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65534,
+        63421,
+        63421,
+        63420,
+        63388,
+        63389,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63355,
+        40170,
+        31783,
+        17029
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        5929,
+        5851,
+        6114,
+        5794,
+        5375,
+        5987,
+        5628,
+        5883
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "918c92b34a78645ea2769ab48063b8b8914a1bc1de5174c0f3fa6da3b462d8b1",
+          "rgb565_sha256": "a1d7b490722a2cbe55a3994d9f560205f0b679fcea44750bd2ed5f629a616c5b",
+          "preview": "preview-partial/tyrannosaurus-0.png",
+          "preview_sha256": "32274d2d03106efb3fbf291ef35da305b09043522b7434120d189bc7c5237f59"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "2a31629d029e225782f67613a35d2e5d86f41778e9a0a83afec1e0dd2d965e45",
+          "rgb565_sha256": "52b4c317ed5b494e63fa1cba05817224391f14e23259fa8eac70f98c88334b5a",
+          "preview": "preview-partial/tyrannosaurus-1.png",
+          "preview_sha256": "76f9e5b84d7dc27d2358de46dbd0aa9a88b49f77a0827b63c36a249071d5f790"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "b9e04dd25603ce233018371d3c0d0a5e63213dba324922ff373a50f92314f9ce",
+          "rgb565_sha256": "5a011e3ff1b763044bec0463c97829fa7d7baa5cc7006791426f6e54397a0b83",
+          "preview": "preview-partial/tyrannosaurus-2.png",
+          "preview_sha256": "33fea5bf02b4058414daae14eeb0e2de1d157159c9938510870555a188749177"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "3f93c5354c8f8325f9f9c71b637b4fee3fc7163daadc910a9b0fe1c328eac25a",
+          "rgb565_sha256": "c8fee9295ff70b99bdac6fd753d8e1417aec580c879aec93e325a2a0ddf99e7f",
+          "preview": "preview-partial/tyrannosaurus-3.png",
+          "preview_sha256": "9ba2615041033d5351fd8e6070fcca1397e24d230d2c810c3a235e11cab620e9"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "3c1675bd5d4bd4cb23c75840fad3309ccba00400e36bb6e2c309a9f508f34623",
+          "rgb565_sha256": "d02f5192dba936a76f79d3543224ccff351a98695ddfed4b25c8c31f11c07119",
+          "preview": "preview-partial/tyrannosaurus-4.png",
+          "preview_sha256": "4d1acb36cbcdff77545c532cd76431fec6536ebeba56bdb6cc18e964d4060269"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "9b1e71d1f405d2682aa0fe5626acb35b96299da2b4e0ecfe03bd9aa644a08312",
+          "rgb565_sha256": "b48203530b6e9acb8be1d4bbb038f30cef5e8f45425413c44eb9ca169752bc64",
+          "preview": "preview-partial/tyrannosaurus-5.png",
+          "preview_sha256": "f43979a2aef0ab9218a552d6e9d0b8f0aac947971404ea9a7f0467f56a546393"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "517e4e32021212e0f52753bc54bc8513342fb13a907d1a491ec47076ac53521b",
+          "rgb565_sha256": "e5ea0b7d334d814713338c6215976bbedc3dd575fae3344caa32ef389a7aa12a",
+          "preview": "preview-partial/tyrannosaurus-6.png",
+          "preview_sha256": "64b3d35d797bc0f690aedb2f2369d1ad716d1c0c55a61f2bd9dfb50a576f4f36"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "e9ba819aea975d7de2dde0ed2e360a2bdf42763fd2ce2d80ddecabf21dc8aafe",
+          "rgb565_sha256": "4aeede7d75530daa4a08b5ac6b457c21ffee8db73f8bc2b982b9075993906d43",
+          "preview": "preview-partial/tyrannosaurus-7.png",
+          "preview_sha256": "b5b582adc4378c34ea17a8583b0a34cfc28f9471db2013e445fde221fe93f068"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/tyrannosaurus.gif",
+        "sha256": "1d2248e0e4abd81e582eb94493816b7eb0fe90924e8a14f8e1a959ad54c1aec0",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "triceratops",
+      "index": 1,
+      "source": {
+        "path": "originals/triceratops.png",
+        "sha256": "b84249a6a3b7e810d069f5559bfb6a23a345d96fc10dce67cc7d9e9112bb3aba",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        56982,
+        46185,
+        46119,
+        44071,
+        39911,
+        23238
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        3938,
+        3543,
+        4442,
+        3840,
+        3688,
+        4293,
+        3805,
+        4013
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "4b074aaf28aa92ddb98d7ff3aa214821c11b8b911a4d42aa3a121f0642364240",
+          "rgb565_sha256": "84401c91cb8b946d1a5c5f3a855d674485ae333150db924edc48c2ae552bb45e",
+          "preview": "preview-partial/triceratops-0.png",
+          "preview_sha256": "9626721d78d0e1661fb6dd58b7baa11c96b4c10619a5748b86bc62d2101905bb"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "f20f19f269ee8cc76ec4237fa62c41ea118d6ef2f15e72beea57c77850260e93",
+          "rgb565_sha256": "1c7dc87f31831b20191aaa2e0afeb33e45c52976ea64a165d27437c6e9498ac3",
+          "preview": "preview-partial/triceratops-1.png",
+          "preview_sha256": "5b359f57a0705017f2fe850e6d8515df758aeaa132d1c5b3975a14b076d1bf78"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "d7dd2cec51b71821646d0b59a6f69b03c829ac5f7f23001305c99fa19fd7858f",
+          "rgb565_sha256": "4e64996980f7a1181c9893773084f68bd1df6282304dd07f5429858656d9c62f",
+          "preview": "preview-partial/triceratops-2.png",
+          "preview_sha256": "217f97224fa07811c31fdb59621de5379a5b724989c06bc262e61cbd7c9e1b17"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "904ceb24ce15af4ab22ba7fa80c8e043c07de6e70699303606a6ea52564d38f8",
+          "rgb565_sha256": "a18cac37d3f05610247ad72191f21dba52b9d3e9888a64a967d7178067e25748",
+          "preview": "preview-partial/triceratops-3.png",
+          "preview_sha256": "811a0aa50fcc9e3c25bb16b664f89d54d023ad0badb55c140b4cca34a2402afd"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "6a0dbc1dc113328955fdcb8bfb0fb12c6cc14beaf89fcb6c28f8a5188b7ad52b",
+          "rgb565_sha256": "1aab71e6e1db20a54ce7f474d976f82113a1ff373d1b05959bc9a2a2d6314c6f",
+          "preview": "preview-partial/triceratops-4.png",
+          "preview_sha256": "27d9255a7ac2bb8da156cf6ff0183811786ecfa74d725e7d42cbe7e6b44511d6"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "066b6f3e87c477f629a95d35035caa7607948f12950243f0973ec0e33566534f",
+          "rgb565_sha256": "20794c056bfb87bb2414f1314db4f70a95025690d7b2fa8d92de30f3eb250bfb",
+          "preview": "preview-partial/triceratops-5.png",
+          "preview_sha256": "50d3ff28ac082811bab6428a286ad4b65bf9a3bda2c0b4c5317ff15745fd51c8"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "24d039e0c79ac5c39a7e78ad46a87f2a569894898f6d82969e792da97cb3c317",
+          "rgb565_sha256": "c86ccbf2ef3c647a63c2ed462a5e4c3d43ab4294b962c0c28b44ebaff1a588b5",
+          "preview": "preview-partial/triceratops-6.png",
+          "preview_sha256": "0668e6fe8045be6394b63a4ecb840eb7f0c4f795a64d2b47c07a9959abdbcdf9"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "4e2d424d6843920d757f2e818b7c892b5f512b131941a17fc971cc3cd8cf4178",
+          "rgb565_sha256": "32afeae67774ca506258df1d9233a29efb486754623325533de5056f4cfda6fc",
+          "preview": "preview-partial/triceratops-7.png",
+          "preview_sha256": "4b586ccda5b7cdf703294048aa0b74264508b0300147cfb6fa37842a2423b014"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/triceratops.gif",
+        "sha256": "bd5e85fb393ef9b624a375771c72409f9c9cb84905bc776f1f072d5afeb89153",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "stegosaurus",
+      "index": 2,
+      "source": {
+        "path": "originals/stegosaurus.png",
+        "sha256": "b8ae6b6486c252c7cf53ff6b45c27299b8b5021fe0ad6050e0c3393014c8e20c",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        52594,
+        50057,
+        43751,
+        25191
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2330,
+        2523,
+        3804,
+        2886,
+        2863,
+        3616,
+        2352,
+        3934
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "e3f8399cd9eacfacfbe68e5eed8f82152ba6f34aef971196c2a2b36f0fcafead",
+          "rgb565_sha256": "f2bce06dbcb996c78cfc4803f2f3abfe18bd8e69261bab2c03fb0188a3a5bf4d",
+          "preview": "preview-partial/stegosaurus-0.png",
+          "preview_sha256": "81d9bfd60175dea3da3fa883e98364871add7ceee0a73829a6821c7932b950f0"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "fbdf39184721afb4d542a116aefd94eff000be228c4827dbd61af0a276ff5dcd",
+          "rgb565_sha256": "45d287d161b0f8ca732c72a540deeb9d04aa839ff19d1efcbfff434c03975aa9",
+          "preview": "preview-partial/stegosaurus-1.png",
+          "preview_sha256": "c8f98b952ba941a3c09f19eb389841c5eb9cd32099739f445e325c5338e8b3a5"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "75856b2db757a473d0796f2ea8c047248cb0c2a4d8239a7179c5cbc9f4a6ec74",
+          "rgb565_sha256": "b7924c9a92a2b489877c72c80f51b1d298c9859a4f2f350c9e5f7d98e4857ed6",
+          "preview": "preview-partial/stegosaurus-2.png",
+          "preview_sha256": "3b44d5f3b50172fa6defa21f120af4f1c84c54befa846506201d11a08733bdc4"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "66e43e2d669d32395dcbc77cfb507c4aac21db2f185a693e8b483a3377d43cc5",
+          "rgb565_sha256": "6dfaa6b02c6f3544755360d104d8abe344bf5c7b325b8925251af6fcccd14df2",
+          "preview": "preview-partial/stegosaurus-3.png",
+          "preview_sha256": "9d288295d5af226545f7d55f64224ad77788a11adbc3abccb49e20581c101116"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "18000b8e31e0c410908c6588f0c20777c511153e5404ed239f5ab04db3b749d3",
+          "rgb565_sha256": "655c1bd87e94f36b21e1895fc55942df986145ce67f5eb1a9d15bb2290e67a89",
+          "preview": "preview-partial/stegosaurus-4.png",
+          "preview_sha256": "61c6fa3c02dd658df1b8dafafaf219e2956058cd815b8c55aa938d3ce8d8cd35"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "38d5b6e8e0bbd139676033f115d3458422fef0ca5c89c04db694685192124baa",
+          "rgb565_sha256": "f6900b1ea1ad8014384bfb26f6dd6dfe2d78757c8769498a6c462e2798f09614",
+          "preview": "preview-partial/stegosaurus-5.png",
+          "preview_sha256": "5b9b8016327995fabc6dfff4fc197832f8641aa455dc97e6a54ec747165b8362"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "29d55b4bab327f4749014091fcc2eae772a582361b040bc52efd355755cac712",
+          "rgb565_sha256": "3a64a58b93c3fadef62c03019b649483776a8452eccfeecc1856e1eb18a833ad",
+          "preview": "preview-partial/stegosaurus-6.png",
+          "preview_sha256": "f8870ebfe983732e60df75dfb987e9274028daa85d8d84994e93a034e61ad9fe"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "bda691a61d9fa530877282c2da1830d277bb652b10c6762c568dcb5643e4045d",
+          "rgb565_sha256": "f520c3199c6970d14ba0e1fd374eab55f031c8468b852e2e8175325f82e98d68",
+          "preview": "preview-partial/stegosaurus-7.png",
+          "preview_sha256": "cd98770ffbefc0c92bd8fd34ff898db5277c598198e703c3655d72c98f09a6af"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/stegosaurus.gif",
+        "sha256": "6c156d799fa7f42e45870a733d4edeed370865d33d0959b56afeff10eadfd19b",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "brachiosaurus",
+      "index": 3,
+      "source": {
+        "path": "originals/brachiosaurus.png",
+        "sha256": "f84e968c98e1c47f487762654253d561b4ed512f4b226b2143db8e9ca4baa041",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        54967,
+        33965,
+        27627
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        1667,
+        1493,
+        1935,
+        1509,
+        1122,
+        2016,
+        1514,
+        1970
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "41b02fb796a05e447f03a26a195b052357f258cd23453db1486f7cca3f985312",
+          "rgb565_sha256": "6fe04b40862dda6bb3d86e59e3887e4cccf650f2d44a803cb7574f58cc5238bb",
+          "preview": "preview-partial/brachiosaurus-0.png",
+          "preview_sha256": "f79ca1ba5d122fa154c6dba5638223dc55fe28fcd6379f4756347ba256d49f37"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "6b4caa47c8756ee20a9a1113f28f68808e88cb7a6470529639cc50104199f5b9",
+          "rgb565_sha256": "4c8deb37bd50b7c1388fcc882738b59be9150a971b1761900a438c390c74a6c0",
+          "preview": "preview-partial/brachiosaurus-1.png",
+          "preview_sha256": "d6e1bea724fbaa4dad30470de8e06eb6c187a048e41f20afa6b8e0022b98e599"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "6c4cae125a61915f598811fb1c90be1ae65fd215aa1a646a63e8d7ea1d0e24d7",
+          "rgb565_sha256": "a8ddfc49e4f78a0f1cd4da97be3d4928fa2aa09f04fe3b106d2dae9034e46be2",
+          "preview": "preview-partial/brachiosaurus-2.png",
+          "preview_sha256": "9790dba792876b355a08a92dd6037ac11edbfba5a9ba41b4c50a81858c370c88"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "063ce6f4e3374737dfa892f4c85c43d31efe7ee8382b693ac87dbe8ac2befe25",
+          "rgb565_sha256": "200986522bbc3d849f5c0c2f3c8c90d9dcf04b299bad37555b22d5672def4b58",
+          "preview": "preview-partial/brachiosaurus-3.png",
+          "preview_sha256": "9e16573c368b6d1351c8e0ef05092ab47cb76ab08abb8e91de22960a703edc17"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "aea64b298b16dd33a140b9dbfed17f942c2171ba21f30e2081aff24517cf4d53",
+          "rgb565_sha256": "ae4b59492e0e5eda155697566f86c114810fb90307715a3f37acd845769e50bd",
+          "preview": "preview-partial/brachiosaurus-4.png",
+          "preview_sha256": "ebf083bc0c810de5f07b1b4c08f117eeab613fc74aeb6944b9550ce98d0240b3"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "0c56e5040ca20efbcd21d2cc15514c3aa883729e5fe4bbc2a9b8a0141e6eff66",
+          "rgb565_sha256": "8fdfdeb4c44f254a53abc9f2bca1397b8279f80fa968d5ab528091d33cb13c23",
+          "preview": "preview-partial/brachiosaurus-5.png",
+          "preview_sha256": "074660cfa5553982d80e3ad540ce2e7c18694c53bae88e4f7d5938abcc245d33"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "3dc20f0b758be8e0adca381eebb5b48372cc3cda6cf5154c02511889ba82ee86",
+          "rgb565_sha256": "ed95a886b9b9796aff9f7751541bb3f11683ff40faac525dfaf6a288933444f7",
+          "preview": "preview-partial/brachiosaurus-6.png",
+          "preview_sha256": "992fe702d8f55684fd3694b4c31f1b01d495c2e2a97806c92b084ef1616ddd22"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "d7c70cafc201ad347af5c88330ee2867aa5412239e7f41084c4a98292331f053",
+          "rgb565_sha256": "0c890e0f636a5a9bbe186d13704c123356771274f4b332ded519596c3f4baea0",
+          "preview": "preview-partial/brachiosaurus-7.png",
+          "preview_sha256": "6ce78ab1c00eded7af3729434dff675730216a2cf5e77532766f9c7ea11b057f"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/brachiosaurus.gif",
+        "sha256": "e6c70ef200beb97cd2c17052cda2f87eac1f8235df7a5543e4f0235946037dc7",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "diplodocus",
+      "index": 4,
+      "source": {
+        "path": "originals/diplodocus.png",
+        "sha256": "3d4faaa339fe2da0f23e96df416651434dda2b109b2fca6a30ed3661aaeec425",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63389,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        59095,
+        52522,
+        40041
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        3187,
+        2825,
+        3371,
+        2342,
+        2492,
+        2964,
+        2791,
+        3951
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "5521b6a52e0887f2a97bb9993df3a3829a9f4a467ed63d0a7196cf73c2af8d69",
+          "rgb565_sha256": "4b5f7dbe9d22d62d0967fb52f450dd87622a9b1608cd1685d354abbea805010d",
+          "preview": "preview-partial/diplodocus-0.png",
+          "preview_sha256": "235ae9ae6550ad17a0ff4bf40d2ed9f21a9d73c26103fcc42eb8a8b1dcf8540f"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "dff9be9e53c968892ffcd76a99330038b5d78da181fa1f2ec737d79ddcd6407c",
+          "rgb565_sha256": "b530728a4589711f4c8698a3dc6e255a0b5689dfc74e697e83904ac847811e5d",
+          "preview": "preview-partial/diplodocus-1.png",
+          "preview_sha256": "ad2eee71bc0f945d54f5f4fb9c48b587eeaf95bc763d39753bce84a492980c57"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "5f6f7ee37829f657d47d113bab731360c9327761b1fe5fe5739d173d22942f33",
+          "rgb565_sha256": "80ffdd4fcba7c2ccfccd5de0120119f6e2a0a09cbea4fb4898a8479a2f4416d5",
+          "preview": "preview-partial/diplodocus-2.png",
+          "preview_sha256": "408681940b1e540e47f692f347b64b93e3078f9dbdec61fc6d3a311a4b330e99"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "e91c9230f4257823bd5f432b838aea34afcf256219bc3cfa9be13cafd349b6ec",
+          "rgb565_sha256": "2f306d42cbdc43a6ff106556304fd10c639b873342603be89cbe405e0cb15f1a",
+          "preview": "preview-partial/diplodocus-3.png",
+          "preview_sha256": "4371749a12cad4e16c6eebe31b858a9ce8775a20690deba5738a69b826852dff"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "669aecd2e0b659e51a061e451230b1ec6a587b65a9afbb3e74c1e3753f0f9ead",
+          "rgb565_sha256": "f44c448bf52b6dabca3b7ea53bf89f7000743e102ee90bca03511566278b835f",
+          "preview": "preview-partial/diplodocus-4.png",
+          "preview_sha256": "6e615ebf723e5a3b581b9a3750fa1bf8cf49e177d6fb200b6e0b1e8cd0f08a5a"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "484ac35bf9b5942b1f28641b910fe53369f7fd6f7bbef0021268107f1ea989ff",
+          "rgb565_sha256": "f887e03f339c93bebfb715b2e04cac198e7c1fd2099a54bc100a2ede077e3ffc",
+          "preview": "preview-partial/diplodocus-5.png",
+          "preview_sha256": "d5f7f0b8864ad9aa6598607b137704545746cb4ed6f55e736f2aa625ee848847"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "1a5865c878daaea8e758ae85f7e2a12ad6fff16f77dfacf728e04480d5288d7b",
+          "rgb565_sha256": "fbc3c8849c12e228c28894e175ca6d1e41000e1fe0b272536acfbaee44a057a1",
+          "preview": "preview-partial/diplodocus-6.png",
+          "preview_sha256": "6f2debd22e24ebfcc5270ee9aa06cd0d87094a91588332e7489aa2c408c27a93"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "51ae42c971185319c657b511098f51940e2205984a8509844717f16f5863c128",
+          "rgb565_sha256": "72fadf6ee71a5605a64f11911f698cc1f1ed5af279bfe79047bcbf6e408026ab",
+          "preview": "preview-partial/diplodocus-7.png",
+          "preview_sha256": "c765f61375323f6dc1360cf5b2aebc28e4d0c4a604ab3a2ce4ae2013ad907115"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/diplodocus.gif",
+        "sha256": "2cef061fdd3c85ab68fcb6a6a1e641f3eddf6eca682875f1fe30a017fe49a65e",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "ankylosaurus",
+      "index": 5,
+      "source": {
+        "path": "originals/ankylosaurus.png",
+        "sha256": "22eefb3bfad0cfd5573fec2b3cbd6980d062221fec4dca061de60e14f941ea1d",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65534,
+        63421,
+        63420,
+        63421,
+        63389,
+        63389,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        59162,
+        40109,
+        25479,
+        14982
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        6068,
+        5932,
+        8226,
+        7134,
+        6525,
+        8216,
+        6818,
+        8666
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "d2c9c7f67066044cd118dfadb50c96dbb07a4735e27930e3c80e83d0dc96fed3",
+          "rgb565_sha256": "bad3cb50a46400cdc3264210edae2b386b47aa40c86fab58615c251a089f29ce",
+          "preview": "preview-partial/ankylosaurus-0.png",
+          "preview_sha256": "ef716b19b0b49e084209cfe5715e1e322f172abfbd4e43865a6fea30ec38863a"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "087b564d3f1ca025149eacb2c55d33809b622c18c03928bf7c451e61c8844c86",
+          "rgb565_sha256": "5aae6c705bc1504a09d5d207506362a94e7c860f48da6a01489d3a95c2db2a0a",
+          "preview": "preview-partial/ankylosaurus-1.png",
+          "preview_sha256": "6f747b9b6ea63d64cba3ba7868c8f8a0f7e519e1217c4703d67a7e718268ad0e"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "6e90b1a00bfde4d5425ba8c8a253c93e9968d8eafa8324bb85f17072672b1748",
+          "rgb565_sha256": "c0bcc96528ded4e9d2ea339b374319031664bee97a09a1865c95d4a3a524ce52",
+          "preview": "preview-partial/ankylosaurus-2.png",
+          "preview_sha256": "7f1c18c3df3751eed7be014766456ade74f70b9f61aba1abf3c38100f1f20275"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "51ceccbf306869fa4dad6863649be8ef7733ac4817f066178dce5a3bde9f7251",
+          "rgb565_sha256": "f5a85fd509d3dba4aaaea76fb3b6ede2847c64c7aec7410b4ac654681828ec2e",
+          "preview": "preview-partial/ankylosaurus-3.png",
+          "preview_sha256": "e32824e61e03fa2188fc6ced9aa29dd6b33102233aa58651e5fd5a43c1c6f05f"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "73b10819c5387f366fb1d7c2855a384e9ad3ceec173ef27b9f0a43d758a35d22",
+          "rgb565_sha256": "3164e0fee0abb99bdf4380c147a226810b84b0b9005062014e96804eca32fec9",
+          "preview": "preview-partial/ankylosaurus-4.png",
+          "preview_sha256": "845a942e814458b92360f20ac9eb25a141662681381ddd1ccc658b45010ae2ed"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "b461a088a3c98070a08ddbba70f211f2256524a9692d4e31ed9c63f45bfe97c2",
+          "rgb565_sha256": "3f0297b1a4a3e7c5ad591cd802cba463bdede712cb0afaa0edefe32a0b53bfdb",
+          "preview": "preview-partial/ankylosaurus-5.png",
+          "preview_sha256": "93fdbbae90170d7ae1c41d9d5d306489fea279de4a229a4731fb79d350366dce"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "b61f7ad79b0771c84a2d44a2f89450f7ed37f848417e96b4d168bd589a0774b5",
+          "rgb565_sha256": "37c11681c4f206947296bcb77f3e0b9dac8dce0d11f74547a7eae85ce9347c91",
+          "preview": "preview-partial/ankylosaurus-6.png",
+          "preview_sha256": "edb09c97b7898b37a869d71ceb8dcca3da9ad6c5336bd631b2479045f01023c5"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "ad21535abade781ff252e42d04dfbab4b138e5f22f0708442cd0cdfb866bd791",
+          "rgb565_sha256": "3793f1e9d3324114bade2bba3a45831e281e0930e6f274f43278bdb637cf23b1",
+          "preview": "preview-partial/ankylosaurus-7.png",
+          "preview_sha256": "d0da0db3a3c52cd54da8c163e6a131a35aceb5842f413157d89cc2c2483ce50a"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/ankylosaurus.gif",
+        "sha256": "ca29098ccab6d927482923ed19e4bb99a6e291c6a869f05d2bb0f88306048bfb",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "spinosaurus",
+      "index": 6,
+      "source": {
+        "path": "originals/spinosaurus.png",
+        "sha256": "6176c65a673701333198a344ce20539d88dd80ca74460be417f4c542884beb10",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65534,
+        63421,
+        63421,
+        63420,
+        63421,
+        63389,
+        63389,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        57115,
+        23666,
+        19440,
+        10889
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        6582,
+        7297,
+        7213,
+        6362,
+        6434,
+        6705,
+        5879,
+        6753
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "f722d1fece1f7ec9bb4143cc84a6ea345c4eb2ea5e3065ba0247c2f6ef76cbba",
+          "rgb565_sha256": "0d59055ba26c00b86ae33a925a7f3c8cf3ff8d2e73ea56d5d0984170300b560c",
+          "preview": "preview-partial/spinosaurus-0.png",
+          "preview_sha256": "2d04fd0cd40f7a2bcb7c90d2348aca6c45a97bbc3bd91f5c81ea2fd58c204468"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "acdd276c620660ec224dd10ba6a112112f426fabf910a97dfa4c99bb9b3c1298",
+          "rgb565_sha256": "14cb9931281c39fced2d4753098249272907e2d85c66adb114a24debf3cec908",
+          "preview": "preview-partial/spinosaurus-1.png",
+          "preview_sha256": "14be10808c33357ab314b82a05037d8343bd238adc92b31e10ff837ab676afcb"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "a9c0865ce4acf2a56e26cb7fcefd7c1c10a524477e2d1f9217d2413df301ad39",
+          "rgb565_sha256": "c4c7858158e97dfb1ebb4b9a98eb83539c0f311d230d52e88958afc13dc99e11",
+          "preview": "preview-partial/spinosaurus-2.png",
+          "preview_sha256": "61b5a0235f8ee91325b8660511af56248b19cb76fdedf7d4b5222c3d6f576bd4"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "8f9de3900d002aad17e17710a91c159eb143a1bca97afaf6ba598b785535f55f",
+          "rgb565_sha256": "411183caf8ea53c6d0e36caa62837c2faefaf5fca417ec832aa6b9cc009b295f",
+          "preview": "preview-partial/spinosaurus-3.png",
+          "preview_sha256": "84bfb300abe79e288c1fca2d34b42fd2acc002f0071f3846c8dd857417923469"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "f11e25730299741542fa00689f018125fd924f07b880cd6ee71675c7a1ce80bb",
+          "rgb565_sha256": "a929361cdfd5d108977bad959f53d26992c8e479fa702774ccba4a58d47330b5",
+          "preview": "preview-partial/spinosaurus-4.png",
+          "preview_sha256": "7e724246cfe980680b4d6811fdc9ab80fe1a98aeb720c0f813cfcee7be38d9ac"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "3755f6a893ee936bc6c2cb0e180fcd0d0374f199fe05e53ab4b2544b375cbd18",
+          "rgb565_sha256": "d95e6f0350d4a2d1ef6eb29c99f37a7717b141bbec9ab5ec9ecacaf15ea86682",
+          "preview": "preview-partial/spinosaurus-5.png",
+          "preview_sha256": "bc913026d00dc62dc1b5d73a578e433fe6ba0fb5c97e397f77e8600e8f333135"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "4ea708e29bb12271d0f4af14e8f69c6580ecc20f3e9ff0eac3cd8e9a309c7abe",
+          "rgb565_sha256": "28972c08a738835312a6a1957496b288e1b92b4726cf045e51c1c92340e3b1cc",
+          "preview": "preview-partial/spinosaurus-6.png",
+          "preview_sha256": "5b09fb240011241c4c87b2df41c98510414b0d85e4ece098b1220e72a05122bd"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "1e2ed420f23f8e989d7956a27316ed2338e304469ecb0dda6800ba690dd49b74",
+          "rgb565_sha256": "0e4a52c21f3d6688a45fd8995212a6f99031d8b6bbcad9b3462c1001a8495154",
+          "preview": "preview-partial/spinosaurus-7.png",
+          "preview_sha256": "410a535425acc3d7d017263e605d862a3e14da076bdf5c0efd9f943fb8edb5de"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/spinosaurus.gif",
+        "sha256": "0285ae63ecdc7319b896126679cd4d8fc7bca70a969d6a220d261c25a85909b0",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "velociraptor",
+      "index": 7,
+      "source": {
+        "path": "originals/velociraptor.png",
+        "sha256": "91d4c8c2c0f1c3230a91f457c4a664b1c15c2b7ebda0021f6197181e40d7b41d",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        44272,
+        41605,
+        37477,
+        18949
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2650,
+        2317,
+        2735,
+        2726,
+        2696,
+        2752,
+        1886,
+        2502
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "d4bd410ff2f46bfa83aefc5f20fa80421dede00f4c592d0abe42bf1039bcdcbe",
+          "rgb565_sha256": "a6dd190dfc532a5caea59ec58dd78d76cd62faa6a9ccca4bf97ece03028b2d3f",
+          "preview": "preview-partial/velociraptor-0.png",
+          "preview_sha256": "39bb14d6ef57c91c2a29b9b96268bed4c4da7bfc0b88858b612a6bb26d2fd1ab"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "7a80eca8b87db3e9e3b48f508dc4d4db5f943ec7217879712506751f0338f52a",
+          "rgb565_sha256": "9264c0caf8316d15158967d314dfb9d90287a65a2c01aae72f3a5d02fcb7eb19",
+          "preview": "preview-partial/velociraptor-1.png",
+          "preview_sha256": "3571a8a056abe733109ac416dfc49bda7ae1159d695b17f4dffb2480457fc6dd"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "9d4176157b8ce7c654c46974f202aca199ffec69e95e0f15bcdd4cba5519b554",
+          "rgb565_sha256": "7b9925440b4bba4c90860bb47ac9e99a42ce3abf7848adc414e5afce2639783f",
+          "preview": "preview-partial/velociraptor-2.png",
+          "preview_sha256": "8e8dc2729ee0577dbb782459f82d0face257ca6acdcb0d18079123d2c779b435"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "e4f5e018246be82a33dabf7f2b5c516fa63d89e5b728301e1dbbb6528b8d0c34",
+          "rgb565_sha256": "df34355cc7d2beb3384bebe1a62d3dece6fd6611b4935bbd0618cd2c9804b80b",
+          "preview": "preview-partial/velociraptor-3.png",
+          "preview_sha256": "3f83b7b54beff70d6c979302e7378aa863f074b0ec8db1f3ff245ba46486cf12"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "8b3e3382abd03aafa05290cdd0766e247ab6f82734069461e69619d67a08f0fe",
+          "rgb565_sha256": "9b23a2c448d017d20adc09168d2b69ff4f9dc6ca034172b2a78de9525b16cc73",
+          "preview": "preview-partial/velociraptor-4.png",
+          "preview_sha256": "b01cbd1a44161c012dce86b57cce81e4720e05f1cbb77cd23b187d01912a2256"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "f43c5f70737d599fedf269fe9ebe63f56eae5a78d6ec86aead86baf571bd04a3",
+          "rgb565_sha256": "1396bcdea4e636d199bfe7f84ab0deb9723ec3bc8aa51cc1299ec224a12b3466",
+          "preview": "preview-partial/velociraptor-5.png",
+          "preview_sha256": "77e20bde1eb7e97cf8b857dc74dced357a273f474012a2b39e564823847f9042"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "66b10ddb870bb1b106eb0e1dc5743deced0a5962e20f33e2ac2818e935ee5320",
+          "rgb565_sha256": "7702fa83765d874c3db6cc1de00fa76a410e9fbd9f79795aa8021077fca3c13d",
+          "preview": "preview-partial/velociraptor-6.png",
+          "preview_sha256": "e2ac6874b25db1631a4bf624be642d625985f8f7a87b6af350ba053910b619a7"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "0c5b0712bed456fc6f5f5aa31fa4a058bd73a6bfffba508c4647f2886e6065fa",
+          "rgb565_sha256": "3246c4105ea8d400231b75ca31bae377cdfcd711f1a9afcfdd23fbd780ca8081",
+          "preview": "preview-partial/velociraptor-7.png",
+          "preview_sha256": "deb9686542b272ca699354ba95c6f72ce0482232b05cd3c85d3ee582b971451a"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/velociraptor.gif",
+        "sha256": "ea9b87e5d2833d14a4b3f1232fe6d4de90cebabe9bb3038d9f72fa0be2467636",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "allosaurus",
+      "index": 8,
+      "source": {
+        "path": "originals/allosaurus.png",
+        "sha256": "fbc3f1755010c918dcdb3d5fbbe7843fd26158f2cdd1d8cc95c3922db602ee79",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        57016,
+        33834,
+        27560,
+        17030
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2390,
+        2616,
+        2820,
+        2375,
+        2033,
+        2728,
+        2196,
+        2220
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "8f98ae954ebb6a449a9fc3ae2b42cb89a2b184a5541cc016b93c114fc4513c72",
+          "rgb565_sha256": "d2253c46dc0a8d81f3359d0de4da954c474e0f6c90dbceeae10cc6a09b72585a",
+          "preview": "preview-partial/allosaurus-0.png",
+          "preview_sha256": "a8c3d3397b851632f8a5d9d16bd4eacf45e036feba37f4958bcd9289e23d7330"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "b1855cfb71b9fd31a0f45fdec7ae0277a4cef47db849f3958f9e264a52b4d271",
+          "rgb565_sha256": "c55e898e25b6b24ca6cb7ddf014c4e62606912da25c7fb4353223245f0c7a767",
+          "preview": "preview-partial/allosaurus-1.png",
+          "preview_sha256": "e1c805fc1f547e5a6b9164198a80700e0b44e90e01d0a0951523d76b4bea3a6c"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "0ad7d3a3d350563c8e72f8796307f08f56ed757452146cf4e6db657d8ec435ff",
+          "rgb565_sha256": "cbfa9a6fdef31ca869cacf8b7ab4a1f1c830731ddbd6d75aba92cfb336abac05",
+          "preview": "preview-partial/allosaurus-2.png",
+          "preview_sha256": "23e4208554147f91b33a1f691d573b81e48b1598a7fc24c54c147178dffb2163"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "07433a646a4a46cd784f21c09902d73e2728f6a85f904642c249507539b83e05",
+          "rgb565_sha256": "6e5174319ef1720efb2a28e2e857e8259ce2b78490dbed7078e6cb2f850c4769",
+          "preview": "preview-partial/allosaurus-3.png",
+          "preview_sha256": "368ece915087e92305b65cbd014eb8c8f7fe39a4292596c210eb95615421b147"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "2e45c0693dd3a314c48496558949f79fab232abbfd4fc7f0db30a98408e1e311",
+          "rgb565_sha256": "c526f62380871a9c228fcf6c7193adc137bbf34f6831c17f34bf7644a942162a",
+          "preview": "preview-partial/allosaurus-4.png",
+          "preview_sha256": "2be416b36087c8b25114fc999b6bca4517a67b7608833e84fb8f4022484e64ea"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "e9f92382fe7617ba29e8579032b81e969db65587ca89d98a3ffae597a66aed4e",
+          "rgb565_sha256": "68089dc4036bead9940d8cc9d2c4c60e0f121067bc018c7bcf8ee454559b098a",
+          "preview": "preview-partial/allosaurus-5.png",
+          "preview_sha256": "be41f8333b7b112ae4fd265454b905f24df53eb15ee0c7a591d9e93f1dc62fb1"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "d63b932c1563eeec5c4a19cc9a478820a63dad2699459fef6324fc9e275eefcc",
+          "rgb565_sha256": "f4ed5d542568d91c2632ebc3ab7813a2884187471043e0f82f1e76ff7db0d0e8",
+          "preview": "preview-partial/allosaurus-6.png",
+          "preview_sha256": "e9e2b8ee372c1e66f5c19b4841d12b20f302b22f1936340d20cd3a876912038d"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "c52b94a465d67da1a3b37e10a04206942d013507e3f62dfa89e84733a127db46",
+          "rgb565_sha256": "97729d704ee22814169fa0e724a1e0d7a945dd9360f7b7cacf1d74c4b83a3095",
+          "preview": "preview-partial/allosaurus-7.png",
+          "preview_sha256": "7cb388ad9927e20df836d77ddd66d0eda6e5b9052722fbeba3532afc14ee033f"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/allosaurus.gif",
+        "sha256": "88e1204764938cb68b7bd9921d45c66991711a9d2598a8aca17b0f46587e8b4e",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "apatosaurus",
+      "index": 9,
+      "source": {
+        "path": "originals/apatosaurus.png",
+        "sha256": "8b96c0d23c1e02c28baaf5cc84a318a29f11635ef69d831196ed9d06cce092d8",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63356,
+        44436,
+        29774,
+        29742,
+        21323
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2531,
+        2125,
+        3101,
+        2687,
+        2813,
+        3066,
+        2664,
+        3618
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "11e2087afb5a71f77dec45ee1dbfba6f5a44e49393e07a912ca03025f281f894",
+          "rgb565_sha256": "1d6f28e7fa3cc7baee6b1062ef53649348dc43144736f965f6ee67105fa68f2c",
+          "preview": "preview-partial/apatosaurus-0.png",
+          "preview_sha256": "e5c53f615e8324c2c0b1085c7af827faca023f03b53515e9af41382973dc3bb7"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "1e15ac219a5e0b437ea552af2a8865e26218caf97568a0215f322f00abe2ed98",
+          "rgb565_sha256": "32b1a5e233eb03997b0086a1dff80bd73ee67eef9fd9c70d0aa59be75a7b32e9",
+          "preview": "preview-partial/apatosaurus-1.png",
+          "preview_sha256": "cfd21e2c4a2613289d1b28e51ec2c946e21745400a18334f993bcdf499c26736"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "600f8b07ac07eaf7096fa782e8e18c7d86e538bb39e6be38abc21238174f2b0d",
+          "rgb565_sha256": "6d8a3c28794e0a06e2c7ce349ddf1d19ce169b31a55de637d1805a3ee139f169",
+          "preview": "preview-partial/apatosaurus-2.png",
+          "preview_sha256": "6d3337d52c60907a93c7a931172ab8ec764167bcc5accb63231023ee24b4526b"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "89574db4c49f5aa0cbf2794165d4c24234af40430034008fcdb782c7e6cb41ab",
+          "rgb565_sha256": "fe544c68c55fde2ecbd9bafd1644e1dbdc05a2d837dd6990e9c77480a2b8eabc",
+          "preview": "preview-partial/apatosaurus-3.png",
+          "preview_sha256": "bedeb3b7277158d7cb24e6a345919b7a75476500b28102a915f69148c666a152"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "a06ac1199d3394dfd8a4eb651fb43f608aab3c49d4a750e238650592c5d3a2f7",
+          "rgb565_sha256": "68308a801e64ac0b6c29bca30cbc4b9374a983076b91a1338736f517cfa45b75",
+          "preview": "preview-partial/apatosaurus-4.png",
+          "preview_sha256": "694ea1cb6d5fa8221cb82f471295de79b5356f3192fe4ba0820349fd1a9a741d"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "61eaa42288a75148899204638ba2c8de538a28ff1bb643526a202845dbbdece6",
+          "rgb565_sha256": "b0a4e807ba3b6a9a34dd0d7244c71da70da2f62e9f43d9a60cd4213af053b2e8",
+          "preview": "preview-partial/apatosaurus-5.png",
+          "preview_sha256": "475510a07b179e72459eb0244d84203226e3c258d26d81c980525df6464e2ae5"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "47a9603ee40759b2cfc497b84ebbc16ad28c8db13651a41cbaa9078cc65a7a54",
+          "rgb565_sha256": "6628230492c2981099e6cbb66ace796fdff7325191da46206f105ab7defece29",
+          "preview": "preview-partial/apatosaurus-6.png",
+          "preview_sha256": "1f6b710170e62a16d14d8b514e79b384e53605f8a2fa0e67b577fdfff04b002c"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "f06ed7b97d9b3d0ecc61ee26633a894a60857a384c5094e08bb73d3ddc8f03fe",
+          "rgb565_sha256": "12ea7585c0bfeb33ba857ee6564027a078465f569bd8427fc693cebb586f6f2b",
+          "preview": "preview-partial/apatosaurus-7.png",
+          "preview_sha256": "13787b6450121ec524d383c4438a195e6e860839f80702cc9309cd520999a919"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/apatosaurus.gif",
+        "sha256": "115697d64b3f9f7166e3cb4e040805b4d50772f4652dc33bcadbe37ec1c65dd4",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "camarasaurus",
+      "index": 10,
+      "source": {
+        "path": "originals/camarasaurus.png",
+        "sha256": "bd828131915205d9a54e5e302ead962f87d255579ae60b04f57dbdc4fd196680",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        57015,
+        50413,
+        48365,
+        31690
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2108,
+        2311,
+        2877,
+        2717,
+        2208,
+        2315,
+        2410,
+        1814
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "b9c4dd3bfcb45932d7e7676d72e633d80a2cac44010de6afeede2b69c323322e",
+          "rgb565_sha256": "5bb25aeae7873e431319f04bb584d6cd4401c3eb0afb31fa7ac91f92586f58e1",
+          "preview": "preview-partial/camarasaurus-0.png",
+          "preview_sha256": "23278e560e53dd1ae8d449b5cd93e9ca4084b534ab1f7d50bb942c23fbd15f1e"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "1d78ee29764c13c3260c2b09e5bc01d95efc792e27608b33e219852e8b05a32f",
+          "rgb565_sha256": "584b08c81bbc3f4001ae45a321d77c6a531c94a70abae29c015ec9111330fa7c",
+          "preview": "preview-partial/camarasaurus-1.png",
+          "preview_sha256": "9a868529245f7fb4bdcc83d06953a7349bf84d1ba138fb1c6f59447289e3afc8"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "f90b88396b7dba9be650addf53a76e20ccdccbfb0f1128749ef5a6689e73ddde",
+          "rgb565_sha256": "50a998112c309866cf12c6301bf0496eb9905d44257d438f4bb8b9469dfc440a",
+          "preview": "preview-partial/camarasaurus-2.png",
+          "preview_sha256": "5337cfaf440dcf6412055cc1b89e078de6d119e6915ad77c5026bc1ba55a5bb1"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "5f588a8a9c74cd7ed49bfb35b7cbc9323c03587fd2df03cbfb98709419ee8240",
+          "rgb565_sha256": "0d275995290d3ab46d4f843ec33b2343473b289b91c4f23d83bfa44acae1c06e",
+          "preview": "preview-partial/camarasaurus-3.png",
+          "preview_sha256": "9234dd7417db9d97c0dc89be49aaf232092ac35cc783ebdd40dedc2ed2a30d9e"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "a9d08165f001a1e1b7a686c4071d2860705f6b173ae273f2f0fc3ce1be657c2a",
+          "rgb565_sha256": "a323c8880e4ee026ed6f659e1aa6f7cec33cb2024e823e5a234410e29f0d1804",
+          "preview": "preview-partial/camarasaurus-4.png",
+          "preview_sha256": "b0e422584f4c78f5424c76e877ae427e68f1cd3fab561194f57f421dff27e65e"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "6ddd0ce7530a587c89475b411035e672ca823f5387a18f79e7898f7d55676f5a",
+          "rgb565_sha256": "c0cc1058dd4a13a0a73d52327b8ec9d96d468f1f04183fb5dec79a57dcae4078",
+          "preview": "preview-partial/camarasaurus-5.png",
+          "preview_sha256": "064070e79bfc8875304737a35f1dd430f1029d3b1f8c7cb3d123598c71cbcec9"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "bcb4b5aca3521433aae82c682fa992445ec1c0aeac5ecf111284832df603d873",
+          "rgb565_sha256": "c089fe11385ca9f09ae2a5130136d8232dbc0183e3eade9df520368caefb5c05",
+          "preview": "preview-partial/camarasaurus-6.png",
+          "preview_sha256": "170b403436c375394f572d6f953b08adee038efe8460baf95fcfcd80764bb3e0"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "e7fb8ee87af58f8338276a4dbc9258d8259f95f033c155e599fbee03e44f1fdb",
+          "rgb565_sha256": "2f69773334ce44615c14fad8235cd04ac921da9355d5fbd34662f721235d1e21",
+          "preview": "preview-partial/camarasaurus-7.png",
+          "preview_sha256": "841da0ec30c053f38570ec4a0b4ce285d9487efef86ab203103ecbe3af0d063e"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/camarasaurus.gif",
+        "sha256": "9e2ec20fc282aa12335a92e2b2e0816e6c52710f3223895cc6c98282704cc322",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "iguanodon",
+      "index": 11,
+      "source": {
+        "path": "originals/iguanodon.png",
+        "sha256": "3b1221111c0f8cfd22c8a87315e8a33b5370b2c8154b47637d4ab67699778d19",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        42417,
+        23657,
+        19304
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2321,
+        1632,
+        2811,
+        2340,
+        1907,
+        2749,
+        2422,
+        3795
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "f93156bcdd97a5ac6ff83b04325711c9b31c2c54693fe70131f52e02e932ea9f",
+          "rgb565_sha256": "8b9198fd7e7bcd7faa53a356b2a0294899cae32a3504c2cdb8b9f8770818a185",
+          "preview": "preview-partial/iguanodon-0.png",
+          "preview_sha256": "30762e46265bffc876d3bdca80fb1626bd82dfe743a675bd3329bc71b8d177f5"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "02d95429695e333402d30ac1d097204bbfb995441db07d20071f8bdc5ce1206c",
+          "rgb565_sha256": "e9c8abb73681d6c2055c79972bd5e0484d488731614c9e3d95bd7d5dbf0fe40b",
+          "preview": "preview-partial/iguanodon-1.png",
+          "preview_sha256": "29071f985d81f19b110348e1c6af551b7a2309cb25a69ffca901e39e49a1225f"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "853821eb0e3666d00e3ef09f1b54c07e82259ddb404e3c0fd986419b18cb4f2f",
+          "rgb565_sha256": "47ef6b2be0cbb104f8de0ba7db611807eafea69f70279e067cbcb48f7adf39e5",
+          "preview": "preview-partial/iguanodon-2.png",
+          "preview_sha256": "45d451d3283dda4206b15eaf1bac7e87313f03bca549632e38cdf5bf5373738f"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "c1b23f40460c5bae224fd77801c9dc60698a19fbcab0c7c0643bd04c5288fb5d",
+          "rgb565_sha256": "57f5d1517693453fae2515db1b618ca60bd48ebed5758324f7719360dcd103e0",
+          "preview": "preview-partial/iguanodon-3.png",
+          "preview_sha256": "b0f1ef764e1d088b5147b46e40c1e773bffb68cc25d67e7860acf8e5a3bfbc96"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "b5438445c9f062dddb1ac38dfed27499491fef0dbcab8d60bb9ecca778a5d91a",
+          "rgb565_sha256": "8244b0283631aa623cf6c90d206ee684acae523db7aa433bb6e5b8bf9852606f",
+          "preview": "preview-partial/iguanodon-4.png",
+          "preview_sha256": "e17c6a61f3cd9c08ac689b172db4316d55ba5029000d573699db0453b82db141"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "8f8ef2db6719d273b42c5d086f18bd4fdbfee5662120fc8cd228ac42b4946480",
+          "rgb565_sha256": "ff8c915c8a2fd3b95935bf6b28a4cb0c60cd1bdf5126ffd56581c53a303d4391",
+          "preview": "preview-partial/iguanodon-5.png",
+          "preview_sha256": "b4ba7b1099d2cb0984ec291efd724ed1aa389e505a5d40b05d26ef0abfb796d2"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "239773bc0840004e3998e2906435190d85b926ed125a624bdea867916873db96",
+          "rgb565_sha256": "e2086274cbc691b85201b0102be428cf44cd72df03e4a57728d9a08405f1b51c",
+          "preview": "preview-partial/iguanodon-6.png",
+          "preview_sha256": "3b8a12cce51d0dbe18f703653dfdcf0486ba8311c205a893120647b60e760ae9"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "f517cdec366aad69f4a6cf7e321b088a9329a171e4d4f345a8bd037144a0df2e",
+          "rgb565_sha256": "e89690ef4f403ce4bf722a330bf783dba6b81b0b294193f5319d1d10f1d64943",
+          "preview": "preview-partial/iguanodon-7.png",
+          "preview_sha256": "cd0db09b89f6ab651cecfd63cc19959eb6261d6e19ca1d82364fca65caba27a0"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/iguanodon.gif",
+        "sha256": "6ecf4a9970ca278052df679eda191cb432ef7fef9f862ef446b30d58843fcc4d",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "parasaurolophus",
+      "index": 12,
+      "source": {
+        "path": "originals/parasaurolophus.png",
+        "sha256": "71f02f5868803a465bd3a6a041c153835984fe3a62b3e721aaad71a173162e35",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        54769,
+        48264,
+        46216,
+        37897,
+        19143
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2914,
+        2341,
+        3310,
+        2983,
+        2612,
+        3301,
+        2717,
+        3805
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "2fe0aac1f64f816812cb4af2e4b1ac2831e0d84298b78c4b997976927cc05b9c",
+          "rgb565_sha256": "1f0e23f26604a2100fdb9411b1d24b989bf21980be927a3acf2e068bbc24beb2",
+          "preview": "preview-partial/parasaurolophus-0.png",
+          "preview_sha256": "2a4909c0f33dac2ff72c4ba2a846f172b5d59a27934168b7fb060e3e441dadb5"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "479643cc826eb67886b02c00b2dac1410c31c2a44ab612a4e3a913bc5d7783fd",
+          "rgb565_sha256": "7ba242c2ad0b6a6b154926d0dfcc2109b7ccc1e250859d739a90bac352b306a0",
+          "preview": "preview-partial/parasaurolophus-1.png",
+          "preview_sha256": "14cfcba686280a6577c0d0ab3b68e91cfd06f4e4a5f36c59010a7bc263157433"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "338b406fb934419976af30a6e00cf3509f3baf0fc96d10c80b7fba451da52735",
+          "rgb565_sha256": "d06c42757bee6b29ba98d858c1e99baa8ec7c9603f7061315c0f6f0f58096997",
+          "preview": "preview-partial/parasaurolophus-2.png",
+          "preview_sha256": "ade7d2dfb9e1121ed1b2ebba3ceb8cbbcd2fddb69f0fb49ce4c99206fb494b41"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "1bad4d0f4562e6bb74fcef8ad4119d1885a38b163e6db0c4b83a0b96977a7d88",
+          "rgb565_sha256": "d1af887f7c61041ecd372dbb3858a6ee93522bcd78c415a4a37bac97becb774a",
+          "preview": "preview-partial/parasaurolophus-3.png",
+          "preview_sha256": "b608b1eb08525c6451818f2358740c43e48c17225ff83b7496371cd2f7241542"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "e4637a626f6ac40e26b43aa0775b67cdd8b778808b873ac148430a41f8cf96a0",
+          "rgb565_sha256": "ae7d13c3c6fcd903337e73365855f5c0984efe4878a4cbada49b35584db2733e",
+          "preview": "preview-partial/parasaurolophus-4.png",
+          "preview_sha256": "c3191cb612ecdaed85b4ef05618de3841a025ebc13d65c80c37046908ce6eee0"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "bc7b307b1aba704fa02acbc2348d37f31a1a607676004e9a3532fbc85ae7a87d",
+          "rgb565_sha256": "6ebc130003b33971eb44f440c789f785f77bc00e6ef03e5460506599633c8834",
+          "preview": "preview-partial/parasaurolophus-5.png",
+          "preview_sha256": "c9b8d3d20b9e96cee01b9794af2f341ca38d9f50853cca53655a7f53cff7be41"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "8f998226483777895e4eada66b8a744a97a4147c33c2df47f5af97968989bdc7",
+          "rgb565_sha256": "b428b7a73cce6d9f976ff453d59fae91b7339b8b2b2ff2470fe1d3c8309e2121",
+          "preview": "preview-partial/parasaurolophus-6.png",
+          "preview_sha256": "3f220fe1e2ba54f077f84c14ef0ea6ee17807eafd9da6c8b4c85b62953871d4b"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "efa3ecba8dbe94cead5dc8de9377c9a6427a2404eb9279ea42bcf28caeed36f4",
+          "rgb565_sha256": "3c865e7f66e0b426d227ce99cead1663b7ae70ada99f96e4ee307b15c5732d3a",
+          "preview": "preview-partial/parasaurolophus-7.png",
+          "preview_sha256": "0e40e2eda0e2c031942cd8de1de8a5f07b99f686223d3a4208a001d54bdc5dc9"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/parasaurolophus.gif",
+        "sha256": "292a17f3626c31573c854f4cedfe64120f3fe6e5087c8bab21a4cf288b4a475a",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "corythosaurus",
+      "index": 13,
+      "source": {
+        "path": "originals/corythosaurus.png",
+        "sha256": "76f9b7e72a42373ff5073614d1165264fcb511061c4cf2c8092d327caed92a95",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63421,
+        63388,
+        63389,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        50708,
+        37995,
+        35882,
+        21256
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        4338,
+        4215,
+        4036,
+        3761,
+        4051,
+        4218,
+        4024,
+        3934
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "b507bdf70748db52f1470cbaa282447e2148fd8f7cc00b2d7e2e16d2203f229a",
+          "rgb565_sha256": "3923613554565e9b985156960f1df7a6d2a362754ccf2686cc7583d58e2459d8",
+          "preview": "preview-partial/corythosaurus-0.png",
+          "preview_sha256": "0e123b5a87a0d36355cf7e7a071fae3ef47581d894c453ca53d546984d2a8cb4"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "b7fd554ba36f3b07ed119fca4147f3106786c03f10a5e3d110b4ce128ac947a8",
+          "rgb565_sha256": "2ee83bf0d44b1c9ea29dbaaa1942f1c8b13be58ebc7a840b6041f22ebde5451f",
+          "preview": "preview-partial/corythosaurus-1.png",
+          "preview_sha256": "0757413a398a1d172d449c2c397e61b3186ee4362c99e1b5591eb865321108ea"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "83cfa3ebf2d8b22467b056580c015540217bdbcbdc4230d49ee812bfe57950c7",
+          "rgb565_sha256": "bb8f84b7b7d46d2017c3121da7f8024ba0e0132b9d2d467964e0432cb873d1b9",
+          "preview": "preview-partial/corythosaurus-2.png",
+          "preview_sha256": "0adab72a8982c118976ea3b20ceb07751a2b7201b6cfcd962c2f697c6a6dae7c"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "79780b72fc0a7f44c388f0e846c812c844cec29a2156c79181d0ecb0afbd2979",
+          "rgb565_sha256": "32021ef4e50b8b1f9996512754464d9ab2684ed5d9cfb266541bd5618387ff57",
+          "preview": "preview-partial/corythosaurus-3.png",
+          "preview_sha256": "5ce33852214191cbe1b5a3a4edc7793abb7026c291ede82155d4138e9499e2b6"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "9a0bb54afa0fe6a4bb429ff53a2031764510a833b2c3b56a696e40ae81a7dbea",
+          "rgb565_sha256": "48cd5986783a66ab216f2dc58d8fde96eca317aef46ca61010cf5fa689160625",
+          "preview": "preview-partial/corythosaurus-4.png",
+          "preview_sha256": "15061e4b8becc5926e4ad639619d07458ee24dcbfe86e05c93001a2b379db298"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "f9a0e335eef57164b0b28cd594b6835a781205522589f22ad493f77f59408c0e",
+          "rgb565_sha256": "c7f805619e6a36f91769fa718f64e249c9c0c9f4122bb2155acbe210a223de78",
+          "preview": "preview-partial/corythosaurus-5.png",
+          "preview_sha256": "b22cc58ab6dfa0ee0d409c62997ab38636f127fb89af4661a19809d3e521793b"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "976082d0351c561ecfb9e9629e52e9e59d44c0b9ef350a9156686cc7bb1492a2",
+          "rgb565_sha256": "30a1028df84fb04976f3b3b6f30ea53a865cc4cf32e971d85d2ad927bc6e7c69",
+          "preview": "preview-partial/corythosaurus-6.png",
+          "preview_sha256": "da35ffa2805ac230b65c370a0993fbaf9ef90a817837e4b7682157b7601037d6"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "7de39f6a924800cbfd3ebf48a73b408e3e7d8e53b039de40930fe14624f62242",
+          "rgb565_sha256": "9d4b5acf89a6c65b222aa59caf83e7405b028ee341b2549d269395e3b13eba88",
+          "preview": "preview-partial/corythosaurus-7.png",
+          "preview_sha256": "fa713b1d7ac23c142237a7c0fd20d11b5436149a9ced5010404aaa123c96e024"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/corythosaurus.gif",
+        "sha256": "df2dc48ca039501ed225f6c8dfb49c495e80ab40a4f4516b418651fe08536748",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "lambeosaurus",
+      "index": 14,
+      "source": {
+        "path": "originals/lambeosaurus.png",
+        "sha256": "d90f775ec98d1617a13f1bc425915b3ec322c6cb462b323704471b6ae2169476",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        56983,
+        50151,
+        44009,
+        33542
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        1895,
+        1836,
+        2385,
+        1807,
+        1904,
+        2039,
+        1983,
+        2175
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "a1f85b6fec82470f4f7fb00746fe79c2645470de11c3da0b7ed4559a561cbe96",
+          "rgb565_sha256": "f2f05b36349356a976a30d31b987af8937cda409a7973ff8b849d999d0228765",
+          "preview": "preview-partial/lambeosaurus-0.png",
+          "preview_sha256": "3c477a08e79cb1ba50774bcf56eaa304b9a67884de981b3f1abf33c864fb5957"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "71c2628a60c2ac8467cbfaf6c20a92996f1de9cef860e096114678b4a5656178",
+          "rgb565_sha256": "66ebb4eae60623195acade858d728a31c4ac67775554a159803718071d53bc45",
+          "preview": "preview-partial/lambeosaurus-1.png",
+          "preview_sha256": "5ecb70050a0b5db7210ed21f2b1ce4c7a929d93a8c7bbc52a57a92d49cefee8f"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "23ee16594fff7a62a00d6d0c8fb372dc04b8d30a86470f460a11a38dbebd6415",
+          "rgb565_sha256": "1089b316e86df7f2670db318326a223486818dd5a116179aef63e3d112179344",
+          "preview": "preview-partial/lambeosaurus-2.png",
+          "preview_sha256": "1c2732181c81bf6b32ec520e935b83e5d8d7db24596ab46d5bb22904dcdbd88e"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "e41bdd8e934ccc8b9f54c99765e4efd16899820cb8a508de370201cc62c4d05f",
+          "rgb565_sha256": "768870f7fab792ffc35bf238222ac64e36f574492e6e35975efea925b74888ec",
+          "preview": "preview-partial/lambeosaurus-3.png",
+          "preview_sha256": "7a43d9b1c07d95d7ab1dcdd6aab39c0d1259e34674df020203a36f1a47eb1df7"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "e360b95abdf06773d3a71de491f53dfd9c7815e55e980a8e844b2258c288a07b",
+          "rgb565_sha256": "6d7ace7358798f4c4e78e4f98cf0cdaa3c40dc16c262570301149d25fdfe5734",
+          "preview": "preview-partial/lambeosaurus-4.png",
+          "preview_sha256": "0df3854a05d3903b433e04d57ab9ae177b5754edee94eb93bf846f7303438d9c"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "1c673589f8b40e78826087d46a2138e95c1f03ccfb6070dfe5748f7f49d4aa83",
+          "rgb565_sha256": "7dd2fc2f3eab02992cb5503f744f99abc4f6a469e040a2e41b23b51b75265cf0",
+          "preview": "preview-partial/lambeosaurus-5.png",
+          "preview_sha256": "92a4a6e8d9ccfde25308a1838c5aaf0cbb531bce74520512a4bca3157a6bd8e8"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "bb69a00a7cd65943c619bacae30fa11db1db203bddc8afa859ce14da952b4b2b",
+          "rgb565_sha256": "45e4c86402b62052dd17c51a87635fd543ecdd95fa1716358453297f17b1bd98",
+          "preview": "preview-partial/lambeosaurus-6.png",
+          "preview_sha256": "99ae490706644c4bc4c554314f772850375d93da0c965ad9364169d449418322"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "c28633f928e2ef90de79922630b28066b6c5762db8284a9a640bf61c47a6e28d",
+          "rgb565_sha256": "75992408f145e6ecb29b7070ac1173f858affe0cfba87df35b600fea6064eaf8",
+          "preview": "preview-partial/lambeosaurus-7.png",
+          "preview_sha256": "c3ae24fa1594cd407a4cd8e072b36ad36e8f8b35718b49be193f2947189daf32"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/lambeosaurus.gif",
+        "sha256": "eb2a045814a69f2d79d84eb8047058d05a9b2abedee00bf2b732f1eae8c1c4ea",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "edmontosaurus",
+      "index": 15,
+      "source": {
+        "path": "originals/edmontosaurus.png",
+        "sha256": "53ab27de41dcb8de00f06eea82d4f99fb273feebbcb64533ce23886e1d209181",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        50836,
+        38220,
+        33995,
+        19240
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        1830,
+        1559,
+        2223,
+        1948,
+        1843,
+        2100,
+        2072,
+        2654
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "7471ad83cd9b4367edbd28e9350088e6c49f85ae02a6d8cdc52d54cb3c36f0b4",
+          "rgb565_sha256": "31b45c29d0527bb0bef81f991d4835a865856a4989e829ec32f7afc6cbeac34b",
+          "preview": "preview-partial/edmontosaurus-0.png",
+          "preview_sha256": "fcb8ec83c0d2d6f34562a34d975296ef399bd9a01b09ac04e889e2315b487c2f"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "d0055264bba78c75325bc5dbb9b01c260ccff1ae66a2dfb6bcb139ee798b57c0",
+          "rgb565_sha256": "bdbc5ee50410ff953a633f8b2e3aca65a728bd3b88499bb9e5a4ae208edd2983",
+          "preview": "preview-partial/edmontosaurus-1.png",
+          "preview_sha256": "14ec83061dcffbc3ef0209b09340c6989ef98bcceb6fc9afc9067701d467d696"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "3c839712dcf98ff4ab9c733e61fff4ad05491b3be3df90983ed75fa53524ec65",
+          "rgb565_sha256": "839bc12368e1b41edf18cf60d3ac1764f9cc74a1bb3b67714c8ed44ef10e2388",
+          "preview": "preview-partial/edmontosaurus-2.png",
+          "preview_sha256": "29b068dd15b3e02fba7ef0001ebe59cd9c1b9d9286aa1db565a5eee72f6b43b4"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "5aa0e2efc82e27f31dd0b3b20e75e6fed37ab779e75b4ba3d8f610026e483286",
+          "rgb565_sha256": "accd7fc2ffba8470e163ffad6cd286d4b05696c722de912bb21d41fc42749e13",
+          "preview": "preview-partial/edmontosaurus-3.png",
+          "preview_sha256": "0eba0e0e315104108d942eb9471dc5db9071152e1e439bb81cbecadd81ffcac3"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "410124880c5d246b919a7a492cf6720135ecc8ac3e8e3d9f8ab83ed723de9134",
+          "rgb565_sha256": "65775c8364a64d3d94da79261b3cd3b6747125547bd9327a6d775eb790dba4b6",
+          "preview": "preview-partial/edmontosaurus-4.png",
+          "preview_sha256": "0c2f2733349ffd80c9397a21b58655b8ad9bdd12608e86e1dbfb549509f715c6"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "d480b3755e0fa01341e10352549e35a25e1f727da421b3b6e9c8843952c8f4a5",
+          "rgb565_sha256": "446fe5af2caa17f1a3ce7435205187be664f1e706c6b680adadd57c9b9133bb7",
+          "preview": "preview-partial/edmontosaurus-5.png",
+          "preview_sha256": "1aa560bb9a7aa62ce0864f5840304cb6f5eaeaf437e8bf22fefb3dd843f15b4f"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "3c6f6114e792bd983d3fa90364dba3cef20b1da45580115881c3da583c5ff3d8",
+          "rgb565_sha256": "fe4ee4be1b376f7539814608838ebaec680c7a00f43868be4b7923b391a258c1",
+          "preview": "preview-partial/edmontosaurus-6.png",
+          "preview_sha256": "321aec4b72f61483dbc431a3a6b77a607c2e2e7d68220bd39de30660b3599da8"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "b905789941e6c5a90fd8ed882eb55aa3d0fe06a651d233dbe502ce3d74fc2725",
+          "rgb565_sha256": "b2d22b087121a01446cd18ef5f91a0390f14965c03b7365404f8d63bc4f7f277",
+          "preview": "preview-partial/edmontosaurus-7.png",
+          "preview_sha256": "c5a00e61373bcab8c0f073d616f9b916e37076578f8e3458cf1aecc15eca2d8e"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/edmontosaurus.gif",
+        "sha256": "5b300da3a6bac650ae607918c2a7226ea58cb152855a3a0303d5140be7a26659",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "maiasaura",
+      "index": 16,
+      "source": {
+        "path": "originals/maiasaura.png",
+        "sha256": "abfb7d4ed95b9f8e1bb8736b8e5ad61b101de0dc9015015f27d50acbec11be25",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63389,
+        63388,
+        63388,
+        63389,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        58996,
+        54635,
+        52588,
+        33770
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        4295,
+        4170,
+        5069,
+        4011,
+        4297,
+        4585,
+        4302,
+        5438
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "3685e1fc97f3cf054ebd26bc989b6b6813981b0f317334e413aff89cb0cb1d4e",
+          "rgb565_sha256": "443ccc29fe8257220e5dd1d35f6f3b3fb94a88c0ec03a5cdd8aa83ba8839e192",
+          "preview": "preview-partial/maiasaura-0.png",
+          "preview_sha256": "8ba3f4eff463a8141bb02e5f309fd6798283edaef97896ea6050ca926576bfe5"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "a4dc85fd6f178672dd1e09ad6976ae8de2fd932616e9f8eb5e7ce49b72bac104",
+          "rgb565_sha256": "f0c849e1b131dd635b31d4c40779c916c5456d290c90caf755d7eb8c02934116",
+          "preview": "preview-partial/maiasaura-1.png",
+          "preview_sha256": "e876818197e1e560323199d8d1b9b2bb9d56748ed6c31e1aaa2c85e10fbd1b78"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "a613bdba8f309eadabc631a8f80191f55f7d9b8ad82cfae6c507f23386d36311",
+          "rgb565_sha256": "bfb8e49fb1d3a8c358063c4c1002af02dd880d0f868e0580190f259510f1d925",
+          "preview": "preview-partial/maiasaura-2.png",
+          "preview_sha256": "c43c9157842038da00f6fe5478ce4840065c4c36e646a3559f66cd7d9e5fc0d7"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "58a6118bf9ef989dd6123d91501e0330366a7ba6ab3c4c897d3ed52b6012e19f",
+          "rgb565_sha256": "e3555ad92ab6917a7d0dd7acd27d2d10475518fe289a7a5f2b18f7f5ffcb8766",
+          "preview": "preview-partial/maiasaura-3.png",
+          "preview_sha256": "268473d26eb4816461cae45690be83e61cb37da7897f23178964ee1242477866"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "c58973cd6f6752fcff7987754fa49592d19cd95e3a7ad1f564ee58a779c146b9",
+          "rgb565_sha256": "815866f76520208dabb442813002125e31a411384a7e31e724ae6df59d57fd17",
+          "preview": "preview-partial/maiasaura-4.png",
+          "preview_sha256": "963225a8dde41f34f416e05ececa2e1819a94235f938150684c2411d9adbe001"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "ad1a21b464623f30946da2c8feb47f2d37dad7242ff4acbe782ce1134d1c8a0a",
+          "rgb565_sha256": "6b97ea10936e2ceb6c1c77702fa24b4cf55dc4cec2e540a06fbba2090883a50a",
+          "preview": "preview-partial/maiasaura-5.png",
+          "preview_sha256": "263dc7e1be8f0930db1de38102d9460e8ce6203a38ff719522b1f7a71c2e2c54"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "4aa5b15e4d91cdc525a1347c3a14107b6f5d060924f306366faca8a4356f5896",
+          "rgb565_sha256": "d5fa330d527eafa8f576eddaa6749ee09a4ba6f479519761f31923da665ee5cd",
+          "preview": "preview-partial/maiasaura-6.png",
+          "preview_sha256": "506741ffd2e3bf7fcbfc5be510260b2e7858d3871788168c57c8fc094e1b54c7"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "b529d85151340f5da0e22c25404e9b19cc260de254561d41ef3c2945fb947fc9",
+          "rgb565_sha256": "34474b6a2f0287fdffabd54d17b91a5164da21ead7821cdd13456e1abe075143",
+          "preview": "preview-partial/maiasaura-7.png",
+          "preview_sha256": "3d610274e6f665aa2a74c453da94edbf7629d63d619ca0d8c7b033363ea31724"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/maiasaura.gif",
+        "sha256": "0a36a9e1e7e4e21f98ec33cfc7f887548f722d65d1ca2badbefaa032006ec255",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "pachycephalosaurus",
+      "index": 17,
+      "source": {
+        "path": "originals/pachycephalosaurus.png",
+        "sha256": "082175d9dd943ccf19260768e819e0ea74a95db4745adff9d07f57ce1c9ce12e",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65501,
+        63388,
+        63388,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        61275,
+        29936,
+        21582,
+        13033
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        1716,
+        1756,
+        1488,
+        1608,
+        1879,
+        1752,
+        1867,
+        1257
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "cc4abecdf0c02bc8271bc3f6f479f8e0299e0412c539fdf00dc50bc8763df079",
+          "rgb565_sha256": "451fe89a4e20002911af9bbf250045a9d7409bbd1633824b06f5435bb276b067",
+          "preview": "preview-partial/pachycephalosaurus-0.png",
+          "preview_sha256": "af3f6485432aa24d2114ebefbd0b96203f0e9939f59f72097f6c7db6483cfb25"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "d0d9ddd9f7e0c425fe8962ecfdd292cbb6fbe32e9c009d1a1d5f09406e29ce67",
+          "rgb565_sha256": "b2c64af2fb69e5834876ca7d6d304e2654c1afb68c9f9fbde32bbf8f8b66ba97",
+          "preview": "preview-partial/pachycephalosaurus-1.png",
+          "preview_sha256": "c163c7af1eef8b8a3e90f2bba39db8d459598e1d309febb25cb3165cabb45e88"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "8a820e87c360d9054ab1a1afd95f18887ef225a587c56af951732b4e9d6a0592",
+          "rgb565_sha256": "2a4f7f59f46148f173b4d87e1bc55c546e4a019f8dc939842d560f6bb03e2af2",
+          "preview": "preview-partial/pachycephalosaurus-2.png",
+          "preview_sha256": "db7a788a3de748795ae5562ab0254549431a351392c7dd538eb21bc1671f202c"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "22e4c12be50b83f3a3fb53ed2b807d96c2394d77b6a5bd9d0ba5959bc1b6cab2",
+          "rgb565_sha256": "234ac9268045c6e93abefc1b48fc791a2a73117ae4b58d1168b982320282e213",
+          "preview": "preview-partial/pachycephalosaurus-3.png",
+          "preview_sha256": "4abd6f7b4ba1b9bf449348676384fc714cf8df94ec5553b5dc4083f37535f5d2"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "c94600300acb05da05c2e76f1431e12e83d5950dddfe80834c9fa38782d8ad7b",
+          "rgb565_sha256": "5efe2329e2b4e4b83546449ac717aadf505303796d41b013f65682bcd9414eac",
+          "preview": "preview-partial/pachycephalosaurus-4.png",
+          "preview_sha256": "2eca7aec15c090aa407bbfb88c92e26d25b628388df4d458d5092955bc8da1e1"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "d20808729eaa93f89e8e19f16ef164722457bf2a9c5d88bdedb0851a7fdc2b57",
+          "rgb565_sha256": "3cef4f759a3b7570238953b085a4c1a8ea90cb7733c8185fb163bffdcb5362cf",
+          "preview": "preview-partial/pachycephalosaurus-5.png",
+          "preview_sha256": "673517a388705f400f61a3a23f78fcd0cb6dbf3552ebde45aa27cf9187f68d3b"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "ec4716bc78f7369612f4fc38072e73a37995c33740f0db58c333d75ec721cc2b",
+          "rgb565_sha256": "4c11ffbaa6927a3f1489a4b3019ea5d117b3c80f0901f9df2c21275d329869cd",
+          "preview": "preview-partial/pachycephalosaurus-6.png",
+          "preview_sha256": "a7e07550318f283efca672835ac981e964e5a98649660319a62d967d8e8f7ad5"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "9b4f7fc7869e8d072ba9a17c9c8fac807c9488a79bdb68f3da92079adee36db8",
+          "rgb565_sha256": "40a46cff9d8fa5d8a499cb1b1c1dbc41c19ff42ad92fce3bcf036bb0451f0800",
+          "preview": "preview-partial/pachycephalosaurus-7.png",
+          "preview_sha256": "ccfeca963015538502a0cd3806175aadbf667895006ffa1dfecd6645bbe8e7a4"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/pachycephalosaurus.gif",
+        "sha256": "f1f7883c246d696384b7f7d43279271dc453ac75390135abf82ea0711c30b70c",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "homalocephale",
+      "index": 18,
+      "source": {
+        "path": "originals/homalocephale.png",
+        "sha256": "6d688308e43cef6472c0b1123b3d722fb0b24f4cefe159bac4e5dab48422abd1",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        61242,
+        42319,
+        36045,
+        29740,
+        17063
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        1983,
+        2124,
+        2776,
+        2502,
+        2570,
+        2270,
+        2264,
+        1927
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "1aab223a3c8e898222e286ec686264393631775c40712287f5ac9015239839ca",
+          "rgb565_sha256": "67161f6f2aa757ec121c76ae44a941ff8a1dab5ac4d227d03f4adf6dcd50daeb",
+          "preview": "preview-partial/homalocephale-0.png",
+          "preview_sha256": "d08e1f6a7a05aa1b8a3e0800f4a1af80b397c3a88a6234e08d7720e82edf2cca"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "8bcfe1ed5dbe3e95d768728485201b562df73ed635f245502a2094fe25911ec9",
+          "rgb565_sha256": "8be0e42bea084bf3ad3a52510703a4794d0ad89f4e85bc9bd6e495c6a452c5b5",
+          "preview": "preview-partial/homalocephale-1.png",
+          "preview_sha256": "7cf9b589a6f5fe735427c3553f6f05879f785be475cc876051ccecff68eb34b1"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "d64226f5ed6aa4ac607d5a6bff6fc5806b50d3999eb97990e92d4bc29b02ef97",
+          "rgb565_sha256": "e99f4638ccdccec469383e6f9a94237d49c9484a14c2810af443232b412bf5c9",
+          "preview": "preview-partial/homalocephale-2.png",
+          "preview_sha256": "a7a503203953ec6c5a211551320a09cd466f5a86c81d53fd24afbe331ccf8ed8"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "1b405f928231c78f6a3d977d7aeab417c19f49dbe15c452957e490d0ec2cfa70",
+          "rgb565_sha256": "61f4c3f56c3c756aed49dce4be48f30efa239a810dfd8f24f277cab979235d89",
+          "preview": "preview-partial/homalocephale-3.png",
+          "preview_sha256": "25a61a6988c54058cbe948a7fc51e531553cc5347711e8e08c581d8ba484c726"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "7c45311cea2b7f596a7372a95006986bddf95c60ff960081fa5031bfd8be368c",
+          "rgb565_sha256": "6f8b7041955ac85bfa1bbbe19e46351dd8fa3378c900b6da2ba5fe910adb8778",
+          "preview": "preview-partial/homalocephale-4.png",
+          "preview_sha256": "90efc7b0dda224b38be75a6b692b24779549d5b784500f7ae9984c5c1339569b"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "404e85db34b7bc1c4f6b11d17a04b86320d7d362af68b5cbcd46e32649d7a348",
+          "rgb565_sha256": "6d9efbcb9ac362fa32140147b829d9443e3ed115381961e3493f80337fc7d8f5",
+          "preview": "preview-partial/homalocephale-5.png",
+          "preview_sha256": "c1dbbaab248343185eb3b931799236d5cee98ed011d023fc410936623d8cd8fc"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "8f336c6c6669c6fff2eeb9376c003bab620c1ff8a529171587e15d6f598a1909",
+          "rgb565_sha256": "ac0fb0f80724b76ffa690971da74e10b9cfcf4b5886dcc4a797c47cb19602ff8",
+          "preview": "preview-partial/homalocephale-6.png",
+          "preview_sha256": "251902dbf69bda58e125f2ab823adcc1bfdc01bc68a49ae4971daf522644b79d"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "70c932011ac82bb83fda03e183738bd9aee2b58818427b2885f687dd651252e1",
+          "rgb565_sha256": "9d6116ef9cb8da2cdb2b69749c668352931489b242d5d4eac6e99ae9784e79de",
+          "preview": "preview-partial/homalocephale-7.png",
+          "preview_sha256": "7db700d49847596b463bebeb3e0c58dce0ddfb3d24cabac2e9e1e4f5fc413bab"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/homalocephale.gif",
+        "sha256": "ce9707a52b3d5a77dee1cfe1d87053ad5b43d9b33ffb2676a4bfaa58f60ae04a",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "psittacosaurus",
+      "index": 19,
+      "source": {
+        "path": "originals/psittacosaurus.png",
+        "sha256": "31824e5d68766222a9b017ee54e57fcbd8b3200a00dfad3263a1c8dc9f42b4d0",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63388,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        54903,
+        48107,
+        48074,
+        19144
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        2300,
+        2711,
+        3159,
+        2808,
+        2963,
+        2821,
+        2522,
+        2254
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "a61c6796c19839fd9d741d12196de04ef66c6336ef2546a8b3a932673f325ff5",
+          "rgb565_sha256": "d8bd64a0f792c900d6d546682282838422ad69b63acf1b537499f25e5e3a5fce",
+          "preview": "preview-partial/psittacosaurus-0.png",
+          "preview_sha256": "106cb306513640a45cf2565cab0aaa714566003644174bc88204404c33e3cee4"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "a533d15c317ca190d7c7c9b0d7a2cc8462b1a993b821ee15a01caaa29f9d4483",
+          "rgb565_sha256": "700dcee3324eb3faafdab9aa82bab94db914293dde8f89f1d9d8ebe3bcf9f817",
+          "preview": "preview-partial/psittacosaurus-1.png",
+          "preview_sha256": "423db9fee33f8d81121fba41491a150e297e06f61a7d5637d0a456f29f02e5cb"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "10fdeeb08aa4759a5123a845c348eb5e368fd263d8ce4974eacb06eaf34bda27",
+          "rgb565_sha256": "dcb49b5fd7cdc3aff78c0dcb98667196329c4147ec675d33829ab6020bf1897e",
+          "preview": "preview-partial/psittacosaurus-2.png",
+          "preview_sha256": "51f5e608e1df2097a747b6a803bc507201e4703fb03d498b16711a9d27b86ff3"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "1966e0984a5bfbec48c5b996f3429832a066cec0981ae77a4ed368d5ae600af4",
+          "rgb565_sha256": "f5849bcc028c61f2f1b622a477be5d411bea7563b5ea7e6ec0172f8c299c881b",
+          "preview": "preview-partial/psittacosaurus-3.png",
+          "preview_sha256": "9f0ca3e07992405a595208940c90ad819a595ea7be2a2e466802a5e4d4b8d98a"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "230fb377e45710c11a17864478cad1c49d632471e6c9b2ff78c5b2e8410d34b4",
+          "rgb565_sha256": "50651b0d428c6fe2c56eb96f0e3565f2a7c2ec57818e17bb765776af8a77f29f",
+          "preview": "preview-partial/psittacosaurus-4.png",
+          "preview_sha256": "5ff10014fa3bb7c46d34579e215d5b178223d054099a57d8bdb39e7d54ed724e"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "95a9cc609b095b686a58a8f507436b4f5788962c2db7a94b1ce8e517b30a0ccf",
+          "rgb565_sha256": "fd1e65623e8c93c8b436bf5d1e18005625aa5d7d687f0d4d647a2316f96354c6",
+          "preview": "preview-partial/psittacosaurus-5.png",
+          "preview_sha256": "f005b57b68811e28cb3468c9e829aee03c54ebf1ccff6a235b5ba7b6d2dc7e9e"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "bc349ece9d9be8025b91adf4b995246429628e91dab18c4297a23251dd736553",
+          "rgb565_sha256": "154930cc00fe6e4601ae71c447b5779e089627db8c35a9b60fceb8dfd0982923",
+          "preview": "preview-partial/psittacosaurus-6.png",
+          "preview_sha256": "ab17b2d2d8315b232a794205ca97fea395e5be6198ef50d82bfb0354f067d584"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "3236283f85b72f4bd4f06c124a13b2f90cadf1284081cb48a116249b1bc601f3",
+          "rgb565_sha256": "ccb04c7de3e87b29769969fefa08638563b6e39a02579530a1692f98b873d69c",
+          "preview": "preview-partial/psittacosaurus-7.png",
+          "preview_sha256": "7dc7e7dcb4e0d400ccb28020cf756bd47a43a752055775555490773614124dfc"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/psittacosaurus.gif",
+        "sha256": "cbf3d31a455ad74f5686be6e5904b0db173cd5c8d769a4fdde4e003f4d78d055",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    },
+    {
+      "id": "protoceratops",
+      "index": 20,
+      "source": {
+        "path": "originals/protoceratops.png",
+        "sha256": "40121640bba93a6639c9f3dc2944b5a9af2372c7ff6e466956a0453f0ded3a6e",
+        "size": [
+          1586,
+          992
+        ]
+      },
+      "crop_boxes": [
+        [
+          0,
+          0,
+          528,
+          330
+        ],
+        [
+          528,
+          0,
+          1057,
+          330
+        ],
+        [
+          1057,
+          0,
+          1586,
+          330
+        ],
+        [
+          0,
+          330,
+          528,
+          661
+        ],
+        [
+          528,
+          330,
+          1057,
+          661
+        ],
+        [
+          1057,
+          330,
+          1586,
+          661
+        ],
+        [
+          0,
+          661,
+          528,
+          992
+        ],
+        [
+          528,
+          661,
+          1057,
+          992
+        ]
+      ],
+      "palette_rgb565": [
+        65469,
+        63389,
+        63389,
+        63389,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        63388,
+        59029,
+        54670,
+        50510,
+        21321
+      ],
+      "unique_frames": 8,
+      "adjacent_changed_pixels": [
+        5842,
+        5803,
+        5866,
+        4882,
+        5791,
+        5517,
+        4852,
+        5874
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "source_crop_sha256": "84be320ca4b118b935846057f51f8b9b5a6ed4d59588b5637a08ed054ad9dd0c",
+          "rgb565_sha256": "95b1e3af959f58c6439f15a70db902fd4de36ee5a8d164e313b09387505cee4e",
+          "preview": "preview-partial/protoceratops-0.png",
+          "preview_sha256": "f99449b5ec99e1a4a07122ea00042d626e610b2f46e287fc05136d518bde1482"
+        },
+        {
+          "frame": 1,
+          "source_crop_sha256": "246812c9995765c9dbc80357a14078e4d15a5a7732cd48f257455d72f76d0b44",
+          "rgb565_sha256": "c8e749639fd4beccb03b92b0cac27c929feaebc46f9ffc7b59d16fcf542cbdb1",
+          "preview": "preview-partial/protoceratops-1.png",
+          "preview_sha256": "bc4aebad96b780bd840708389fb47a09f71e94fc2740ad16d1cb605a96389266"
+        },
+        {
+          "frame": 2,
+          "source_crop_sha256": "8a86350e326bcbe0f75ec026164f94e00713b13e51ede43e246c77e5dbb34be4",
+          "rgb565_sha256": "5667d0df2eb8c4a67abb52e0680d7b20b7403456db3cde7f1624a5c826d08d77",
+          "preview": "preview-partial/protoceratops-2.png",
+          "preview_sha256": "b8d2fb4524ffca1b4ccd53599fa0c35b9c8fa27f606e8b23b71a3bced6298c88"
+        },
+        {
+          "frame": 3,
+          "source_crop_sha256": "26f445cacd3e7951248b09950ac7a94a269ef3b851dc7ccba19e41c9f940efe1",
+          "rgb565_sha256": "6922cc77f65f4b188ca8b17240a918f759819858e55112c521661b70005a6b07",
+          "preview": "preview-partial/protoceratops-3.png",
+          "preview_sha256": "d469ffe73d000b8aaf19d77a8d0934905602c34967acbe8782d74c7f7eb17231"
+        },
+        {
+          "frame": 4,
+          "source_crop_sha256": "98d307716599ab687694d86cd99a1a12005b4924e54e4ddc671a188a970acecf",
+          "rgb565_sha256": "e6e6383e0d884e469ce40f112306348362ad3aef820c07559c110a19cbb328e6",
+          "preview": "preview-partial/protoceratops-4.png",
+          "preview_sha256": "0b97b57c2e72f76685cbd24abc779b14706b8dae481273104958d1340368ae36"
+        },
+        {
+          "frame": 5,
+          "source_crop_sha256": "fa209d327ec0623e85cb2b20bcda28f8140658db4a743d3fc6287135c0530f42",
+          "rgb565_sha256": "625299e3cd59a8832c6cc4af4bcfc3aaf482e9fe2a54ac59741ae3d231cd59b5",
+          "preview": "preview-partial/protoceratops-5.png",
+          "preview_sha256": "5eff8e39fb5c2ab247ae7a635334e0ddd9b4f95202301fdc63a0616d1f355efb"
+        },
+        {
+          "frame": 6,
+          "source_crop_sha256": "c9511cac96409395c07c00a6f040f65aa445464d9238a53b1e421c6b2771b870",
+          "rgb565_sha256": "b6946024506852c7311d0daf0a3e904781ef28c88473bd36e12a05572279879d",
+          "preview": "preview-partial/protoceratops-6.png",
+          "preview_sha256": "dd1523e71d1309682f6dac4a31c3a4f333b51d39025cf0bea7b1721f426d39a9"
+        },
+        {
+          "frame": 7,
+          "source_crop_sha256": "9875b05668123c3e0b7aba643f848fd3c1718fa9f47a10394f1890710bc2e290",
+          "rgb565_sha256": "479b3a15db33f7f0cc05a489f456a8e0075c6ec72e9c822afaf826e488174b2d",
+          "preview": "preview-partial/protoceratops-7.png",
+          "preview_sha256": "7220452fa83098c4845f852014239f7c028e0e4ec9d5b22f0d8a33edd39df2a0"
+        }
+      ],
+      "gif": {
+        "path": "preview-partial/protoceratops.gif",
+        "sha256": "52d3e2d0defb41373a980f3478a44fa2cf1432e26b424e3a05f9bf462241e033",
+        "durations_ms": [
+          120,
+          130,
+          120,
+          130,
+          120,
+          130,
+          120,
+          130
+        ],
+        "loop_ms": 1000
+      }
+    }
+  ]
+}
